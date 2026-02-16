@@ -1,0 +1,44 @@
+{
+  "name": "tira-node",
+  "version": "1.0.0",
+  "description": "A client to integrate with TIRA",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./build/esm/index.js",
+      "require": "./build/cjs/index.js",
+      "types": "./build/esm/index.d.ts"
+    }
+  },
+  "files": [
+    "build",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npx tsc && npx tsc -p tsconfig.cjs.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run test && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulraheemf/tira-node.git"
+  },
+  "keywords": [
+    "labedan",
+    "tira"
+  ],
+  "author": "Labedan IT Solutions",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/abdulraheemf/tira-node/issues"
+  },
+  "homepage": "https://github.com/abdulraheemf/tira-node#readme",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
