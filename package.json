@@ -31,7 +31,7 @@
     "tira"
   ],
   "author": "Labedan IT Solutions",
-  "license": "",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/abdulraheemf/tira-node/issues"
   },
