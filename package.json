@@ -1,6 +1,6 @@
 {
   "name": "tira-node",
-  "version": "1.0.17",
+  "version": "1.1.0",
   "description": "A client to integrate with TIRA",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
