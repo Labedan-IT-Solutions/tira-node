@@ -1,15 +1,7 @@
-import type { CoverNoteResponse } from "./common.js";
+import type { CoverNoteResponse, SimpleClaimant } from "./common.js";
 
-export interface AssessmentClaimant {
-  /** Claimant category: 1-Policyholder, 2-Third Party */
-  claimant_category: "1" | "2";
-  /** Claimant type: 1-Individual, 2-Corporate */
-  claimant_type: "1" | "2";
-  /** Claimant identification number. String(50) */
-  claimant_id_number: string;
-  /** Claimant identification type: 1-NIN, 2-Voters, 3-Passport, 4-Driving License, 5-ZANID, 6-TIN, 7-Company Incorporation */
-  claimant_id_type: "1" | "2" | "3" | "4" | "5" | "6" | "7";
-}
+/** @deprecated Use SimpleClaimant instead */
+export type AssessmentClaimant = SimpleClaimant;
 
 export interface ClaimAssessmentPayload {
   /** Unique request identifier */
@@ -45,7 +37,7 @@ export interface ClaimAssessmentPayload {
   /** Is this a re-assessment: Y-Yes, N-No */
   is_re_assessment: "Y" | "N";
   /** Assessment claimant details. At least one claimant required. */
-  claimants: AssessmentClaimant[];
+  claimants: SimpleClaimant[];
 }
 
 export type ClaimAssessmentResponse = CoverNoteResponse;

@@ -57,6 +57,10 @@ export type {
   AssessmentClaimant,
 } from "./types/claim-assessment.js";
 export type {
+  DischargeVoucherPayload,
+  DischargeVoucherResponse,
+} from "./types/discharge-voucher.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
@@ -67,6 +71,7 @@ export type {
   ClaimNotificationCallbackResponse,
   ClaimIntimationCallbackResponse,
   ClaimAssessmentCallbackResponse,
+  DischargeVoucherCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {
@@ -77,6 +82,7 @@ export type {
   CoverNoteAddon,
   PolicyHolder,
   MotorDetails,
+  SimpleClaimant,
   CoverNotePayloadBase,
   CoverNoteResponse,
 } from "./types/common.js";

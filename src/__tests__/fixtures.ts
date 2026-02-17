@@ -14,6 +14,7 @@ import type { ClaimNotificationPayload } from "../types/claim-notification.js";
 import type { CoverNoteVerificationPayload } from "../types/covernote-verification.js";
 import type { ClaimIntimationPayload } from "../types/claim-intimation.js";
 import type { ClaimAssessmentPayload } from "../types/claim-assessment.js";
+import type { DischargeVoucherPayload } from "../types/discharge-voucher.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -664,5 +665,66 @@ export const sampleClaimAssessmentCallbackParsed = {
       ResponseStatusDesc: "Successful",
     },
     MsgSignature: "claim-assess-sig-abc123==",
+  },
+};
+
+// --- Discharge Voucher Fixtures ---
+
+export const validDischargeVoucherPayload: DischargeVoucherPayload = {
+  request_id: "AB3232532523344",
+  callback_url: "https://nic.co.tz/api/CoverNoteref/response",
+  insurer_company_code: "IC100",
+  discharge_voucher_number: "322WQ25234234",
+  claim_assessment_number: "322WQ252323423q4",
+  claim_reference_number: "10020-25400-07720",
+  covernote_reference_number: "10020-25400-07720",
+  discharge_voucher_date: "2020-09-10T13:55:22",
+  currency_code: "USD",
+  exchange_rate: 2000.0,
+  claim_offer_communication_date: "2020-09-10T13:55:22",
+  claim_offer_amount: 5000000,
+  claimant_response_date: "2020-09-10T13:55:22",
+  adjustment_date: "2020-09-10T13:55:22",
+  adjustment_reason: "vhrefhrehfohfiwhei",
+  adjustment_amount: 1000000.0,
+  reconciliation_date: "2020-09-10T13:55:22",
+  reconciliation_summary: "vyuergviwfvwiuevuiwvfiubbegwe",
+  reconciled_amount: 200000,
+  offer_accepted: "N",
+  claimants: [
+    {
+      claimant_category: "2",
+      claimant_type: "1",
+      claimant_id_number: "24241241",
+      claimant_id_type: "1",
+    },
+    {
+      claimant_category: "2",
+      claimant_type: "2",
+      claimant_id_number: "3452525235525",
+      claimant_id_type: "3",
+    },
+  ],
+};
+
+export const sampleDischargeVoucherCallbackXml = `<TiraMsg>
+  <DischargeVoucherRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </DischargeVoucherRes>
+  <MsgSignature>discharge-voucher-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleDischargeVoucherCallbackParsed = {
+  TiraMsg: {
+    DischargeVoucherRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "discharge-voucher-sig-abc123==",
   },
 };

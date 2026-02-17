@@ -48,6 +48,8 @@ import {
   sampleClaimIntimationCallbackParsed,
   sampleClaimAssessmentCallbackXml,
   sampleClaimAssessmentCallbackParsed,
+  sampleDischargeVoucherCallbackXml,
+  sampleDischargeVoucherCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -762,6 +764,69 @@ describe("Tira.handleCallback — claim_assessment", () => {
     });
     const result = await tira.handleCallback(
       sampleClaimAssessmentCallbackParsed,
+    );
+    expect(result.raw_xml).toBe("");
+  });
+});
+
+describe("Tira constructor — dischargeVoucher", () => {
+  it("creates instance with dischargeVoucher resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.dischargeVoucher).toBeDefined();
+  });
+});
+
+describe("Tira.handleCallback — discharge_voucher", () => {
+  it("returns discharge_voucher callback result when enabled", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { discharge_voucher: true },
+    });
+    const result = await tira.handleCallback(
+      sampleDischargeVoucherCallbackParsed,
+    );
+
+    expect(result.type).toBe("discharge_voucher");
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+    expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
+  });
+
+  it("throws when discharge_voucher is not enabled", async () => {
+    const tira = new Tira(mockTiraConfig);
+    await expect(
+      tira.handleCallback(sampleDischargeVoucherCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleDischargeVoucherCallbackParsed),
+    ).rejects.toThrow("discharge_voucher");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { discharge_voucher: true },
+    });
+    const result = await tira.handleCallback(
+      sampleDischargeVoucherCallbackXml,
+    );
+
+    expect(result.type).toBe("discharge_voucher");
+    expect(result.raw_xml).toBe(sampleDischargeVoucherCallbackXml);
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { discharge_voucher: true },
+    });
+    const result = await tira.handleCallback(
+      sampleDischargeVoucherCallbackParsed,
     );
     expect(result.raw_xml).toBe("");
   });

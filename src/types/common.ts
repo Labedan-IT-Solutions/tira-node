@@ -102,6 +102,17 @@ export interface PolicyHolder {
   email_address?: string | undefined;
 }
 
+export interface SimpleClaimant {
+  /** Claimant category: 1-Policyholder, 2-Third Party */
+  claimant_category: "1" | "2";
+  /** Claimant type: 1-Individual, 2-Corporate */
+  claimant_type: "1" | "2";
+  /** Claimant identification number. String(50) */
+  claimant_id_number: string;
+  /** Claimant identification type: 1-NIN, 2-Voters, 3-Passport, 4-Driving License, 5-ZANID, 6-TIN, 7-Company Incorporation */
+  claimant_id_type: "1" | "2" | "3" | "4" | "5" | "6" | "7";
+}
+
 export interface CoverNotePayloadBase {
   /** Unique request identifier */
   request_id: string;

@@ -7,6 +7,7 @@ import type {
   ClaimNotificationCallbackResponse,
   ClaimIntimationCallbackResponse,
   ClaimAssessmentCallbackResponse,
+  DischargeVoucherCallbackResponse,
 } from "../types/callback.js";
 
 const TAG_MAP: Record<string, string> = {
@@ -17,6 +18,7 @@ const TAG_MAP: Record<string, string> = {
   ClaimNotificationRefRes: "claim_notification",
   ClaimIntimationRes: "claim_intimation",
   ClaimAssessmentRes: "claim_assessment",
+  DischargeVoucherRes: "discharge_voucher",
 };
 
 /**
@@ -47,6 +49,7 @@ const EXTRACTORS: Record<
   claim_notification: extractClaimNotificationCallback,
   claim_intimation: extractClaimIntimationCallback,
   claim_assessment: extractClaimAssessmentCallback,
+  discharge_voucher: extractDischargeVoucherCallback,
 };
 
 function extractMotorCallback(
@@ -147,6 +150,17 @@ function extractClaimIntimationCallback(
 function extractClaimAssessmentCallback(
   data: Record<string, any>,
 ): ClaimAssessmentCallbackResponse {
+  return {
+    response_id: data.ResponseId ?? "",
+    request_id: data.RequestId ?? "",
+    response_status_code: data.ResponseStatusCode ?? "",
+    response_status_desc: data.ResponseStatusDesc ?? "",
+  };
+}
+
+function extractDischargeVoucherCallback(
+  data: Record<string, any>,
+): DischargeVoucherCallbackResponse {
   return {
     response_id: data.ResponseId ?? "",
     request_id: data.RequestId ?? "",
