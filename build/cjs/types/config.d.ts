@@ -18,6 +18,6 @@ export interface TiraConfig {
     /** Path to the PFX file for signing requests (tiramisclientprivate.pfx) */
     pfx_path: string;
     /** Passphrase for the PFX file. Defaults to empty string. */
-    pfx_passphrase?: string | undefined;
+    pfx_passphrase: string;
 }
 //# sourceMappingURL=config.d.ts.map

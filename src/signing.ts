@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
-import * as forge from 'node-forge';
+import forge from 'node-forge';
 
 function privateKeyPemFromPfx(pfxPath: string, passphrase: string): string {
   const pfxBuf = fs.readFileSync(pfxPath);

@@ -10,7 +10,8 @@ export class MotorResource {
     async submit(payload) {
         validateMotorCoverNotePayload(payload);
         const xml = buildMotorCoverNoteXml(payload, this.config);
-        const raw = await this.client.postXml("/covernote/motor", xml);
+        console.log(`Sending XML`, JSON.stringify(xml, null, 2));
+        const raw = await this.client.postXml("/ecovernote/api/covernote/non-life/motor/v2/request", xml);
         const ack = raw?.["TiraMsg"]?.["MotorCoverNoteRefReqAck"];
         return {
             acknowledgement_id: ack?.["AcknowledgementId"] ?? "",

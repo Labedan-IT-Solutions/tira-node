@@ -23,7 +23,7 @@ export class MotorResource {
 
     const xml = buildMotorCoverNoteXml(payload, this.config);
     const raw = await this.client.postXml<Record<string, any>>(
-      "/covernote/motor",
+      "/ecovernote/api/covernote/non-life/motor/v2/request",
       xml,
     );
 

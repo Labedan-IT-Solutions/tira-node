@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "build/cjs",
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "allowSyntheticDefaultImports": true
   }
 }
