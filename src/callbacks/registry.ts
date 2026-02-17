@@ -15,6 +15,7 @@ const TAG_MAP: Record<string, string> = {
   ClaimIntimationRes: "claim_intimation",
   ClaimAssessmentRes: "claim_assessment",
   DischargeVoucherRes: "discharge_voucher",
+  ClaimPaymentRes: "claim_payment",
 };
 
 /**
@@ -46,6 +47,7 @@ const EXTRACTORS: Record<
   claim_intimation: extractBaseCallback,
   claim_assessment: extractBaseCallback,
   discharge_voucher: extractBaseCallback,
+  claim_payment: extractBaseCallback,
 };
 
 function extractBaseCallback(

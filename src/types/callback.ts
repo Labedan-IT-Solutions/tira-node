@@ -69,6 +69,7 @@ export type PolicyCallbackResponse = BaseCallbackResponse;
 export type ClaimIntimationCallbackResponse = BaseCallbackResponse;
 export type ClaimAssessmentCallbackResponse = BaseCallbackResponse;
 export type DischargeVoucherCallbackResponse = BaseCallbackResponse;
+export type ClaimPaymentCallbackResponse = BaseCallbackResponse;
 
 export interface ClaimNotificationCallbackResponse extends BaseCallbackResponse {
   /** Claim reference number assigned by TIRA */
@@ -94,4 +95,6 @@ export interface EnabledCallbacks {
   claim_assessment?: boolean | undefined;
   /** Enable discharge voucher callback handling */
   discharge_voucher?: boolean | undefined;
+  /** Enable claim payment callback handling */
+  claim_payment?: boolean | undefined;
 }

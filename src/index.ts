@@ -61,6 +61,10 @@ export type {
   DischargeVoucherResponse,
 } from "./types/discharge-voucher.js";
 export type {
+  ClaimPaymentPayload,
+  ClaimPaymentResponse,
+} from "./types/claim-payment.js";
+export type {
   CallbackResult,
   BaseCallbackResponse,
   MotorCallbackResponse,
@@ -73,6 +77,7 @@ export type {
   ClaimIntimationCallbackResponse,
   ClaimAssessmentCallbackResponse,
   DischargeVoucherCallbackResponse,
+  ClaimPaymentCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {

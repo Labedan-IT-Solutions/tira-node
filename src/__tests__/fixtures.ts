@@ -15,6 +15,7 @@ import type { CoverNoteVerificationPayload } from "../types/covernote-verificati
 import type { ClaimIntimationPayload } from "../types/claim-intimation.js";
 import type { ClaimAssessmentPayload } from "../types/claim-assessment.js";
 import type { DischargeVoucherPayload } from "../types/discharge-voucher.js";
+import type { ClaimPaymentPayload } from "../types/claim-payment.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -726,5 +727,62 @@ export const sampleDischargeVoucherCallbackParsed = {
       ResponseStatusDesc: "Successful",
     },
     MsgSignature: "discharge-voucher-sig-abc123==",
+  },
+};
+
+// --- Claim Payment Fixtures ---
+
+export const validClaimPaymentPayload: ClaimPaymentPayload = {
+  request_id: "AB3232532523344",
+  callback_url: "https://nic.co.tz/api/CoverNoteref/response",
+  insurer_company_code: "IC100",
+  claim_payment_number: "322WQ25234234",
+  claim_reference_number: "10020-25400-07720",
+  claim_intimation_number: "322WQ25234234",
+  covernote_reference_number: "10020-25400-07720",
+  payment_date: "2020-09-10T13:55:22",
+  paid_amount: 20000,
+  payment_mode: "1",
+  parties_notified: "Y",
+  net_premium_earned: 200,
+  claim_resulted_litigation: "Y",
+  litigation_reason: "gegewgwgwifubweufgweiyfgwiguwf",
+  currency_code: "USD",
+  exchange_rate: 2000.0,
+  claimants: [
+    {
+      claimant_category: "2",
+      claimant_type: "1",
+      claimant_id_number: "24241241",
+      claimant_id_type: "1",
+    },
+    {
+      claimant_category: "2",
+      claimant_type: "2",
+      claimant_id_number: "3452525235525",
+      claimant_id_type: "3",
+    },
+  ],
+};
+
+export const sampleClaimPaymentCallbackXml = `<TiraMsg>
+  <ClaimPaymentRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </ClaimPaymentRes>
+  <MsgSignature>claim-payment-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleClaimPaymentCallbackParsed = {
+  TiraMsg: {
+    ClaimPaymentRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "claim-payment-sig-abc123==",
   },
 };
