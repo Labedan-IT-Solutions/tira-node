@@ -1,4 +1,5 @@
-import type { TiraConfig } from './config/tira-config.js';
+import type { TiraConfig } from './types/config.js';
+import { TiraApiError } from './errors.js';
 
 export class TiraClient {
   private config: TiraConfig;
@@ -22,7 +23,7 @@ export class TiraClient {
     const res = await fetch(url, options);
 
     if (!res.ok) {
-      throw new Error(`Tira API error: ${res.status} ${res.statusText}`);
+      throw new TiraApiError(res.status, res.statusText);
     }
 
     return res.json() as Promise<T>;

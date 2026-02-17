@@ -1,4 +1,4 @@
-import type { TiraConfig } from './config/tira-config.js';
+import type { TiraConfig } from './types/config.js';
 import { TiraClient } from './client.js';
 import { PoliciesResource } from './resources/policies.js';
 

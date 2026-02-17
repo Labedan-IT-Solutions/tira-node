@@ -1,4 +1,5 @@
 import type { TiraClient } from '../client.js';
+import type { SubmitPolicyRequest, SubmitPolicyResponse } from '../types/policies.js';
 
 export class PoliciesResource {
   private client: TiraClient;
@@ -7,7 +8,7 @@ export class PoliciesResource {
     this.client = client;
   }
 
-  async submit(data: Record<string, unknown>): Promise<Record<string, unknown>> {
+  async submit(data: SubmitPolicyRequest): Promise<SubmitPolicyResponse> {
     return this.client.post('/policies/submit', data);
   }
 }

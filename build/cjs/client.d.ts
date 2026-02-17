@@ -1,4 +1,4 @@
-import type { TiraConfig } from './config/tira-config.js';
+import type { TiraConfig } from './types/config.js';
 export declare class TiraClient {
     private config;
     constructor(config: TiraConfig);

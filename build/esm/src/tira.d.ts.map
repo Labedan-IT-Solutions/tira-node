@@ -1,1 +1,0 @@
-{"version":3,"file":"tira.d.ts","sourceRoot":"","sources":["../../../src/tira.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAE1D,qBAAa,IAAI;IACf,OAAO,CAAC,MAAM,CAAa;gBAEf,MAAM,EAAE,UAAU;IAO9B,SAAS,IAAI,UAAU;CAGxB"}

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TiraClient = void 0;
+const errors_js_1 = require("./errors.js");
 class TiraClient {
     config;
     constructor(config) {
@@ -20,7 +21,7 @@ class TiraClient {
         }
         const res = await fetch(url, options);
         if (!res.ok) {
-            throw new Error(`Tira API error: ${res.status} ${res.statusText}`);
+            throw new errors_js_1.TiraApiError(res.status, res.statusText);
         }
         return res.json();
     }
