@@ -1,1 +1,0 @@
-{"version":3,"file":"motor.d.ts","sourceRoot":"","sources":["../../../src/builders/motor.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,oBAAoB,CAAC;AACrD,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,mBAAmB,CAAC;AAE/D,wBAAgB,sBAAsB,CACpC,OAAO,EAAE,qBAAqB,EAC9B,MAAM,EAAE,UAAU,GACjB,MAAM,CAgKR"}
