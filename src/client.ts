@@ -1,39 +1,88 @@
-import type { TiraConfig } from './types/config.js';
-import { TiraApiError } from './errors.js';
+import * as https from "node:https";
+import * as fs from "node:fs";
+import { parseStringPromise } from "xml2js";
+import type { TiraConfig } from "./types/config.js";
+import { TiraApiError } from "./errors.js";
+import { signContent, wrapTiraMsg } from "./signing.js";
 
 export class TiraClient {
   private config: TiraConfig;
+  private agent: https.Agent;
 
   constructor(config: TiraConfig) {
     this.config = config;
+    this.agent = new https.Agent({
+      key: fs.readFileSync(config.client_key_path),
+      cert: fs.readFileSync(config.client_cert_path),
+      ca: fs.readFileSync(config.ca_cert_path),
+      rejectUnauthorized: false,
+    });
   }
 
-  async request<T>(method: string, path: string, body?: unknown): Promise<T> {
-    const url = `${this.config.baseUrl}${path}`;
-    const options: RequestInit = {
-      method,
-      headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`,
-        'Content-Type': 'application/json',
-      },
+  async postXml<T>(endpoint: string, xmlBody: string): Promise<T> {
+    const url = new URL(endpoint, this.config.base_url);
+
+    // Sign and wrap the XML
+    const signature = signContent(
+      xmlBody,
+      this.config.pfx_path,
+      this.config.pfx_passphrase,
+    );
+    const wrappedXml = wrapTiraMsg(xmlBody, signature);
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/xml",
+      ClientCode: this.config.client_code,
+      ClientKey: this.config.client_key,
     };
-    if (body) {
-      options.body = JSON.stringify(body);
+
+    // Verification endpoints use Basic Auth
+    if (endpoint.toLowerCase().includes("/verification/")) {
+      const basicAuth = Buffer.from(
+        `${this.config.client_code}:${this.config.client_key}`,
+      ).toString("base64");
+      headers["Authorization"] = `Basic ${basicAuth}`;
     }
-    const res = await fetch(url, options);
 
-    if (!res.ok) {
-      throw new TiraApiError(res.status, res.statusText);
-    }
+    const responseText = await new Promise<string>((resolve, reject) => {
+      const req = https.request(
+        url,
+        {
+          method: "POST",
+          headers,
+          agent: this.agent,
+        },
+        (res) => {
+          const chunks: Buffer[] = [];
+          res.on("data", (chunk: Buffer) => chunks.push(chunk));
+          res.on("end", () => {
+            const body = Buffer.concat(chunks).toString("utf-8");
+            if (
+              res.statusCode &&
+              (res.statusCode < 200 || res.statusCode >= 300)
+            ) {
+              reject(
+                new TiraApiError(
+                  res.statusCode,
+                  res.statusMessage ?? "Unknown error",
+                ),
+              );
+              return;
+            }
+            resolve(body);
+          });
+          res.on("error", reject);
+        },
+      );
 
-    return res.json() as Promise<T>;
-  }
+      req.on("error", reject);
+      req.write(wrappedXml);
+      req.end();
+    });
 
-  post<T>(path: string, body: unknown): Promise<T> {
-    return this.request<T>('POST', path, body);
-  }
-
-  get<T>(path: string): Promise<T> {
-    return this.request<T>('GET', path);
+    const parsed = await parseStringPromise(responseText, {
+      explicitArray: false,
+    });
+    return parsed as T;
   }
 }

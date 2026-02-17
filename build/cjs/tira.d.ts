@@ -1,8 +1,8 @@
 import type { TiraConfig } from './types/config.js';
-import { PoliciesResource } from './resources/policies.js';
+import { MotorResource } from './resources/motor.js';
 export declare class Tira {
     private client;
-    readonly policies: PoliciesResource;
+    readonly motor: MotorResource;
     constructor(config: TiraConfig);
 }
 //# sourceMappingURL=tira.d.ts.map

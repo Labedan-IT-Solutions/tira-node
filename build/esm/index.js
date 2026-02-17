@@ -2,5 +2,5 @@
 // Copyright (c) LABEDAN IT SOLUTIONS 2026. All rights reserved. See LICENSE file in the project root for license information.
 // RESOURCES:
 export { Tira } from "./tira.js";
-export { TiraError, TiraApiError } from "./errors.js";
+export { TiraError, TiraApiError, TiraValidationError } from "./errors.js";
 //# sourceMappingURL=index.js.map

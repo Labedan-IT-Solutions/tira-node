@@ -6,4 +6,8 @@ export declare class TiraApiError extends TiraError {
     readonly statusText: string;
     constructor(status: number, statusText: string);
 }
+export declare class TiraValidationError extends TiraError {
+    readonly field: string;
+    constructor(message: string, field: string);
+}
 //# sourceMappingURL=errors.d.ts.map

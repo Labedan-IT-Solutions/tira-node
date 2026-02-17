@@ -14,4 +14,12 @@ export class TiraApiError extends TiraError {
         this.statusText = statusText;
     }
 }
+export class TiraValidationError extends TiraError {
+    field;
+    constructor(message, field) {
+        super(message);
+        this.name = 'TiraValidationError';
+        this.field = field;
+    }
+}
 //# sourceMappingURL=errors.js.map

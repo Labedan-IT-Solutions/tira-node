@@ -3,14 +3,14 @@
 
 // RESOURCES:
 export { Tira } from "./tira.js";
-export { TiraError, TiraApiError } from "./errors.js";
+export { TiraError, TiraApiError, TiraValidationError } from "./errors.js";
 
 // TYPES:
 export type { TiraConfig } from "./types/config.js";
 export type {
-  SubmitPolicyRequest,
-  SubmitPolicyResponse,
-} from "./types/policies.js";
+  MotorCoverNotePayload,
+  MotorCoverNoteResponse,
+} from "./types/motor.js";
 export type {
   TaxCharged,
   DiscountOffered,

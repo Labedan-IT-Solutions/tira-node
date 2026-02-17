@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TiraApiError = exports.TiraError = void 0;
+exports.TiraValidationError = exports.TiraApiError = exports.TiraError = void 0;
 class TiraError extends Error {
     constructor(message) {
         super(message);
@@ -19,4 +19,13 @@ class TiraApiError extends TiraError {
     }
 }
 exports.TiraApiError = TiraApiError;
+class TiraValidationError extends TiraError {
+    field;
+    constructor(message, field) {
+        super(message);
+        this.name = 'TiraValidationError';
+        this.field = field;
+    }
+}
+exports.TiraValidationError = TiraValidationError;
 //# sourceMappingURL=errors.js.map

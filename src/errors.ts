@@ -16,3 +16,13 @@ export class TiraApiError extends TiraError {
     this.statusText = statusText;
   }
 }
+
+export class TiraValidationError extends TiraError {
+  public readonly field: string;
+
+  constructor(message: string, field: string) {
+    super(message);
+    this.name = 'TiraValidationError';
+    this.field = field;
+  }
+}
