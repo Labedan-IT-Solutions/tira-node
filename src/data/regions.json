@@ -1,0 +1,348 @@
+[
+  {
+    "region_code": "10000",
+    "region": "Dar es Salaam",
+    "districts": [
+      { "code": "11000", "name": "Ilala" },
+      { "code": "12000", "name": "Kigamboni" },
+      { "code": "13000", "name": "Ubungo" },
+      { "code": "14000", "name": "Kinondoni" },
+      { "code": "15000", "name": "Temeke" }
+    ]
+  },
+  {
+    "region_code": "21000",
+    "region": "Tanga",
+    "districts": [
+      { "code": "21100", "name": "Tanga CBD" },
+      { "code": "21200", "name": "Tanga" },
+      { "code": "21300", "name": "Pangani" },
+      { "code": "21400", "name": "Muheza" },
+      { "code": "21500", "name": "Mkinga" },
+      { "code": "21600", "name": "Korogwe" },
+      { "code": "21700", "name": "Lushoto" },
+      { "code": "21800", "name": "Handeni" },
+      { "code": "21900", "name": "Kilindi" }
+    ]
+  },
+  {
+    "region_code": "23000",
+    "region": "Arusha",
+    "districts": [
+      { "code": "23100", "name": "Arusha CBD" },
+      { "code": "23200", "name": "Arusha" },
+      { "code": "23300", "name": "Arumeru" },
+      { "code": "23400", "name": "Monduli" },
+      { "code": "23500", "name": "Longido" },
+      { "code": "23600", "name": "Karatu" },
+      { "code": "23700", "name": "Ngorongoro" }
+    ]
+  },
+  {
+    "region_code": "25000",
+    "region": "Kilimanjaro",
+    "districts": [
+      { "code": "25100", "name": "Moshi CDB" },
+      { "code": "25200", "name": "Moshi" },
+      { "code": "25300", "name": "Hai" },
+      { "code": "25400", "name": "Siha" },
+      { "code": "25500", "name": "Mwanga" },
+      { "code": "25600", "name": "Same" },
+      { "code": "25700", "name": "Rombo" }
+    ]
+  },
+  {
+    "region_code": "27000",
+    "region": "Manyara",
+    "districts": [
+      { "code": "27100", "name": "Babati CBD" },
+      { "code": "27200", "name": "Babati" },
+      { "code": "27300", "name": "Hanang" },
+      { "code": "27400", "name": "Mbulu" },
+      { "code": "27500", "name": "Kiteto" },
+      { "code": "27600", "name": "Simanjiro" }
+    ]
+  },
+  {
+    "region_code": "30000",
+    "region": "Geita",
+    "districts": [
+      { "code": "30100", "name": "Geita" },
+      { "code": "30200", "name": "Nyang'hwale" },
+      { "code": "30300", "name": "Chato" },
+      { "code": "30400", "name": "Mbogwe" },
+      { "code": "30500", "name": "Bukombe" }
+    ]
+  },
+  {
+    "region_code": "31000",
+    "region": "Mara",
+    "districts": [
+      { "code": "31100", "name": "Musoma CBD" },
+      { "code": "31200", "name": "Butiama" },
+      { "code": "31300", "name": "Rorya" },
+      { "code": "31400", "name": "Tarime" },
+      { "code": "31500", "name": "Bunda" },
+      { "code": "31600", "name": "Serengeti" },
+      { "code": "31700", "name": "MUSOMA (TO)WN" }
+    ]
+  },
+  {
+    "region_code": "33000",
+    "region": "Mwanza",
+    "districts": [
+      { "code": "33100", "name": "Nyamagana" },
+      { "code": "33200", "name": "Ilemela" },
+      { "code": "33300", "name": "Sengerema" },
+      { "code": "33400", "name": "Magu" },
+      { "code": "33500", "name": "Misungwi" },
+      { "code": "33600", "name": "Ukerewe" },
+      { "code": "33700", "name": "Kwimba" }
+    ]
+  },
+  {
+    "region_code": "35000",
+    "region": "Kagera",
+    "districts": [
+      { "code": "35100", "name": "Bukoba" },
+      { "code": "35200", "name": "Bukoba" },
+      { "code": "35300", "name": "Missenyi" },
+      { "code": "35400", "name": "Karagwe" },
+      { "code": "35500", "name": "Muleba" },
+      { "code": "35600", "name": "Biharamulo" },
+      { "code": "35700", "name": "Ngara" },
+      { "code": "35800", "name": "Kyerwa" }
+    ]
+  },
+  {
+    "region_code": "37000",
+    "region": "Shinyanga",
+    "districts": [
+      { "code": "37100", "name": "Shinyanga CBD" },
+      { "code": "37200", "name": "Shinyanga" },
+      { "code": "37300", "name": "Kahama CBD" },
+      { "code": "37400", "name": "Kahama" },
+      { "code": "37500", "name": "Kishapu" }
+    ]
+  },
+  {
+    "region_code": "39000",
+    "region": "Simiyu",
+    "districts": [
+      { "code": "39100", "name": "Bariadi" },
+      { "code": "39200", "name": "Itilima" },
+      { "code": "39300", "name": "Maswa" },
+      { "code": "39400", "name": "Meatu" },
+      { "code": "39500", "name": "Busega" }
+    ]
+  },
+  {
+    "region_code": "41000",
+    "region": "Dodoma",
+    "districts": [
+      { "code": "41100", "name": "Dodoma CBD" },
+      { "code": "41200", "name": "Dodoma" },
+      { "code": "41300", "name": "Bahi" },
+      { "code": "41400", "name": "Chamwino" },
+      { "code": "41500", "name": "Kongwa" },
+      { "code": "41600", "name": "Mpwapwa" },
+      { "code": "41700", "name": "Kondoa" },
+      { "code": "41800", "name": "Chemba" }
+    ]
+  },
+  {
+    "region_code": "43000",
+    "region": "Singida",
+    "districts": [
+      { "code": "43100", "name": "Singida CBD" },
+      { "code": "43200", "name": "Singida" },
+      { "code": "43300", "name": "Iramba" },
+      { "code": "43400", "name": "Manyoni" },
+      { "code": "43500", "name": "Mkalama" },
+      { "code": "43600", "name": "Ikungi" }
+    ]
+  },
+  {
+    "region_code": "45000",
+    "region": "Tabora",
+    "districts": [
+      { "code": "45100", "name": "Tabora CBD" },
+      { "code": "45200", "name": "Uyui" },
+      { "code": "45300", "name": "Sikonge" },
+      { "code": "45400", "name": "Nzega" },
+      { "code": "45500", "name": "Urambo" },
+      { "code": "45600", "name": "Igunga" },
+      { "code": "45700", "name": "Kaliua" }
+    ]
+  },
+  {
+    "region_code": "47000",
+    "region": "Kigoma",
+    "districts": [
+      { "code": "47100", "name": "Kigoma CBD" },
+      { "code": "47200", "name": "Kigoma" },
+      { "code": "47300", "name": "Kasulu" },
+      { "code": "47400", "name": "Kibondo" },
+      { "code": "47500", "name": "Buhigwe" },
+      { "code": "47600", "name": "Uvinza" },
+      { "code": "47700", "name": "Kakonko" }
+    ]
+  },
+  {
+    "region_code": "50000",
+    "region": "Katavi",
+    "districts": [
+      { "code": "50100", "name": "Mpanda CBD" },
+      { "code": "50200", "name": "Mpanda" },
+      { "code": "50300", "name": "Mlele" }
+    ]
+  },
+  {
+    "region_code": "51000",
+    "region": "Iringa",
+    "districts": [
+      { "code": "51100", "name": "Iringa CBD" },
+      { "code": "51200", "name": "IRINGA" },
+      { "code": "51300", "name": "Kilolo" },
+      { "code": "51400", "name": "Mufindi" }
+    ]
+  },
+  {
+    "region_code": "53000",
+    "region": "Mbeya",
+    "districts": [
+      { "code": "53100", "name": "Mbeya CBD" },
+      { "code": "53200", "name": "Mbeya" },
+      { "code": "53300", "name": "Mbozi" },
+      { "code": "53400", "name": "Ileje" },
+      { "code": "53500", "name": "Rungwe" },
+      { "code": "53600", "name": "Mbarali" },
+      { "code": "53700", "name": "Kyela" },
+      { "code": "53800", "name": "Chunya" },
+      { "code": "53900", "name": "Momba" }
+    ]
+  },
+  {
+    "region_code": "55000",
+    "region": "Rukwa",
+    "districts": [
+      { "code": "55100", "name": "Sumbawanga CBD" },
+      { "code": "55200", "name": "Sumbawanga" },
+      { "code": "55300", "name": "Nkasi" },
+      { "code": "55400", "name": "Kalambo" }
+    ]
+  },
+  {
+    "region_code": "57000",
+    "region": "Ruvuma",
+    "districts": [
+      { "code": "57100", "name": "Songea CBD" },
+      { "code": "57200", "name": "Songea" },
+      { "code": "57300", "name": "Namtumbo" },
+      { "code": "57400", "name": "Mbinga" },
+      { "code": "57500", "name": "Nyasa" },
+      { "code": "57600", "name": "Tunduru" }
+    ]
+  },
+  {
+    "region_code": "59000",
+    "region": "Njombe",
+    "districts": [
+      { "code": "59100", "name": "Njombe CBD" },
+      { "code": "59200", "name": "Njombe" },
+      { "code": "59300", "name": "Wanging'ombe" },
+      { "code": "59400", "name": "Ludewa" },
+      { "code": "59500", "name": "Makete" }
+    ]
+  },
+  {
+    "region_code": "61000",
+    "region": "Pwani",
+    "districts": [
+      { "code": "61100", "name": "Kibaha CBD" },
+      { "code": "61200", "name": "Kibaha" },
+      { "code": "61300", "name": "Bagamoyo" },
+      { "code": "61400", "name": "Kisarawe" },
+      { "code": "61500", "name": "Mkuranga" },
+      { "code": "61600", "name": "Rufiji" },
+      { "code": "61700", "name": "Mafia" }
+    ]
+  },
+  {
+    "region_code": "63000",
+    "region": "Mtwara",
+    "districts": [
+      { "code": "63100", "name": "Mtwara CBD" },
+      { "code": "63200", "name": "Mtwara" },
+      { "code": "63300", "name": "Tandahimba" },
+      { "code": "63400", "name": "Newala" },
+      { "code": "63500", "name": "Masasi" },
+      { "code": "63600", "name": "Nanyumbu" }
+    ]
+  },
+  {
+    "region_code": "65000",
+    "region": "Lindi",
+    "districts": [
+      { "code": "65100", "name": "Lindi CBD" },
+      { "code": "65200", "name": "Lindi Rural" },
+      { "code": "65300", "name": "Nachingwea" },
+      { "code": "65400", "name": "Kilwa" },
+      { "code": "65500", "name": "Liwale" },
+      { "code": "65600", "name": "Ruangwa" }
+    ]
+  },
+  {
+    "region_code": "67000",
+    "region": "Morogoro",
+    "districts": [
+      { "code": "67100", "name": "Morogoro CBD" },
+      { "code": "67200", "name": "Morogoro" },
+      { "code": "67300", "name": "Mvomero" },
+      { "code": "67400", "name": "Kilosa" },
+      { "code": "67500", "name": "Kilombero" },
+      { "code": "67600", "name": "Ulanga" },
+      { "code": "67700", "name": "Gairo" }
+    ]
+  },
+  {
+    "region_code": "71000",
+    "region": "Unguja Magharibi",
+    "districts": [
+      { "code": "71100", "name": "Mjini" },
+      { "code": "71200", "name": "Magharibi" }
+    ]
+  },
+  {
+    "region_code": "72000",
+    "region": "Zanzibar Kati / Kusini",
+    "districts": [
+      { "code": "72100", "name": "Kusini" },
+      { "code": "72200", "name": "Kati" }
+    ]
+  },
+  {
+    "region_code": "73000",
+    "region": "Unguja Kaskazini",
+    "districts": [
+      { "code": "73100", "name": "Kaskazini A" },
+      { "code": "73200", "name": "Kaskazini B" }
+    ]
+  },
+  {
+    "region_code": "74000",
+    "region": "Pemba Kusini",
+    "districts": [
+      { "code": "74100", "name": "Mkoani" },
+      { "code": "74200", "name": "Chakechake" }
+    ]
+  },
+  {
+    "region_code": "75000",
+    "region": "Pemba Kaskazini",
+    "districts": [
+      { "code": "75100", "name": "Wete" },
+      { "code": "75200", "name": "Micheweni" }
+    ]
+  }
+]

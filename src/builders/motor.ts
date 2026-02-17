@@ -1,6 +1,9 @@
 import { create } from "xmlbuilder2";
 import type { TiraConfig } from "../types/config.js";
-import type { MotorCoverNotePayload } from "../types/motor.js";
+import type {
+  MotorCoverNotePayload,
+  MotorVerificationPayload,
+} from "../types/motor.js";
 
 export function buildMotorCoverNoteXml(
   payload: MotorCoverNotePayload,
@@ -161,6 +164,28 @@ export function buildMotorCoverNoteXml(
             OwnerCategory: m.owner_category,
             OwnerAddress: m.owner_address,
           },
+        },
+      },
+    })
+    .end({ prettyPrint: false, headless: true });
+}
+
+export function buildMotorVerificationXml(
+  payload: MotorVerificationPayload,
+  config: TiraConfig,
+): string {
+  return create({ version: "1.0" })
+    .ele({
+      MotorVerificationReq: {
+        VerificationHdr: {
+          RequestId: payload.request_id,
+          CompanyCode: config.client_code,
+          SystemCode: config.system_code,
+        },
+        VerificationDtl: {
+          MotorCategory: payload.motor_category,
+          MotorRegistrationNumber: payload.motor_registration_number ?? "",
+          MotorChassisNumber: payload.motor_chassis_number ?? "",
         },
       },
     })

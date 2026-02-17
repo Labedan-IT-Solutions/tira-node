@@ -1,4 +1,7 @@
-import type { MotorCoverNotePayload } from "../types/motor.js";
+import type {
+  MotorCoverNotePayload,
+  MotorVerificationPayload,
+} from "../types/motor.js";
 import {
   validateRequired,
   validateEnum,
@@ -21,11 +24,15 @@ export function validateMotorCoverNotePayload(
   validateRequired(payload.callback_url, "callback_url");
   validateHttpsUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
-  validateEnum(payload.covernote_type, {
-    '1': 'New',
-    '2': 'Renewal',
-    '3': 'Endorsement',
-  }, "covernote_type");
+  validateEnum(
+    payload.covernote_type,
+    {
+      "1": "New",
+      "2": "Renewal",
+      "3": "Endorsement",
+    },
+    "covernote_type",
+  );
 
   // Cover note number required for new and renewal (not endorsement)
   if (payload.covernote_type !== "3") {
@@ -58,11 +65,15 @@ export function validateMotorCoverNotePayload(
 
   validateRequired(payload.covernote_desc, "covernote_desc");
   validateRequired(payload.operative_clause, "operative_clause");
-  validateEnum(payload.payment_mode, {
-    '1': 'Cash',
-    '2': 'Cheque',
-    '3': 'EFT',
-  }, "payment_mode");
+  validateEnum(
+    payload.payment_mode,
+    {
+      "1": "Cash",
+      "2": "Cheque",
+      "3": "EFT",
+    },
+    "payment_mode",
+  );
 
   // Premiums
   validatePositiveNumber(
@@ -95,12 +106,16 @@ export function validateMotorCoverNotePayload(
         "endorsement_type",
       );
     }
-    validateEnum(payload.endorsement_type, {
-      '1': 'Increasing Premium',
-      '2': 'Decreasing Premium',
-      '3': 'Cover Details Changed',
-      '4': 'Cancellation',
-    }, "endorsement_type");
+    validateEnum(
+      payload.endorsement_type,
+      {
+        "1": "Increasing Premium",
+        "2": "Decreasing Premium",
+        "3": "Cover Details Changed",
+        "4": "Cancellation",
+      },
+      "endorsement_type",
+    );
     validateRequired(payload.endorsement_reason, "endorsement_reason");
   }
 
@@ -145,7 +160,11 @@ export function validateMotorCoverNotePayload(
       for (let j = 0; j < r.discounts_offered.length; j++) {
         const d = r.discounts_offered[j]!;
         const dLabel = `${label}.discounts_offered[${j}]`;
-        validateEnum(d.discount_type, { '1': 'Fleet Discount' }, `${dLabel}.discount_type`);
+        validateEnum(
+          d.discount_type,
+          { "1": "Fleet Discount" },
+          `${dLabel}.discount_type`,
+        );
         validateNumber(d.discount_rate, `${dLabel}.discount_rate`);
         validateNumber(d.discount_amount, `${dLabel}.discount_amount`);
       }
@@ -222,24 +241,32 @@ export function validateMotorCoverNotePayload(
       p.policyholder_birthdate,
       `${label}.policyholder_birthdate`,
     );
-    validateEnum(p.policyholder_type, {
-      '1': 'Individual',
-      '2': 'Corporate',
-    }, `${label}.policyholder_type`);
-    validateEnum(p.policyholder_id_type, {
-      '1': 'NIDA',
-      '2': 'Voters ID Card',
-      '3': 'Passport',
-      '4': 'Driving License',
-      '5': 'Zanzibar ID',
-      '6': 'TIN',
-      '7': 'Company Incorporation Certificate Number',
-    }, `${label}.policyholder_id_type`);
+    validateEnum(
+      p.policyholder_type,
+      {
+        "1": "Individual",
+        "2": "Corporate",
+      },
+      `${label}.policyholder_type`,
+    );
+    validateEnum(
+      p.policyholder_id_type,
+      {
+        "1": "NIDA",
+        "2": "Voters ID Card",
+        "3": "Passport",
+        "4": "Driving License",
+        "5": "Zanzibar ID",
+        "6": "TIN",
+        "7": "Company Incorporation Certificate Number",
+      },
+      `${label}.policyholder_id_type`,
+    );
     validateRequired(
       p.policyholder_id_number,
       `${label}.policyholder_id_number`,
     );
-    validateEnum(p.gender, { 'M': 'Male', 'F': 'Female' }, `${label}.gender`);
+    validateEnum(p.gender, { M: "Male", F: "Female" }, `${label}.gender`);
     validateRequired(p.region, `${label}.region`);
     validateRequired(p.district, `${label}.district`);
     validateRequired(p.street, `${label}.street`);
@@ -255,14 +282,22 @@ export function validateMotorCoverNotePayload(
   // --- Motor Details ---
   const m = payload.motor_details;
 
-  validateEnum(m.motor_category, {
-    '1': 'Motor Vehicle',
-    '2': 'Motor Cycle',
-  }, "motor_details.motor_category");
-  validateEnum(m.motor_type, {
-    '1': 'Registered',
-    '2': 'In Transit',
-  }, "motor_details.motor_type");
+  validateEnum(
+    m.motor_category,
+    {
+      "1": "Motor Vehicle",
+      "2": "Motor Cycle",
+    },
+    "motor_details.motor_category",
+  );
+  validateEnum(
+    m.motor_type,
+    {
+      "1": "Registered",
+      "2": "In Transit",
+    },
+    "motor_details.motor_type",
+  );
 
   if (m.motor_type === "1") {
     validateRequired(
@@ -307,14 +342,50 @@ export function validateMotorCoverNotePayload(
 
   validatePositiveNumber(m.tare_weight, "motor_details.tare_weight");
   validatePositiveNumber(m.gross_weight, "motor_details.gross_weight");
-  validateEnum(m.motor_usage, {
-    '1': 'Private',
-    '2': 'Commercial',
-  }, "motor_details.motor_usage");
+  validateEnum(
+    m.motor_usage,
+    {
+      "1": "Private",
+      "2": "Commercial",
+    },
+    "motor_details.motor_usage",
+  );
   validateRequired(m.owner_name, "motor_details.owner_name");
-  validateEnum(m.owner_category, {
-    '1': 'Sole Proprietor',
-    '2': 'Corporate',
-  }, "motor_details.owner_category");
+  validateEnum(
+    m.owner_category,
+    {
+      "1": "Sole Proprietor",
+      "2": "Corporate",
+    },
+    "motor_details.owner_category",
+  );
   validateRequired(m.owner_address, "motor_details.owner_address");
+}
+
+export function validateMotorVerificationPayload(
+  payload: MotorVerificationPayload,
+): void {
+  validateRequired(payload.request_id, "request_id");
+  validateEnum(
+    payload.motor_category,
+    {
+      "1": "Motor Vehicle",
+      "2": "Motor Cycle",
+    },
+    "motor_category",
+  );
+
+  if (!payload.motor_registration_number && !payload.motor_chassis_number) {
+    throw new TiraValidationError(
+      "Either motor_registration_number or motor_chassis_number must be provided.",
+      "motor_registration_number",
+    );
+  }
+
+  if (payload.motor_registration_number && payload.motor_chassis_number) {
+    throw new TiraValidationError(
+      "Provide either motor_registration_number or motor_chassis_number, not both.",
+      "motor_registration_number",
+    );
+  }
 }

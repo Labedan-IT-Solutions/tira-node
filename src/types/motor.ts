@@ -4,7 +4,7 @@ import type {
   CoverNoteAddon,
   PolicyHolder,
   MotorDetails,
-} from './common.js';
+} from "./common.js";
 
 export interface MotorCoverNotePayload {
   /** Unique request identifier */
@@ -14,7 +14,7 @@ export interface MotorCoverNotePayload {
   /** Insurer company code */
   insurer_company_code: string;
   /** Type of cover note: 1-New, 2-Renewal, 3-Endorsement */
-  covernote_type: '1' | '2' | '3';
+  covernote_type: "1" | "2" | "3";
   /** Cover note number given by the insurer */
   covernote_number?: string | undefined;
   /** Previous cover note reference number (for renewals/endorsements) */
@@ -30,7 +30,7 @@ export interface MotorCoverNotePayload {
   /** Operative clause text */
   operative_clause: string;
   /** Payment mode: 1-Cash, 2-Cheque, 3-EFT */
-  payment_mode: '1' | '2' | '3';
+  payment_mode: "1" | "2" | "3";
   /** ISO Currency code (e.g., TZS, USD). Defaults to TZS. */
   currency_code?: string | undefined;
   /** Exchange rate to TZS. Defaults to 1.0 if TZS. */
@@ -50,7 +50,7 @@ export interface MotorCoverNotePayload {
   /** Product code. E.g. SP014001000000 for MOTOR PRIVATE VEHICLE */
   product_code: string;
   /** Endorsement type: 1-Increasing Premium, 2-Decreasing Premium, 3-Cover Details Changed, 4-Cancellation. Mandatory for endorsements. */
-  endorsement_type?: '1' | '2' | '3' | '4' | undefined;
+  endorsement_type?: "1" | "2" | "3" | "4" | undefined;
   /** Reason for endorsement */
   endorsement_reason?: string | undefined;
   /** Premium amount earned from endorsement */
@@ -80,4 +80,28 @@ export interface MotorCoverNoteResponse {
   requires_acknowledgement: boolean;
   /** Raw acknowledgement payload for sending back to TIRA */
   acknowledgement_payload: Record<string, unknown>;
+}
+
+export interface MotorVerificationPayload {
+  /** Unique request identifier */
+  request_id: string;
+  /** Motor category: 1-Motor Vehicle, 2-Motor Cycle. Defaults to "1". */
+  motor_category: "1" | "2";
+  /** Motor registration number. Provide this OR motor_chassis_number, not both. */
+  motor_registration_number?: string | undefined;
+  /** Motor chassis number. Provide this OR motor_registration_number, not both. */
+  motor_chassis_number?: string | undefined;
+}
+
+export interface MotorVerificationResponse {
+  /** Response ID from TIRA */
+  response_id: string;
+  /** The original request ID */
+  request_id: string;
+  /** TIRA status code (TIRA001 = success) */
+  tira_status_code: string;
+  /** TIRA status description */
+  tira_status_desc: string;
+  /** Motor details from TIRA — only present on successful verification (TIRA001) */
+  data?: Record<string, any> | undefined;
 }

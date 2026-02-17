@@ -3,10 +3,12 @@ import type { TiraConfig } from "../types/config.js";
 import type {
   MotorCoverNotePayload,
   MotorCoverNoteResponse,
+  MotorVerificationPayload,
+  MotorVerificationResponse,
 } from "../types/motor.js";
 import type { CallbackResult, MotorCallbackResponse } from "../types/callback.js";
-import { validateMotorCoverNotePayload } from "../validation/motor.js";
-import { buildMotorCoverNoteXml } from "../builders/motor.js";
+import { validateMotorCoverNotePayload, validateMotorVerificationPayload } from "../validation/motor.js";
+import { buildMotorCoverNoteXml, buildMotorVerificationXml } from "../builders/motor.js";
 import { parseCallbackXml } from "../callbacks/handler.js";
 import { extractCallbackData } from "../callbacks/registry.js";
 import { ENDPOINTS } from "../endpoints.js";
@@ -51,5 +53,32 @@ export class MotorResource {
     const extracted = extractCallbackData("motor", responseData) as MotorCallbackResponse;
 
     return { type: "motor", body, extracted, raw_xml: typeof input === "string" ? input : "" };
+  }
+
+  async verify(
+    payload: MotorVerificationPayload,
+  ): Promise<MotorVerificationResponse> {
+    validateMotorVerificationPayload(payload);
+
+    const xml = buildMotorVerificationXml(payload, this.config);
+    const raw = await this.client.postXml<Record<string, any>>(
+      ENDPOINTS.motor_verification,
+      xml,
+    );
+
+    const res = raw?.["TiraMsg"]?.["MotorVerificationRes"];
+    const hdr = res?.["VerificationHdr"];
+    const result: MotorVerificationResponse = {
+      response_id: hdr?.["ResponseId"] ?? "",
+      request_id: hdr?.["RequestId"] ?? "",
+      tira_status_code: hdr?.["ResponseStatusCode"] ?? "",
+      tira_status_desc: hdr?.["ResponseStatusDesc"] ?? "",
+    };
+
+    if (result.tira_status_code === "TIRA001") {
+      result.data = res?.["VerificationDtl"];
+    }
+
+    return result;
   }
 }
