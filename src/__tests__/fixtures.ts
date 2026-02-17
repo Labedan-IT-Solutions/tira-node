@@ -399,7 +399,7 @@ export const validReinsurancePayload: ReinsurancePayload = {
   request_id: "NIC22424232355",
   callback_url: "https://example.com/reinsurance/callback",
   insurer_company_code: "ICC103",
-  cover_note_reference_number: "CN-2025-001",
+  covernote_reference_number: "CN-2025-001",
   premium_including_tax: 619500,
   currency_code: "TZS",
   exchange_rate: 1.0,

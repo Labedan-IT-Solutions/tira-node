@@ -31,10 +31,8 @@ export function buildReinsuranceXml(
           SystemCode: config.system_code,
           CallBackUrl: payload.callback_url,
           InsurerCompanyCode: payload.insurer_company_code,
-          CoverNoteReferenceNumber: payload.cover_note_reference_number,
-          PremiumIncludingTax: Number(
-            payload.premium_including_tax,
-          ).toFixed(2),
+          CoverNoteReferenceNumber: payload.covernote_reference_number,
+          PremiumIncludingTax: Number(payload.premium_including_tax).toFixed(2),
           CurrencyCode: currencyCode,
           ExchangeRate: exchangeRate.toFixed(2),
           AuthorizingOfficerName: payload.authorizing_officer_name,

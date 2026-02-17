@@ -29,7 +29,7 @@ export interface ReinsurancePayload {
   /** Insurer company code */
   insurer_company_code: string;
   /** Cover note reference number from a previously submitted cover note */
-  cover_note_reference_number: string;
+  covernote_reference_number: string;
   /** Total premium including tax (Max 2 decimal places) */
   premium_including_tax: number;
   /** ISO Currency code. Defaults to TZS. */

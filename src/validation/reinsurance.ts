@@ -16,8 +16,8 @@ export function validateReinsurancePayload(payload: ReinsurancePayload): void {
   validateHttpsUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
   validateRequired(
-    payload.cover_note_reference_number,
-    "cover_note_reference_number",
+    payload.covernote_reference_number,
+    "covernote_reference_number",
   );
   validatePositiveNumber(
     payload.premium_including_tax,

@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { resolveCallbackType, extractCallbackData } from "../callbacks/registry.js";
+import {
+  resolveCallbackType,
+  extractCallbackData,
+} from "../callbacks/registry.js";
 
 describe("resolveCallbackType", () => {
   it('returns "motor" for MotorCoverNoteRefRes without fleet data', () => {
@@ -8,8 +11,13 @@ describe("resolveCallbackType", () => {
   });
 
   it('returns "motor_fleet" for MotorCoverNoteRefRes with FleetResHdr', () => {
-    const data = { FleetResHdr: { ResponseId: "RES-FLT-001" }, FleetResDtl: [] };
-    expect(resolveCallbackType("MotorCoverNoteRefRes", data)).toBe("motor_fleet");
+    const data = {
+      FleetResHdr: { ResponseId: "RES-FLT-001" },
+      FleetResDtl: [],
+    };
+    expect(resolveCallbackType("MotorCoverNoteRefRes", data)).toBe(
+      "motor_fleet",
+    );
   });
 
   it('returns "non_life_other" for CoverNoteRefRes', () => {
@@ -41,7 +49,7 @@ describe("extractCallbackData — motor", () => {
     expect(result).toEqual({
       response_id: "RES-001",
       request_id: "REQ-001",
-      cover_note_reference_number: "CN-2025-001",
+      covernote_reference_number: "CN-2025-001",
       sticker_number: "STK-2025-001",
       response_status_code: "TIRA001",
       response_status_desc: "Successful",
@@ -55,7 +63,7 @@ describe("extractCallbackData — motor", () => {
     };
 
     const result = extractCallbackData("motor", data);
-    expect(result).toHaveProperty("cover_note_reference_number", "");
+    expect(result).toHaveProperty("covernote_reference_number", "");
     expect(result).toHaveProperty("sticker_number", "");
   });
 
@@ -70,7 +78,7 @@ describe("extractCallbackData — motor", () => {
     expect(result).toEqual({
       response_id: "",
       request_id: "",
-      cover_note_reference_number: "",
+      covernote_reference_number: "",
       sticker_number: "",
       response_status_code: "",
       response_status_desc: "",
@@ -92,7 +100,7 @@ describe("extractCallbackData — non_life_other", () => {
     expect(result).toEqual({
       response_id: "RES-NLO-001",
       request_id: "REQ-NLO-001",
-      cover_note_reference_number: "CN-NLO-2025-001",
+      covernote_reference_number: "CN-NLO-2025-001",
       response_status_code: "TIRA001",
       response_status_desc: "Successful",
     });
@@ -106,7 +114,7 @@ describe("extractCallbackData — non_life_other", () => {
     };
 
     const result = extractCallbackData("non_life_other", data);
-    expect(result).toHaveProperty("cover_note_reference_number", "");
+    expect(result).toHaveProperty("covernote_reference_number", "");
     expect(result).toHaveProperty("response_status_code", "");
     expect(result).toHaveProperty("response_status_desc", "");
     expect(result).not.toHaveProperty("sticker_number");
@@ -117,7 +125,7 @@ describe("extractCallbackData — non_life_other", () => {
     expect(result).toEqual({
       response_id: "",
       request_id: "",
-      cover_note_reference_number: "",
+      covernote_reference_number: "",
       response_status_code: "",
       response_status_desc: "",
     });
@@ -166,7 +174,7 @@ describe("extractCallbackData — motor_fleet", () => {
         {
           fleet_entry: 1,
           covernote_number: "CN-001",
-          cover_note_reference_number: "REF-001",
+          covernote_reference_number: "REF-001",
           sticker_number: "STK-001",
           response_status_code: "TIRA001",
           response_status_desc: "OK",
@@ -174,7 +182,7 @@ describe("extractCallbackData — motor_fleet", () => {
         {
           fleet_entry: 2,
           covernote_number: "CN-002",
-          cover_note_reference_number: "REF-002",
+          covernote_reference_number: "REF-002",
           sticker_number: "STK-002",
           response_status_code: "TIRA001",
           response_status_desc: "OK",
@@ -259,7 +267,7 @@ describe("extractCallbackData — reinsurance", () => {
     });
   });
 
-  it("does not include cover_note_reference_number or sticker_number", () => {
+  it("does not include covernote_reference_number or sticker_number", () => {
     const data = {
       ResponseId: "RES-001",
       RequestId: "REQ-001",
@@ -268,7 +276,7 @@ describe("extractCallbackData — reinsurance", () => {
     };
 
     const result = extractCallbackData("reinsurance", data);
-    expect(result).not.toHaveProperty("cover_note_reference_number");
+    expect(result).not.toHaveProperty("covernote_reference_number");
     expect(result).not.toHaveProperty("sticker_number");
   });
 

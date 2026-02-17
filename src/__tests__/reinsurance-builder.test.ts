@@ -41,7 +41,7 @@ describe("buildReinsuranceXml", () => {
       validReinsurancePayload.insurer_company_code,
     );
     expect(hdr.CoverNoteReferenceNumber).toBe(
-      validReinsurancePayload.cover_note_reference_number,
+      validReinsurancePayload.covernote_reference_number,
     );
     expect(hdr.AuthorizingOfficerName).toBe(
       validReinsurancePayload.authorizing_officer_name,

@@ -44,9 +44,9 @@ describe("validateReinsurancePayload", () => {
     ).toThrow(TiraValidationError);
   });
 
-  it("throws when cover_note_reference_number is missing", () => {
+  it("throws when covernote_reference_number is missing", () => {
     expect(() =>
-      validateReinsurancePayload(reins({ cover_note_reference_number: "" })),
+      validateReinsurancePayload(reins({ covernote_reference_number: "" })),
     ).toThrow(TiraValidationError);
   });
 

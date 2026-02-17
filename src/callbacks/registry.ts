@@ -17,32 +17,42 @@ const TAG_MAP: Record<string, string> = {
  * fall through to the default TAG_MAP type. This pattern is reusable for any future tag that
  * has multiple sub-types.
  */
-const TAG_DISCRIMINATORS: Record<string, (data: Record<string, any>) => string | undefined> = {
+const TAG_DISCRIMINATORS: Record<
+  string,
+  (data: Record<string, any>) => string | undefined
+> = {
   MotorCoverNoteRefRes: (data) => {
     if (data.FleetResHdr) return "motor_fleet";
     return undefined;
   },
 };
 
-const EXTRACTORS: Record<string, (data: Record<string, any>) => Record<string, any>> = {
+const EXTRACTORS: Record<
+  string,
+  (data: Record<string, any>) => Record<string, any>
+> = {
   motor: extractMotorCallback,
   motor_fleet: extractMotorFleetCallback,
   non_life_other: extractNonLifeOtherCallback,
   reinsurance: extractReinsuranceCallback,
 };
 
-function extractMotorCallback(data: Record<string, any>): MotorCallbackResponse {
+function extractMotorCallback(
+  data: Record<string, any>,
+): MotorCallbackResponse {
   return {
     response_id: data.ResponseId ?? "",
     request_id: data.RequestId ?? "",
-    cover_note_reference_number: data.CoverNoteReferenceNumber ?? "",
+    covernote_reference_number: data.CoverNoteReferenceNumber ?? "",
     sticker_number: data.StickerNumber ?? "",
     response_status_code: data.ResponseStatusCode ?? "",
     response_status_desc: data.ResponseStatusDesc ?? "",
   };
 }
 
-function extractMotorFleetCallback(data: Record<string, any>): MotorFleetCallbackResponse {
+function extractMotorFleetCallback(
+  data: Record<string, any>,
+): MotorFleetCallbackResponse {
   const hdr = data.FleetResHdr ?? {};
   const dtlRaw = data.FleetResDtl;
   // xml2js returns a single object when there's one entry, array when multiple
@@ -57,7 +67,7 @@ function extractMotorFleetCallback(data: Record<string, any>): MotorFleetCallbac
     fleet_details: dtls.map((d: Record<string, any>) => ({
       fleet_entry: Number(d.FleetEntry ?? 0),
       covernote_number: d.CoverNoteNumber ?? "",
-      cover_note_reference_number: d.CoverNoteReferenceNumber ?? "",
+      covernote_reference_number: d.CoverNoteReferenceNumber ?? "",
       sticker_number: d.StickerNumber ?? "",
       response_status_code: d.ResponseStatusCode ?? "",
       response_status_desc: d.ResponseStatusDesc ?? "",
@@ -65,17 +75,21 @@ function extractMotorFleetCallback(data: Record<string, any>): MotorFleetCallbac
   };
 }
 
-function extractNonLifeOtherCallback(data: Record<string, any>): NonLifeOtherCallbackResponse {
+function extractNonLifeOtherCallback(
+  data: Record<string, any>,
+): NonLifeOtherCallbackResponse {
   return {
     response_id: data.ResponseId ?? "",
     request_id: data.RequestId ?? "",
-    cover_note_reference_number: data.CoverNoteReferenceNumber ?? "",
+    covernote_reference_number: data.CoverNoteReferenceNumber ?? "",
     response_status_code: data.ResponseStatusCode ?? "",
     response_status_desc: data.ResponseStatusDesc ?? "",
   };
 }
 
-function extractReinsuranceCallback(data: Record<string, any>): ReinsuranceCallbackResponse {
+function extractReinsuranceCallback(
+  data: Record<string, any>,
+): ReinsuranceCallbackResponse {
   return {
     response_id: data.ResponseId ?? "",
     request_id: data.RequestId ?? "",
@@ -84,7 +98,10 @@ function extractReinsuranceCallback(data: Record<string, any>): ReinsuranceCallb
   };
 }
 
-export function resolveCallbackType(responseTag: string, responseData: Record<string, any>): string {
+export function resolveCallbackType(
+  responseTag: string,
+  responseData: Record<string, any>,
+): string {
   const discriminator = TAG_DISCRIMINATORS[responseTag];
   if (discriminator) {
     const refined = discriminator(responseData);
@@ -93,7 +110,10 @@ export function resolveCallbackType(responseTag: string, responseData: Record<st
   return TAG_MAP[responseTag] ?? "unknown";
 }
 
-export function extractCallbackData(type: string, data: Record<string, any>): Record<string, any> {
+export function extractCallbackData(
+  type: string,
+  data: Record<string, any>,
+): Record<string, any> {
   const extractor = EXTRACTORS[type];
   if (!extractor) return data;
   return extractor(data);

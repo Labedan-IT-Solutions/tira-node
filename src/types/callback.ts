@@ -17,7 +17,7 @@ export interface MotorCallbackResponse {
   /** The original request ID */
   request_id: string;
   /** Cover note reference number assigned by TIRA */
-  cover_note_reference_number?: string;
+  covernote_reference_number?: string;
   /** Sticker number assigned by TIRA */
   sticker_number?: string;
   /** Response status code */
@@ -32,7 +32,7 @@ export interface NonLifeOtherCallbackResponse {
   /** The original request ID */
   request_id: string;
   /** Cover note reference number assigned by TIRA */
-  cover_note_reference_number?: string;
+  covernote_reference_number?: string;
   /** Response status code */
   response_status_code: string;
   /** Response status description */
@@ -45,7 +45,7 @@ export interface MotorFleetCallbackDetail {
   /** Cover note number for this vehicle */
   covernote_number: string;
   /** Cover note reference number assigned by TIRA */
-  cover_note_reference_number: string;
+  covernote_reference_number: string;
   /** Sticker number assigned by TIRA */
   sticker_number: string;
   /** Response status code for this vehicle */

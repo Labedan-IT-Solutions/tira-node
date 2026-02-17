@@ -90,84 +90,131 @@ describe("Tira constructor", () => {
 
 describe("Tira.handleCallback", () => {
   it("returns motor callback result when motor is enabled", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackParsed);
 
     expect(result.type).toBe("motor");
     expect(result.extracted).toHaveProperty("response_id", "RES-001");
     expect(result.extracted).toHaveProperty("request_id", "REQ-001");
-    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-2025-001");
+    expect(result.extracted).toHaveProperty(
+      "covernote_reference_number",
+      "CN-2025-001",
+    );
     expect(result.extracted).toHaveProperty("sticker_number", "STK-2025-001");
     expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
-    expect(result.extracted).toHaveProperty("response_status_desc", "Successful");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
   });
 
   it("returns non_life_other callback result when non_life_other is enabled", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { non_life_other: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { non_life_other: true },
+    });
     const result = await tira.handleCallback(sampleNonLifeOtherCallbackParsed);
 
     expect(result.type).toBe("non_life_other");
-    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-NLO-2025-001");
+    expect(result.extracted).toHaveProperty(
+      "covernote_reference_number",
+      "CN-NLO-2025-001",
+    );
     expect(result.extracted).not.toHaveProperty("sticker_number");
   });
 
   it("returns non_life_other callback result from XML string", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { non_life_other: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { non_life_other: true },
+    });
     const result = await tira.handleCallback(sampleNonLifeOtherCallbackXml);
 
     expect(result.type).toBe("non_life_other");
-    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-NLO-2025-001");
+    expect(result.extracted).toHaveProperty(
+      "covernote_reference_number",
+      "CN-NLO-2025-001",
+    );
     expect(result.extracted).not.toHaveProperty("sticker_number");
     expect(result.raw_xml).toBe(sampleNonLifeOtherCallbackXml);
   });
 
   it("throws on unknown response tag", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
-    const input = { TiraMsg: { UnknownTag: { SomeField: "value" }, MsgSignature: "abc" } };
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
+    const input = {
+      TiraMsg: { UnknownTag: { SomeField: "value" }, MsgSignature: "abc" },
+    };
 
-    await expect(tira.handleCallback(input)).rejects.toThrow("Unknown callback type");
+    await expect(tira.handleCallback(input)).rejects.toThrow(
+      "Unknown callback type",
+    );
     await expect(tira.handleCallback(input)).rejects.toThrow("UnknownTag");
   });
 
   it("throws when callback type is known but not enabled", async () => {
     const tira = new Tira(mockTiraConfig); // no enabled_callbacks
-    await expect(tira.handleCallback(sampleMotorCallbackParsed)).rejects.toThrow("not enabled");
-    await expect(tira.handleCallback(sampleMotorCallbackParsed)).rejects.toThrow("motor");
+    await expect(
+      tira.handleCallback(sampleMotorCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleMotorCallbackParsed),
+    ).rejects.toThrow("motor");
   });
 
   it("returns body (full parsed object) for acknowledgement", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackParsed);
     expect(result.body.TiraMsg).toBeDefined();
     expect(result.body.TiraMsg.MotorCoverNoteRefRes).toBeDefined();
   });
 
   it("raw_xml is empty string when input is pre-parsed object", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackParsed);
     expect(result.raw_xml).toBe("");
   });
 
   it("raw_xml is the original string when input is string", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackXml);
     expect(result.raw_xml).toBe(sampleMotorCallbackXml);
   });
 
   it("handles TIRA error callbacks (non-TIRA001 status)", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackErrorParsed);
 
     expect(result.type).toBe("motor");
     expect(result.extracted).toHaveProperty("response_status_code", "TIRA020");
-    expect(result.extracted).toHaveProperty("cover_note_reference_number", "");
+    expect(result.extracted).toHaveProperty("covernote_reference_number", "");
     expect(result.extracted).toHaveProperty("sticker_number", "");
   });
 });
 
 describe("Tira.handleCallback — motor_fleet (discriminator)", () => {
   it("resolves motor_fleet type when FleetResHdr is present", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor_fleet: true },
+    });
     const result = await tira.handleCallback(sampleFleetCallbackParsed);
 
     expect(result.type).toBe("motor_fleet");
@@ -178,8 +225,13 @@ describe("Tira.handleCallback — motor_fleet (discriminator)", () => {
   });
 
   it("handles single vehicle fleet (xml2js returns object, not array)", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
-    const result = await tira.handleCallback(sampleFleetCallbackSingleVehicleParsed);
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor_fleet: true },
+    });
+    const result = await tira.handleCallback(
+      sampleFleetCallbackSingleVehicleParsed,
+    );
 
     expect(result.type).toBe("motor_fleet");
     expect((result.extracted as any).fleet_details).toHaveLength(1);
@@ -187,20 +239,33 @@ describe("Tira.handleCallback — motor_fleet (discriminator)", () => {
   });
 
   it("throws when motor_fleet is not enabled", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
-    await expect(tira.handleCallback(sampleFleetCallbackParsed)).rejects.toThrow("not enabled");
-    await expect(tira.handleCallback(sampleFleetCallbackParsed)).rejects.toThrow("motor_fleet");
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
+    await expect(
+      tira.handleCallback(sampleFleetCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleFleetCallbackParsed),
+    ).rejects.toThrow("motor_fleet");
   });
 
   it("returns raw_xml when input is XML string", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor_fleet: true },
+    });
     const result = await tira.handleCallback(sampleFleetCallbackXml);
     expect(result.type).toBe("motor_fleet");
     expect(result.raw_xml).toBe(sampleFleetCallbackXml);
   });
 
   it("still resolves regular motor when no FleetResHdr", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackParsed);
     expect(result.type).toBe("motor");
   });
@@ -227,17 +292,25 @@ describe("Tira.acknowledge", () => {
   it("calls wrapTiraMsg with content and signature", () => {
     const tira = new Tira(mockTiraConfig);
     tira.acknowledge(sampleMotorCallbackParsed, "ACK-123");
-    expect(wrapTiraMsg).toHaveBeenCalledWith(expect.any(String), "mock-base64-signature");
+    expect(wrapTiraMsg).toHaveBeenCalledWith(
+      expect.any(String),
+      "mock-base64-signature",
+    );
   });
 
   it("throws when parsedBody has no TiraMsg", () => {
     const tira = new Tira(mockTiraConfig);
-    expect(() => tira.acknowledge({ NoTiraMsg: {} }, "ACK-123")).toThrow("Missing TiraMsg");
+    expect(() => tira.acknowledge({ NoTiraMsg: {} }, "ACK-123")).toThrow(
+      "Missing TiraMsg",
+    );
   });
 
   it("uses the provided acknowledgement ID (not hardcoded)", () => {
     const tira = new Tira(mockTiraConfig);
-    const result = tira.acknowledge(sampleMotorCallbackParsed, "STK-2025-001-CUSTOM");
+    const result = tira.acknowledge(
+      sampleMotorCallbackParsed,
+      "STK-2025-001-CUSTOM",
+    );
     // The signContent mock receives the inner XML — check it contains the custom ID
     const signCall = vi.mocked(signContent).mock.calls[0]!;
     expect(signCall[0]).toContain("STK-2025-001-CUSTOM");
@@ -246,14 +319,17 @@ describe("Tira.acknowledge", () => {
 
 describe("end-to-end callback flow", () => {
   it("parse callback → extract data → build ack ID from extracted data → acknowledge", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
 
     // Step 1: Parse callback
     const result = await tira.handleCallback(sampleMotorCallbackParsed);
     expect(result.type).toBe("motor");
 
     // Step 2: Build ack ID from extracted data (real-world pattern)
-    const ackId = `${result.extracted.cover_note_reference_number}-${result.extracted.sticker_number}`;
+    const ackId = `${result.extracted.covernote_reference_number}-${result.extracted.sticker_number}`;
     expect(ackId).toBe("CN-2025-001-STK-2025-001");
 
     // Step 3: Acknowledge
@@ -267,15 +343,21 @@ describe("end-to-end callback flow", () => {
   });
 
   it("handles error callback gracefully — fields default to empty string", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
 
     const result = await tira.handleCallback(sampleMotorCallbackErrorParsed);
     expect(result.extracted.response_status_code).toBe("TIRA020");
-    expect(result.extracted.cover_note_reference_number).toBe("");
+    expect(result.extracted.covernote_reference_number).toBe("");
     expect(result.extracted.sticker_number).toBe("");
 
     // User can still acknowledge error callbacks
-    const ackXml = tira.acknowledge(result.body, `ERR-${result.extracted.request_id}`);
+    const ackXml = tira.acknowledge(
+      result.body,
+      `ERR-${result.extracted.request_id}`,
+    );
     expect(ackXml).toContain("<TiraMsg>");
   });
 });
@@ -294,7 +376,10 @@ describe("Tira.handleCallback signature verification", () => {
   });
 
   it("sets signature_verified to false when tira_public_pfx_path is not configured", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+    });
     const result = await tira.handleCallback(sampleMotorCallbackXml);
     expect(result.signature_verified).toBe(false);
     expect(verifySignature).not.toHaveBeenCalled();
@@ -337,24 +422,37 @@ describe("Tira.handleCallback signature verification", () => {
 
 describe("Tira.handleCallback — reinsurance", () => {
   it("returns reinsurance callback result when reinsurance is enabled", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { reinsurance: true },
+    });
     const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
 
     expect(result.type).toBe("reinsurance");
     expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
     expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
     expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
-    expect(result.extracted).toHaveProperty("response_status_desc", "Successful");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
   });
 
   it("throws when reinsurance is not enabled", async () => {
     const tira = new Tira(mockTiraConfig); // no enabled_callbacks
-    await expect(tira.handleCallback(sampleReinsuranceCallbackParsed)).rejects.toThrow("not enabled");
-    await expect(tira.handleCallback(sampleReinsuranceCallbackParsed)).rejects.toThrow("reinsurance");
+    await expect(
+      tira.handleCallback(sampleReinsuranceCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleReinsuranceCallbackParsed),
+    ).rejects.toThrow("reinsurance");
   });
 
   it("returns raw_xml when input is XML string", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { reinsurance: true },
+    });
     const result = await tira.handleCallback(sampleReinsuranceCallbackXml);
 
     expect(result.type).toBe("reinsurance");
@@ -363,15 +461,21 @@ describe("Tira.handleCallback — reinsurance", () => {
   });
 
   it("raw_xml is empty string when input is pre-parsed object", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { reinsurance: true },
+    });
     const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
     expect(result.raw_xml).toBe("");
   });
 
-  it("does not include cover_note_reference_number or sticker_number in extracted data", async () => {
-    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+  it("does not include covernote_reference_number or sticker_number in extracted data", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { reinsurance: true },
+    });
     const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
-    expect(result.extracted).not.toHaveProperty("cover_note_reference_number");
+    expect(result.extracted).not.toHaveProperty("covernote_reference_number");
     expect(result.extracted).not.toHaveProperty("sticker_number");
   });
 });
