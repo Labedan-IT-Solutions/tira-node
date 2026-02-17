@@ -1,6 +1,9 @@
 import { create } from "xmlbuilder2";
 
-export function buildAckPayload(parsedBody: Record<string, any>): Record<string, unknown> {
+export function buildAckPayload(
+  parsedBody: Record<string, any>,
+  acknowledgementId: string,
+): Record<string, unknown> {
   const tiraMsg = parsedBody.TiraMsg;
   if (!tiraMsg) throw new Error("Missing TiraMsg in callback body");
 
@@ -11,7 +14,7 @@ export function buildAckPayload(parsedBody: Record<string, any>): Record<string,
 
   return {
     [responseTag + "Ack"]: {
-      AcknowledgementId: `GLC-${Date.now()}`,
+      AcknowledgementId: acknowledgementId,
       ResponseId: responseData.ResponseId,
       AcknowledgementStatusCode: "TIRA001",
       AcknowledgementStatusDesc: "Successful",

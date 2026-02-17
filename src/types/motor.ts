@@ -81,19 +81,3 @@ export interface MotorCoverNoteResponse {
   /** Raw acknowledgement payload for sending back to TIRA */
   acknowledgement_payload: Record<string, unknown>;
 }
-
-export interface MotorCallbackResult {
-  /** Parsed XML as JS object */
-  body: Record<string, any>;
-  /** Typed extracted data */
-  extracted: MotorCoverNoteResponse;
-  /** Original XML string */
-  raw_xml: string;
-  /** Signed acknowledgement XML to return as HTTP response (only if acknowledge: true) */
-  ack_xml?: string | undefined;
-}
-
-export interface HandleCallbackOptions {
-  /** Whether to build a signed acknowledgement XML to return to TIRA */
-  acknowledge?: boolean | undefined;
-}

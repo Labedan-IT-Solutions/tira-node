@@ -11,9 +11,12 @@ export type { TiraConfig } from "./types/config.js";
 export type {
   MotorCoverNotePayload,
   MotorCoverNoteResponse,
-  MotorCallbackResult,
-  HandleCallbackOptions,
 } from "./types/motor.js";
+export type {
+  CallbackResult,
+  MotorCallbackResponse,
+  EnabledCallbacks,
+} from "./types/callback.js";
 export type {
   TaxCharged,
   DiscountOffered,

@@ -1,9 +1,15 @@
 import type { TiraConfig } from "./types/config.js";
+import type { CallbackResult } from "./types/callback.js";
 import { TiraClient } from "./client.js";
 import { MotorResource } from "./resources/motor.js";
+import { parseCallbackXml } from "./callbacks/handler.js";
+import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
+import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
+import { signContent, wrapTiraMsg } from "./signing.js";
 
 export class Tira {
   private client: TiraClient;
+  private config: TiraConfig;
   public readonly motor: MotorResource;
 
   constructor(config: TiraConfig) {
@@ -38,7 +44,42 @@ export class Tira {
       throw new Error("Tira: pfx_passphrase is required");
     }
 
+    this.config = config;
     this.client = new TiraClient(config);
     this.motor = new MotorResource(this.client, config);
+  }
+
+  async handleCallback(rawXml: string): Promise<CallbackResult> {
+    const { body, responseTag, responseData } = await parseCallbackXml(rawXml);
+    const type = resolveCallbackType(responseTag);
+
+    const enabledCallbacks = this.config.enabled_callbacks;
+    const isEnabled = enabledCallbacks?.[type as keyof typeof enabledCallbacks];
+
+    if (type === "unknown") {
+      throw new Error(
+        `Unknown callback type: unrecognized response tag '${responseTag}'.`,
+      );
+    }
+
+    if (!isEnabled) {
+      throw new Error(
+        `Callback type '${type}' is not enabled. Add { enabled_callbacks: { ${type}: true } } to your Tira config.`,
+      );
+    }
+
+    const extracted = extractCallbackData(type, responseData);
+    return { type, body, extracted, raw_xml: rawXml };
+  }
+
+  acknowledge(parsedBody: Record<string, any>, acknowledgementId: string): string {
+    const ackPayload = buildAckPayload(parsedBody, acknowledgementId);
+    const ackContentXml = buildAcknowledgementXml(ackPayload);
+    const signature = signContent(
+      ackContentXml,
+      this.config.pfx_path,
+      this.config.pfx_passphrase,
+    );
+    return wrapTiraMsg(ackContentXml, signature);
   }
 }

@@ -1,3 +1,5 @@
+import type { EnabledCallbacks } from "./callback.js";
+
 export interface TiraConfig {
   /** Client code provided by TIRA */
   client_code: string;
@@ -19,4 +21,6 @@ export interface TiraConfig {
   pfx_path: string;
   /** Passphrase for the PFX file. Defaults to empty string. */
   pfx_passphrase: string;
+  /** Enable specific callback handlers for the universal handleCallback method */
+  enabled_callbacks?: EnabledCallbacks | undefined;
 }
