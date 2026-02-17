@@ -11,6 +11,7 @@ import type {
 } from "../types/reinsurance.js";
 import type { PolicyPayload, PolicyDetail } from "../types/policy.js";
 import type { ClaimNotificationPayload } from "../types/claim-notification.js";
+import type { CoverNoteVerificationPayload } from "../types/covernote-verification.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -521,4 +522,19 @@ export const sampleClaimNotificationCallbackParsed = {
     },
     MsgSignature: "claim-notif-sig-abc123==",
   },
+};
+
+// --- Cover Note Verification Fixtures ---
+
+export const validCoverNoteVerificationPayload: CoverNoteVerificationPayload = {
+  request_id: "NIC22424232355",
+  covernote_reference_number: "4242424",
+};
+
+export const validCoverNoteVerificationPayloadFull: CoverNoteVerificationPayload = {
+  request_id: "NIC22424232355",
+  covernote_reference_number: "4242424",
+  sticker_number: "1313-1414-124124",
+  motor_registration_number: "T233SQA",
+  motor_chassis_number: "4353646",
 };

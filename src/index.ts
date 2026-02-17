@@ -43,6 +43,10 @@ export type {
   ClaimNotificationResponse,
 } from "./types/claim-notification.js";
 export type {
+  CoverNoteVerificationPayload,
+  CoverNoteVerificationResponse,
+} from "./types/covernote-verification.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,

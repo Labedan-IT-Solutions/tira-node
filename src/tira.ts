@@ -7,6 +7,7 @@ import { NonLifeOtherResource } from "./resources/non-life-other.js";
 import { ReinsuranceResource } from "./resources/reinsurance.js";
 import { PolicyResource } from "./resources/policy.js";
 import { ClaimNotificationResource } from "./resources/claim-notification.js";
+import { CoverNoteVerificationResource } from "./resources/covernote-verification.js";
 import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
@@ -21,6 +22,7 @@ export class Tira {
   public readonly reinsurance: ReinsuranceResource;
   public readonly policy: PolicyResource;
   public readonly claimNotification: ClaimNotificationResource;
+  public readonly coverNoteVerification: CoverNoteVerificationResource;
 
   constructor(config: TiraConfig) {
     if (!config.client_code) {
@@ -62,6 +64,7 @@ export class Tira {
     this.reinsurance = new ReinsuranceResource(this.client, config);
     this.policy = new PolicyResource(this.client, config);
     this.claimNotification = new ClaimNotificationResource(this.client, config);
+    this.coverNoteVerification = new CoverNoteVerificationResource(this.client, config);
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {

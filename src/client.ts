@@ -36,14 +36,6 @@ export class TiraClient {
       ClientKey: this.config.client_key,
     };
 
-    // Verification endpoints use Basic Auth
-    if (endpoint.toLowerCase().includes("/verification/")) {
-      const basicAuth = Buffer.from(
-        `${this.config.client_code}:${this.config.client_key}`,
-      ).toString("base64");
-      headers["Authorization"] = `Basic ${basicAuth}`;
-    }
-
     const responseText = await new Promise<string>((resolve, reject) => {
       const req = https.request(
         url,

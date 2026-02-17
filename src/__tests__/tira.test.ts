@@ -556,6 +556,13 @@ describe("Tira constructor — claimNotification", () => {
   });
 });
 
+describe("Tira constructor — coverNoteVerification", () => {
+  it("creates instance with coverNoteVerification resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.coverNoteVerification).toBeDefined();
+  });
+});
+
 describe("Tira.handleCallback — claim_notification", () => {
   it("returns claim_notification callback result when enabled", async () => {
     const tira = new Tira({
