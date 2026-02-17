@@ -2,6 +2,7 @@ import type { MotorCoverNotePayload } from "../types/motor.js";
 import type { MotorVerificationPayload } from "../types/motor.js";
 import type { TiraConfig } from "../types/config.js";
 import type { MotorFleetCoverNotePayload, FleetDetailEntry } from "../types/motor-fleet.js";
+import type { ReinsurancePayload, ReinsuranceDetail } from "../types/reinsurance.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -372,4 +373,63 @@ export const validFleetPayload: MotorFleetCoverNotePayload = {
       },
     },
   ],
+};
+
+// --- Reinsurance Fixtures ---
+
+export const validReinsuranceDetail: ReinsuranceDetail = {
+  participant_code: "RE001",
+  participant_type: "1",
+  reinsurance_form: "3",
+  reinsurance_type: "1",
+  re_broker_code: "BRK001",
+  brokerage_commission: 5000,
+  reinsurance_commission: 10000,
+  premium_share: 250000,
+  participation_date: "2025-05-31T21:00:00Z",
+};
+
+export const validReinsurancePayload: ReinsurancePayload = {
+  request_id: "NIC22424232355",
+  callback_url: "https://example.com/reinsurance/callback",
+  insurer_company_code: "ICC103",
+  cover_note_reference_number: "CN-2025-001",
+  premium_including_tax: 619500,
+  currency_code: "TZS",
+  exchange_rate: 1.0,
+  authorizing_officer_name: "Johnson Abraham",
+  authorizing_officer_title: "Manager",
+  reinsurance_category: "1",
+  reinsurance_details: [
+    { ...validReinsuranceDetail },
+    {
+      ...validReinsuranceDetail,
+      participant_code: "RE002",
+      participant_type: "4",
+      re_broker_code: undefined,
+      premium_share: 150000,
+    },
+  ],
+};
+
+export const sampleReinsuranceCallbackXml = `<TiraMsg>
+  <ReinsuranceRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </ReinsuranceRes>
+  <MsgSignature>reinsurance-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleReinsuranceCallbackParsed = {
+  TiraMsg: {
+    ReinsuranceRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "reinsurance-sig-abc123==",
+  },
 };

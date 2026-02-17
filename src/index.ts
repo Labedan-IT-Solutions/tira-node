@@ -29,11 +29,17 @@ export type {
   FleetDetailEntry,
 } from "./types/motor-fleet.js";
 export type {
+  ReinsurancePayload,
+  ReinsuranceResponse,
+  ReinsuranceDetail,
+} from "./types/reinsurance.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
   MotorFleetCallbackDetail,
   NonLifeOtherCallbackResponse,
+  ReinsuranceCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {

@@ -38,6 +38,8 @@ import {
   sampleFleetCallbackParsed,
   sampleFleetCallbackSingleVehicleParsed,
   sampleFleetCallbackXml,
+  sampleReinsuranceCallbackXml,
+  sampleReinsuranceCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -58,6 +60,11 @@ describe("Tira constructor", () => {
   it("creates instance with motorFleet resource accessible", () => {
     const tira = new Tira(mockTiraConfig);
     expect(tira.motorFleet).toBeDefined();
+  });
+
+  it("creates instance with reinsurance resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.reinsurance).toBeDefined();
   });
 
   const requiredFields: (keyof TiraConfig)[] = [
@@ -325,5 +332,46 @@ describe("Tira.handleCallback signature verification", () => {
     const result = await tira.handleCallback(sampleNonLifeOtherCallbackXml);
     expect(result.signature_verified).toBe(true);
     expect(result.type).toBe("non_life_other");
+  });
+});
+
+describe("Tira.handleCallback — reinsurance", () => {
+  it("returns reinsurance callback result when reinsurance is enabled", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
+
+    expect(result.type).toBe("reinsurance");
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+    expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty("response_status_desc", "Successful");
+  });
+
+  it("throws when reinsurance is not enabled", async () => {
+    const tira = new Tira(mockTiraConfig); // no enabled_callbacks
+    await expect(tira.handleCallback(sampleReinsuranceCallbackParsed)).rejects.toThrow("not enabled");
+    await expect(tira.handleCallback(sampleReinsuranceCallbackParsed)).rejects.toThrow("reinsurance");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const result = await tira.handleCallback(sampleReinsuranceCallbackXml);
+
+    expect(result.type).toBe("reinsurance");
+    expect(result.raw_xml).toBe(sampleReinsuranceCallbackXml);
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
+    expect(result.raw_xml).toBe("");
+  });
+
+  it("does not include cover_note_reference_number or sticker_number in extracted data", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { reinsurance: true } });
+    const result = await tira.handleCallback(sampleReinsuranceCallbackParsed);
+    expect(result.extracted).not.toHaveProperty("cover_note_reference_number");
+    expect(result.extracted).not.toHaveProperty("sticker_number");
   });
 });

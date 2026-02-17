@@ -2,11 +2,13 @@ import type {
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
   NonLifeOtherCallbackResponse,
+  ReinsuranceCallbackResponse,
 } from "../types/callback.js";
 
 const TAG_MAP: Record<string, string> = {
   MotorCoverNoteRefRes: "motor",
   CoverNoteRefRes: "non_life_other",
+  ReinsuranceRes: "reinsurance",
 };
 
 /**
@@ -26,6 +28,7 @@ const EXTRACTORS: Record<string, (data: Record<string, any>) => Record<string, a
   motor: extractMotorCallback,
   motor_fleet: extractMotorFleetCallback,
   non_life_other: extractNonLifeOtherCallback,
+  reinsurance: extractReinsuranceCallback,
 };
 
 function extractMotorCallback(data: Record<string, any>): MotorCallbackResponse {
@@ -67,6 +70,15 @@ function extractNonLifeOtherCallback(data: Record<string, any>): NonLifeOtherCal
     response_id: data.ResponseId ?? "",
     request_id: data.RequestId ?? "",
     cover_note_reference_number: data.CoverNoteReferenceNumber ?? "",
+    response_status_code: data.ResponseStatusCode ?? "",
+    response_status_desc: data.ResponseStatusDesc ?? "",
+  };
+}
+
+function extractReinsuranceCallback(data: Record<string, any>): ReinsuranceCallbackResponse {
+  return {
+    response_id: data.ResponseId ?? "",
+    request_id: data.RequestId ?? "",
     response_status_code: data.ResponseStatusCode ?? "",
     response_status_desc: data.ResponseStatusDesc ?? "",
   };
