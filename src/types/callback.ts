@@ -11,32 +11,27 @@ export interface CallbackResult<T = Record<string, any>> {
   signature_verified: boolean;
 }
 
-export interface MotorCallbackResponse {
+export interface BaseCallbackResponse {
   /** Response ID from TIRA */
   response_id: string;
   /** The original request ID */
   request_id: string;
-  /** Cover note reference number assigned by TIRA */
-  covernote_reference_number?: string;
-  /** Sticker number assigned by TIRA */
-  sticker_number?: string;
-  /** Response status code */
+  /** Response status code (e.g., TIRA001 for success) */
   response_status_code: string;
   /** Response status description */
   response_status_desc: string;
 }
 
-export interface NonLifeOtherCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
+export interface MotorCallbackResponse extends BaseCallbackResponse {
   /** Cover note reference number assigned by TIRA */
   covernote_reference_number?: string;
-  /** Response status code */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
+  /** Sticker number assigned by TIRA */
+  sticker_number?: string;
+}
+
+export interface NonLifeOtherCallbackResponse extends BaseCallbackResponse {
+  /** Cover note reference number assigned by TIRA */
+  covernote_reference_number?: string;
 }
 
 export interface MotorFleetCallbackDetail {
@@ -69,72 +64,15 @@ export interface MotorFleetCallbackResponse {
   fleet_details: MotorFleetCallbackDetail[];
 }
 
-export interface ReinsuranceCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
-}
+export type ReinsuranceCallbackResponse = BaseCallbackResponse;
+export type PolicyCallbackResponse = BaseCallbackResponse;
+export type ClaimIntimationCallbackResponse = BaseCallbackResponse;
+export type ClaimAssessmentCallbackResponse = BaseCallbackResponse;
+export type DischargeVoucherCallbackResponse = BaseCallbackResponse;
 
-export interface PolicyCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
-}
-
-export interface ClaimNotificationCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
+export interface ClaimNotificationCallbackResponse extends BaseCallbackResponse {
   /** Claim reference number assigned by TIRA */
   claim_reference_number: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
-}
-
-export interface ClaimIntimationCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
-}
-
-export interface ClaimAssessmentCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
-}
-
-export interface DischargeVoucherCallbackResponse {
-  /** Response ID from TIRA */
-  response_id: string;
-  /** The original request ID */
-  request_id: string;
-  /** Response status code (e.g., TIRA001 for success) */
-  response_status_code: string;
-  /** Response status description */
-  response_status_desc: string;
 }
 
 export interface EnabledCallbacks {

@@ -62,6 +62,7 @@ export type {
 } from "./types/discharge-voucher.js";
 export type {
   CallbackResult,
+  BaseCallbackResponse,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
   MotorFleetCallbackDetail,

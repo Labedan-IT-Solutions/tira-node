@@ -1,13 +1,9 @@
 import type {
+  BaseCallbackResponse,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
   NonLifeOtherCallbackResponse,
-  ReinsuranceCallbackResponse,
-  PolicyCallbackResponse,
   ClaimNotificationCallbackResponse,
-  ClaimIntimationCallbackResponse,
-  ClaimAssessmentCallbackResponse,
-  DischargeVoucherCallbackResponse,
 } from "../types/callback.js";
 
 const TAG_MAP: Record<string, string> = {
@@ -44,24 +40,32 @@ const EXTRACTORS: Record<
   motor: extractMotorCallback,
   motor_fleet: extractMotorFleetCallback,
   non_life_other: extractNonLifeOtherCallback,
-  reinsurance: extractReinsuranceCallback,
-  policy: extractPolicyCallback,
+  reinsurance: extractBaseCallback,
+  policy: extractBaseCallback,
   claim_notification: extractClaimNotificationCallback,
-  claim_intimation: extractClaimIntimationCallback,
-  claim_assessment: extractClaimAssessmentCallback,
-  discharge_voucher: extractDischargeVoucherCallback,
+  claim_intimation: extractBaseCallback,
+  claim_assessment: extractBaseCallback,
+  discharge_voucher: extractBaseCallback,
 };
+
+function extractBaseCallback(
+  data: Record<string, any>,
+): BaseCallbackResponse {
+  return {
+    response_id: data.ResponseId ?? "",
+    request_id: data.RequestId ?? "",
+    response_status_code: data.ResponseStatusCode ?? "",
+    response_status_desc: data.ResponseStatusDesc ?? "",
+  };
+}
 
 function extractMotorCallback(
   data: Record<string, any>,
 ): MotorCallbackResponse {
   return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
+    ...extractBaseCallback(data),
     covernote_reference_number: data.CoverNoteReferenceNumber ?? "",
     sticker_number: data.StickerNumber ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
   };
 }
 
@@ -94,33 +98,8 @@ function extractNonLifeOtherCallback(
   data: Record<string, any>,
 ): NonLifeOtherCallbackResponse {
   return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
+    ...extractBaseCallback(data),
     covernote_reference_number: data.CoverNoteReferenceNumber ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
-  };
-}
-
-function extractReinsuranceCallback(
-  data: Record<string, any>,
-): ReinsuranceCallbackResponse {
-  return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
-  };
-}
-
-function extractPolicyCallback(
-  data: Record<string, any>,
-): PolicyCallbackResponse {
-  return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
   };
 }
 
@@ -128,44 +107,8 @@ function extractClaimNotificationCallback(
   data: Record<string, any>,
 ): ClaimNotificationCallbackResponse {
   return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
+    ...extractBaseCallback(data),
     claim_reference_number: data.ClaimReferenceNumber ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
-  };
-}
-
-function extractClaimIntimationCallback(
-  data: Record<string, any>,
-): ClaimIntimationCallbackResponse {
-  return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
-  };
-}
-
-function extractClaimAssessmentCallback(
-  data: Record<string, any>,
-): ClaimAssessmentCallbackResponse {
-  return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
-  };
-}
-
-function extractDischargeVoucherCallback(
-  data: Record<string, any>,
-): DischargeVoucherCallbackResponse {
-  return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    response_status_code: data.ResponseStatusCode ?? "",
-    response_status_desc: data.ResponseStatusDesc ?? "",
   };
 }
 
