@@ -52,6 +52,11 @@ export type {
   Claimant,
 } from "./types/claim-intimation.js";
 export type {
+  ClaimAssessmentPayload,
+  ClaimAssessmentResponse,
+  AssessmentClaimant,
+} from "./types/claim-assessment.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
@@ -61,6 +66,7 @@ export type {
   PolicyCallbackResponse,
   ClaimNotificationCallbackResponse,
   ClaimIntimationCallbackResponse,
+  ClaimAssessmentCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {

@@ -115,6 +115,17 @@ export interface ClaimIntimationCallbackResponse {
   response_status_desc: string;
 }
 
+export interface ClaimAssessmentCallbackResponse {
+  /** Response ID from TIRA */
+  response_id: string;
+  /** The original request ID */
+  request_id: string;
+  /** Response status code (e.g., TIRA001 for success) */
+  response_status_code: string;
+  /** Response status description */
+  response_status_desc: string;
+}
+
 export interface EnabledCallbacks {
   /** Enable motor callback handling */
   motor?: boolean | undefined;
@@ -130,4 +141,6 @@ export interface EnabledCallbacks {
   claim_notification?: boolean | undefined;
   /** Enable claim intimation callback handling */
   claim_intimation?: boolean | undefined;
+  /** Enable claim assessment callback handling */
+  claim_assessment?: boolean | undefined;
 }

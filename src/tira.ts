@@ -9,6 +9,7 @@ import { PolicyResource } from "./resources/policy.js";
 import { ClaimNotificationResource } from "./resources/claim-notification.js";
 import { CoverNoteVerificationResource } from "./resources/covernote-verification.js";
 import { ClaimIntimationResource } from "./resources/claim-intimation.js";
+import { ClaimAssessmentResource } from "./resources/claim-assessment.js";
 import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
@@ -25,6 +26,7 @@ export class Tira {
   public readonly claimNotification: ClaimNotificationResource;
   public readonly coverNoteVerification: CoverNoteVerificationResource;
   public readonly claimIntimation: ClaimIntimationResource;
+  public readonly claimAssessment: ClaimAssessmentResource;
 
   constructor(config: TiraConfig) {
     if (!config.client_code) {
@@ -68,6 +70,7 @@ export class Tira {
     this.claimNotification = new ClaimNotificationResource(this.client, config);
     this.coverNoteVerification = new CoverNoteVerificationResource(this.client, config);
     this.claimIntimation = new ClaimIntimationResource(this.client, config);
+    this.claimAssessment = new ClaimAssessmentResource(this.client, config);
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {
