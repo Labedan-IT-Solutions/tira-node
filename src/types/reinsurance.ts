@@ -9,8 +9,8 @@ export interface ReinsuranceDetail {
   reinsurance_form: "1" | "2" | "3";
   /** Reinsurance type: 1-Fac Proportion-Quota share, 2-Fac Non Proportion-Excess of Loss, 3-Fac Proportion-Surplus treaty, 4-Fac Obligatory, 5-Treaty Proportion-Quota Share, 6-Treaty Proportion-Surplus Treaty, 7-Treaty Non Proportion-Excess of Loss, 8-Treaty Non Proportion-Stop Loss */
   reinsurance_type: "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8";
-  /** Reinsurance broker code. Provided by TIRA. Optional. */
-  re_broker_code?: string | undefined;
+  /** Reinsurance broker code. Provided by TIRA. */
+  re_broker_code: string;
   /** Brokerage commission amount (Max 2 decimal places) */
   brokerage_commission: number;
   /** Reinsurance commission amount (Max 2 decimal places) */

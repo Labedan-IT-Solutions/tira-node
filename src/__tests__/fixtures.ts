@@ -1,8 +1,14 @@
 import type { MotorCoverNotePayload } from "../types/motor.js";
 import type { MotorVerificationPayload } from "../types/motor.js";
 import type { TiraConfig } from "../types/config.js";
-import type { MotorFleetCoverNotePayload, FleetDetailEntry } from "../types/motor-fleet.js";
-import type { ReinsurancePayload, ReinsuranceDetail } from "../types/reinsurance.js";
+import type {
+  MotorFleetCoverNotePayload,
+  FleetDetailEntry,
+} from "../types/motor-fleet.js";
+import type {
+  ReinsurancePayload,
+  ReinsuranceDetail,
+} from "../types/reinsurance.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -406,7 +412,7 @@ export const validReinsurancePayload: ReinsurancePayload = {
       ...validReinsuranceDetail,
       participant_code: "RE002",
       participant_type: "4",
-      re_broker_code: undefined,
+      re_broker_code: "BRK002",
       premium_share: 150000,
     },
   ],

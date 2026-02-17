@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { parseStringPromise } from "xml2js";
 import { buildReinsuranceXml } from "../builders/reinsurance.js";
-import { validReinsurancePayload, validReinsuranceDetail, mockTiraConfig } from "./fixtures.js";
+import {
+  validReinsurancePayload,
+  validReinsuranceDetail,
+  mockTiraConfig,
+} from "./fixtures.js";
 
 async function parseXml(xml: string): Promise<Record<string, any>> {
   return parseStringPromise(xml, { explicitArray: false });
@@ -33,11 +37,21 @@ describe("buildReinsuranceXml", () => {
     const hdr = parsed.ReinsuranceReq.ReinsuranceHdr;
     expect(hdr.RequestId).toBe(validReinsurancePayload.request_id);
     expect(hdr.CallBackUrl).toBe(validReinsurancePayload.callback_url);
-    expect(hdr.InsurerCompanyCode).toBe(validReinsurancePayload.insurer_company_code);
-    expect(hdr.CoverNoteReferenceNumber).toBe(validReinsurancePayload.cover_note_reference_number);
-    expect(hdr.AuthorizingOfficerName).toBe(validReinsurancePayload.authorizing_officer_name);
-    expect(hdr.AuthorizingOfficerTitle).toBe(validReinsurancePayload.authorizing_officer_title);
-    expect(hdr.ReinsuranceCategory).toBe(validReinsurancePayload.reinsurance_category);
+    expect(hdr.InsurerCompanyCode).toBe(
+      validReinsurancePayload.insurer_company_code,
+    );
+    expect(hdr.CoverNoteReferenceNumber).toBe(
+      validReinsurancePayload.cover_note_reference_number,
+    );
+    expect(hdr.AuthorizingOfficerName).toBe(
+      validReinsurancePayload.authorizing_officer_name,
+    );
+    expect(hdr.AuthorizingOfficerTitle).toBe(
+      validReinsurancePayload.authorizing_officer_title,
+    );
+    expect(hdr.ReinsuranceCategory).toBe(
+      validReinsurancePayload.reinsurance_category,
+    );
   });
 
   it("premium value is formatted with .toFixed(2)", async () => {
@@ -62,7 +76,11 @@ describe("buildReinsuranceXml", () => {
   });
 
   it("uses provided currency_code and exchange_rate", async () => {
-    const payload = { ...validReinsurancePayload, currency_code: "USD", exchange_rate: 2500.5 };
+    const payload = {
+      ...validReinsurancePayload,
+      currency_code: "USD",
+      exchange_rate: 2500.5,
+    };
     const xml = buildReinsuranceXml(payload, mockTiraConfig);
     const parsed = await parseXml(xml);
     const hdr = parsed.ReinsuranceReq.ReinsuranceHdr;
@@ -102,14 +120,19 @@ describe("buildReinsuranceXml", () => {
     const xml = buildReinsuranceXml(validReinsurancePayload, mockTiraConfig);
     const parsed = await parseXml(xml);
     const dtl = parsed.ReinsuranceReq.ReinsuranceDtl[0];
-    expect(dtl.ParticipationDate).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+    expect(dtl.ParticipationDate).toMatch(
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/,
+    );
   });
 
   it("ParticipationDate is converted from UTC to GMT+3", async () => {
     const payload = {
       ...validReinsurancePayload,
       reinsurance_details: [
-        { ...validReinsuranceDetail, participation_date: "2025-05-31T21:00:00Z" },
+        {
+          ...validReinsuranceDetail,
+          participation_date: "2025-05-31T21:00:00Z",
+        },
       ],
     };
     const xml = buildReinsuranceXml(payload, mockTiraConfig);
@@ -122,20 +145,16 @@ describe("buildReinsuranceXml", () => {
     const payload = {
       ...validReinsurancePayload,
       reinsurance_details: [
-        { ...validReinsuranceDetail, participation_date: new Date("2025-05-31T21:00:00Z") },
+        {
+          ...validReinsuranceDetail,
+          participation_date: new Date("2025-05-31T21:00:00Z"),
+        },
       ],
     };
     const xml = buildReinsuranceXml(payload, mockTiraConfig);
     const parsed = await parseXml(xml);
     const dtl = parsed.ReinsuranceReq.ReinsuranceDtl;
     expect(dtl.ParticipationDate).toBe("2025-06-01T00:00:00");
-  });
-
-  it("ReBrokerCode defaults to empty string when not provided", async () => {
-    const xml = buildReinsuranceXml(validReinsurancePayload, mockTiraConfig);
-    const parsed = await parseXml(xml);
-    const dtl = parsed.ReinsuranceReq.ReinsuranceDtl[1];
-    expect(dtl.ReBrokerCode).toBe("");
   });
 
   it("output is headless (no XML declaration)", () => {

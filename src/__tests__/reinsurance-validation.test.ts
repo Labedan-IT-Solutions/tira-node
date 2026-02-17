@@ -4,20 +4,24 @@ import { validateReinsurancePayload } from "../validation/reinsurance.js";
 import { validReinsurancePayload, validReinsuranceDetail } from "./fixtures.js";
 import type { ReinsurancePayload } from "../types/reinsurance.js";
 
-function reins(overrides: Partial<ReinsurancePayload> = {}): ReinsurancePayload {
+function reins(
+  overrides: Partial<ReinsurancePayload> = {},
+): ReinsurancePayload {
   return { ...validReinsurancePayload, ...overrides };
 }
 
 describe("validateReinsurancePayload", () => {
   it("valid complete payload passes", () => {
-    expect(() => validateReinsurancePayload(validReinsurancePayload)).not.toThrow();
+    expect(() =>
+      validateReinsurancePayload(validReinsurancePayload),
+    ).not.toThrow();
   });
 
   // --- Required header fields ---
   it("throws when request_id is missing", () => {
-    expect(() =>
-      validateReinsurancePayload(reins({ request_id: "" })),
-    ).toThrow(TiraValidationError);
+    expect(() => validateReinsurancePayload(reins({ request_id: "" }))).toThrow(
+      TiraValidationError,
+    );
   });
 
   it("throws when callback_url is missing", () => {
@@ -28,7 +32,9 @@ describe("validateReinsurancePayload", () => {
 
   it("throws when callback_url uses HTTP", () => {
     expect(() =>
-      validateReinsurancePayload(reins({ callback_url: "http://example.com/cb" })),
+      validateReinsurancePayload(
+        reins({ callback_url: "http://example.com/cb" }),
+      ),
     ).toThrow(TiraValidationError);
   });
 
@@ -86,7 +92,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, participant_code: "" }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, participant_code: "" },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -96,7 +104,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, participant_type: "9" as any }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, participant_type: "9" as any },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -106,7 +116,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, reinsurance_form: "5" as any }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, reinsurance_form: "5" as any },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -116,7 +128,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, reinsurance_type: "9" as any }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, reinsurance_type: "9" as any },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -126,7 +140,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, brokerage_commission: NaN }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, brokerage_commission: NaN },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -136,7 +152,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, reinsurance_commission: NaN }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, reinsurance_commission: NaN },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -146,7 +164,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, premium_share: NaN }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, premium_share: NaN },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -156,21 +176,12 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, participation_date: "not-a-date" }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, participation_date: "not-a-date" },
+          ],
         }),
       ),
     ).toThrow(TiraValidationError);
-  });
-
-  // --- Optional / valid edge cases ---
-  it("passes when re_broker_code is undefined", () => {
-    expect(() =>
-      validateReinsurancePayload(
-        reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, re_broker_code: undefined }],
-        }),
-      ),
-    ).not.toThrow();
   });
 
   it("accepts Date objects for participation_date", () => {
@@ -178,7 +189,10 @@ describe("validateReinsurancePayload", () => {
       validateReinsurancePayload(
         reins({
           reinsurance_details: [
-            { ...validReinsuranceDetail, participation_date: new Date("2025-06-01T00:00:00Z") },
+            {
+              ...validReinsuranceDetail,
+              participation_date: new Date("2025-06-01T00:00:00Z"),
+            },
           ],
         }),
       ),
@@ -189,7 +203,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, brokerage_commission: 0 }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, brokerage_commission: 0 },
+          ],
         }),
       ),
     ).not.toThrow();
@@ -199,7 +215,9 @@ describe("validateReinsurancePayload", () => {
     expect(() =>
       validateReinsurancePayload(
         reins({
-          reinsurance_details: [{ ...validReinsuranceDetail, reinsurance_commission: 0 }],
+          reinsurance_details: [
+            { ...validReinsuranceDetail, reinsurance_commission: 0 },
+          ],
         }),
       ),
     ).not.toThrow();

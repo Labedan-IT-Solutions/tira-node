@@ -9,9 +9,7 @@ import {
 } from "./validators.js";
 import { TiraValidationError } from "../errors.js";
 
-export function validateReinsurancePayload(
-  payload: ReinsurancePayload,
-): void {
+export function validateReinsurancePayload(payload: ReinsurancePayload): void {
   // --- Header fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
@@ -58,6 +56,7 @@ export function validateReinsurancePayload(
     const prefix = `reinsurance_details[${i}]`;
 
     validateRequired(d.participant_code, `${prefix}.participant_code`);
+    validateRequired(d.re_broker_code, `${prefix}.re_broker_code`);
     validateEnum(
       d.participant_type,
       {
