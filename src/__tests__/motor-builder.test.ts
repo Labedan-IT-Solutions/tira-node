@@ -66,13 +66,51 @@ describe("buildMotorCoverNoteXml", () => {
     expect(parsed.MotorCoverNoteRefReq.CoverNoteDtl.ExchangeRate).toBe("2500.50");
   });
 
-  it("dates are formatted as ISO substring(0,19) — no Z, no milliseconds", async () => {
+  it("dates are formatted as YYYY-MM-DDTHH:MM:SS — no Z, no milliseconds", async () => {
     const xml = buildMotorCoverNoteXml(validCoverNotePayload, mockTiraConfig);
     const parsed = await parseXml(xml);
     const dtl = parsed.MotorCoverNoteRefReq.CoverNoteDtl;
-    // Should match YYYY-MM-DDTHH:mm:ss (exactly 19 chars, no Z)
     expect(dtl.CoverNoteStartDate).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
     expect(dtl.CoverNoteEndDate).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+  });
+
+  it("dates are converted from UTC to GMT+3 (EAT)", async () => {
+    const payload = {
+      ...validCoverNotePayload,
+      covernote_start_date: "2025-05-31T21:00:00Z",
+      covernote_end_date: "2026-05-31T21:00:00Z",
+    };
+    const xml = buildMotorCoverNoteXml(payload, mockTiraConfig);
+    const parsed = await parseXml(xml);
+    const dtl = parsed.MotorCoverNoteRefReq.CoverNoteDtl;
+    expect(dtl.CoverNoteStartDate).toBe("2025-06-01T00:00:00");
+    expect(dtl.CoverNoteEndDate).toBe("2026-06-01T00:00:00");
+  });
+
+  it("UTC midnight becomes 03:00:00 in GMT+3", async () => {
+    const payload = {
+      ...validCoverNotePayload,
+      covernote_start_date: "2025-06-01T00:00:00Z",
+      covernote_end_date: "2026-06-01T00:00:00Z",
+    };
+    const xml = buildMotorCoverNoteXml(payload, mockTiraConfig);
+    const parsed = await parseXml(xml);
+    const dtl = parsed.MotorCoverNoteRefReq.CoverNoteDtl;
+    expect(dtl.CoverNoteStartDate).toBe("2025-06-01T03:00:00");
+    expect(dtl.CoverNoteEndDate).toBe("2026-06-01T03:00:00");
+  });
+
+  it("accepts Date objects and converts to GMT+3", async () => {
+    const payload = {
+      ...validCoverNotePayload,
+      covernote_start_date: new Date("2025-05-31T21:00:00Z"),
+      covernote_end_date: new Date("2026-05-31T21:00:00Z"),
+    };
+    const xml = buildMotorCoverNoteXml(payload, mockTiraConfig);
+    const parsed = await parseXml(xml);
+    const dtl = parsed.MotorCoverNoteRefReq.CoverNoteDtl;
+    expect(dtl.CoverNoteStartDate).toBe("2025-06-01T00:00:00");
+    expect(dtl.CoverNoteEndDate).toBe("2026-06-01T00:00:00");
   });
 
   it("country_code defaults to 'TZA' for policy holder", async () => {

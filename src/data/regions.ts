@@ -1,0 +1,318 @@
+export const REGIONS = {
+  "Dar es Salaam": {
+    region_code: "10000",
+    districts: {
+      Ilala: "11000",
+      Kigamboni: "12000",
+      Ubungo: "13000",
+      Kinondoni: "14000",
+      Temeke: "15000",
+    },
+  },
+  Tanga: {
+    region_code: "21000",
+    districts: {
+      "Tanga CBD": "21100",
+      Tanga: "21200",
+      Pangani: "21300",
+      Muheza: "21400",
+      Mkinga: "21500",
+      Korogwe: "21600",
+      Lushoto: "21700",
+      Handeni: "21800",
+      Kilindi: "21900",
+    },
+  },
+  Arusha: {
+    region_code: "23000",
+    districts: {
+      "Arusha CBD": "23100",
+      Arusha: "23200",
+      Arumeru: "23300",
+      Monduli: "23400",
+      Longido: "23500",
+      Karatu: "23600",
+      Ngorongoro: "23700",
+    },
+  },
+  Kilimanjaro: {
+    region_code: "25000",
+    districts: {
+      "Moshi CDB": "25100",
+      Moshi: "25200",
+      Hai: "25300",
+      Siha: "25400",
+      Mwanga: "25500",
+      Same: "25600",
+      Rombo: "25700",
+    },
+  },
+  Manyara: {
+    region_code: "27000",
+    districts: {
+      "Babati CBD": "27100",
+      Babati: "27200",
+      Hanang: "27300",
+      Mbulu: "27400",
+      Kiteto: "27500",
+      Simanjiro: "27600",
+    },
+  },
+  Geita: {
+    region_code: "30000",
+    districts: {
+      Geita: "30100",
+      "Nyang'hwale": "30200",
+      Chato: "30300",
+      Mbogwe: "30400",
+      Bukombe: "30500",
+    },
+  },
+  Mara: {
+    region_code: "31000",
+    districts: {
+      "Musoma CBD": "31100",
+      Butiama: "31200",
+      Rorya: "31300",
+      Tarime: "31400",
+      Bunda: "31500",
+      Serengeti: "31600",
+      "MUSOMA (TO)WN": "31700",
+    },
+  },
+  Mwanza: {
+    region_code: "33000",
+    districts: {
+      Nyamagana: "33100",
+      Ilemela: "33200",
+      Sengerema: "33300",
+      Magu: "33400",
+      Misungwi: "33500",
+      Ukerewe: "33600",
+      Kwimba: "33700",
+    },
+  },
+  Kagera: {
+    region_code: "35000",
+    districts: {
+      "Bukoba CBD": "35100",
+      Bukoba: "35200",
+      Missenyi: "35300",
+      Karagwe: "35400",
+      Muleba: "35500",
+      Biharamulo: "35600",
+      Ngara: "35700",
+      Kyerwa: "35800",
+    },
+  },
+  Shinyanga: {
+    region_code: "37000",
+    districts: {
+      "Shinyanga CBD": "37100",
+      Shinyanga: "37200",
+      "Kahama CBD": "37300",
+      Kahama: "37400",
+      Kishapu: "37500",
+    },
+  },
+  Simiyu: {
+    region_code: "39000",
+    districts: {
+      Bariadi: "39100",
+      Itilima: "39200",
+      Maswa: "39300",
+      Meatu: "39400",
+      Busega: "39500",
+    },
+  },
+  Dodoma: {
+    region_code: "41000",
+    districts: {
+      "Dodoma CBD": "41100",
+      Dodoma: "41200",
+      Bahi: "41300",
+      Chamwino: "41400",
+      Kongwa: "41500",
+      Mpwapwa: "41600",
+      Kondoa: "41700",
+      Chemba: "41800",
+    },
+  },
+  Singida: {
+    region_code: "43000",
+    districts: {
+      "Singida CBD": "43100",
+      Singida: "43200",
+      Iramba: "43300",
+      Manyoni: "43400",
+      Mkalama: "43500",
+      Ikungi: "43600",
+    },
+  },
+  Tabora: {
+    region_code: "45000",
+    districts: {
+      "Tabora CBD": "45100",
+      Uyui: "45200",
+      Sikonge: "45300",
+      Nzega: "45400",
+      Urambo: "45500",
+      Igunga: "45600",
+      Kaliua: "45700",
+    },
+  },
+  Kigoma: {
+    region_code: "47000",
+    districts: {
+      "Kigoma CBD": "47100",
+      Kigoma: "47200",
+      Kasulu: "47300",
+      Kibondo: "47400",
+      Buhigwe: "47500",
+      Uvinza: "47600",
+      Kakonko: "47700",
+    },
+  },
+  Katavi: {
+    region_code: "50000",
+    districts: {
+      "Mpanda CBD": "50100",
+      Mpanda: "50200",
+      Mlele: "50300",
+    },
+  },
+  Iringa: {
+    region_code: "51000",
+    districts: {
+      "Iringa CBD": "51100",
+      IRINGA: "51200",
+      Kilolo: "51300",
+      Mufindi: "51400",
+    },
+  },
+  Mbeya: {
+    region_code: "53000",
+    districts: {
+      "Mbeya CBD": "53100",
+      Mbeya: "53200",
+      Mbozi: "53300",
+      Ileje: "53400",
+      Rungwe: "53500",
+      Mbarali: "53600",
+      Kyela: "53700",
+      Chunya: "53800",
+      Momba: "53900",
+    },
+  },
+  Rukwa: {
+    region_code: "55000",
+    districts: {
+      "Sumbawanga CBD": "55100",
+      Sumbawanga: "55200",
+      Nkasi: "55300",
+      Kalambo: "55400",
+    },
+  },
+  Ruvuma: {
+    region_code: "57000",
+    districts: {
+      "Songea CBD": "57100",
+      Songea: "57200",
+      Namtumbo: "57300",
+      Mbinga: "57400",
+      Nyasa: "57500",
+      Tunduru: "57600",
+    },
+  },
+  Njombe: {
+    region_code: "59000",
+    districts: {
+      "Njombe CBD": "59100",
+      Njombe: "59200",
+      "Wanging'ombe": "59300",
+      Ludewa: "59400",
+      Makete: "59500",
+    },
+  },
+  Pwani: {
+    region_code: "61000",
+    districts: {
+      "Kibaha CBD": "61100",
+      Kibaha: "61200",
+      Bagamoyo: "61300",
+      Kisarawe: "61400",
+      Mkuranga: "61500",
+      Rufiji: "61600",
+      Mafia: "61700",
+    },
+  },
+  Mtwara: {
+    region_code: "63000",
+    districts: {
+      "Mtwara CBD": "63100",
+      Mtwara: "63200",
+      Tandahimba: "63300",
+      Newala: "63400",
+      Masasi: "63500",
+      Nanyumbu: "63600",
+    },
+  },
+  Lindi: {
+    region_code: "65000",
+    districts: {
+      "Lindi CBD": "65100",
+      "Lindi Rural": "65200",
+      Nachingwea: "65300",
+      Kilwa: "65400",
+      Liwale: "65500",
+      Ruangwa: "65600",
+    },
+  },
+  Morogoro: {
+    region_code: "67000",
+    districts: {
+      "Morogoro CBD": "67100",
+      Morogoro: "67200",
+      Mvomero: "67300",
+      Kilosa: "67400",
+      Kilombero: "67500",
+      Ulanga: "67600",
+      Gairo: "67700",
+    },
+  },
+  "Unguja Magharibi": {
+    region_code: "71000",
+    districts: {
+      Mjini: "71100",
+      Magharibi: "71200",
+    },
+  },
+  "Zanzibar Kati / Kusini": {
+    region_code: "72000",
+    districts: {
+      Kusini: "72100",
+      Kati: "72200",
+    },
+  },
+  "Unguja Kaskazini": {
+    region_code: "73000",
+    districts: {
+      "Kaskazini A": "73100",
+      "Kaskazini B": "73200",
+    },
+  },
+  "Pemba Kusini": {
+    region_code: "74000",
+    districts: {
+      Mkoani: "74100",
+      Chakechake: "74200",
+    },
+  },
+  "Pemba Kaskazini": {
+    region_code: "75000",
+    districts: {
+      Wete: "75100",
+      Micheweni: "75200",
+    },
+  },
+} as const;

@@ -4,17 +4,21 @@ import type {
   MotorCoverNotePayload,
   MotorVerificationPayload,
 } from "../types/motor.js";
+import { formatDateForTira } from "../utils.js";
 
 export function buildMotorCoverNoteXml(
   payload: MotorCoverNotePayload,
   config: TiraConfig,
 ): string {
-  const startDate = new Date(payload.covernote_start_date);
-  const endDate = new Date(payload.covernote_end_date);
-
   const currencyCode = payload.currency_code ?? "TZS";
   const exchangeRate = payload.exchange_rate ?? 1.0;
   const m = payload.motor_details;
+
+  const tanzanianStartDate = formatDateForTira(payload.covernote_start_date);
+  const tanzanianEndDate = formatDateForTira(payload.covernote_end_date);
+
+  console.log(`Start date in GMT+3 (EAT): ${tanzanianStartDate}`);
+  console.log(`End date in GMT+3 (EAT): ${tanzanianEndDate}`);
 
   return create({ version: "1.0" })
     .ele({
@@ -33,8 +37,8 @@ export function buildMotorCoverNoteXml(
           PrevCoverNoteReferenceNumber:
             payload.previous_covernote_reference_number ?? "",
           SalePointCode: payload.sales_point_code,
-          CoverNoteStartDate: startDate.toISOString().substring(0, 19),
-          CoverNoteEndDate: endDate.toISOString().substring(0, 19),
+          CoverNoteStartDate: tanzanianStartDate,
+          CoverNoteEndDate: tanzanianEndDate,
           CoverNoteDesc: payload.covernote_desc,
           OperativeClause: payload.operative_clause,
           PaymentMode: payload.payment_mode,

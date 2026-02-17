@@ -1,5 +1,5 @@
 {
-  "exclude": ["node_modules", "build"],
+  "exclude": ["node_modules", "build", "vitest.config.ts"],
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout

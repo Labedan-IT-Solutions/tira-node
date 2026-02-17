@@ -4,7 +4,12 @@
 // RESOURCES:
 export { Tira } from "./tira.js";
 export { TiraError, TiraApiError, TiraValidationError } from "./errors.js";
+
+// REFERENCE DATA:
 export { ENDPOINTS } from "./endpoints.js";
+export { COUNTRIES } from "./data/countries.js";
+export { CURRENCIES } from "./data/currencies.js";
+export { REGIONS } from "./data/regions.js";
 
 // TYPES:
 export type { TiraConfig } from "./types/config.js";
