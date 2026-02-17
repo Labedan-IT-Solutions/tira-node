@@ -12,6 +12,7 @@ import { ClaimIntimationResource } from "./resources/claim-intimation.js";
 import { ClaimAssessmentResource } from "./resources/claim-assessment.js";
 import { DischargeVoucherResource } from "./resources/discharge-voucher.js";
 import { ClaimPaymentResource } from "./resources/claim-payment.js";
+import { ClaimRejectionResource } from "./resources/claim-rejection.js";
 import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
@@ -31,6 +32,7 @@ export class Tira {
   public readonly claimAssessment: ClaimAssessmentResource;
   public readonly dischargeVoucher: DischargeVoucherResource;
   public readonly claimPayment: ClaimPaymentResource;
+  public readonly claimRejection: ClaimRejectionResource;
 
   constructor(config: TiraConfig) {
     if (!config.client_code) {
@@ -77,6 +79,7 @@ export class Tira {
     this.claimAssessment = new ClaimAssessmentResource(this.client, config);
     this.dischargeVoucher = new DischargeVoucherResource(this.client, config);
     this.claimPayment = new ClaimPaymentResource(this.client, config);
+    this.claimRejection = new ClaimRejectionResource(this.client, config);
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {

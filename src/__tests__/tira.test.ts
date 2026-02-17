@@ -52,6 +52,8 @@ import {
   sampleDischargeVoucherCallbackParsed,
   sampleClaimPaymentCallbackXml,
   sampleClaimPaymentCallbackParsed,
+  sampleClaimRejectionCallbackXml,
+  sampleClaimRejectionCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -892,6 +894,69 @@ describe("Tira.handleCallback — claim_payment", () => {
     });
     const result = await tira.handleCallback(
       sampleClaimPaymentCallbackParsed,
+    );
+    expect(result.raw_xml).toBe("");
+  });
+});
+
+describe("Tira constructor — claimRejection", () => {
+  it("creates instance with claimRejection resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.claimRejection).toBeDefined();
+  });
+});
+
+describe("Tira.handleCallback — claim_rejection", () => {
+  it("returns claim_rejection callback result when enabled", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_rejection: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimRejectionCallbackParsed,
+    );
+
+    expect(result.type).toBe("claim_rejection");
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+    expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
+  });
+
+  it("throws when claim_rejection is not enabled", async () => {
+    const tira = new Tira(mockTiraConfig);
+    await expect(
+      tira.handleCallback(sampleClaimRejectionCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleClaimRejectionCallbackParsed),
+    ).rejects.toThrow("claim_rejection");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_rejection: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimRejectionCallbackXml,
+    );
+
+    expect(result.type).toBe("claim_rejection");
+    expect(result.raw_xml).toBe(sampleClaimRejectionCallbackXml);
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_rejection: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimRejectionCallbackParsed,
     );
     expect(result.raw_xml).toBe("");
   });
