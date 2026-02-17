@@ -68,6 +68,8 @@ npm install tira-node
 
 ### Initialize
 
+Just provide the PFX certificate files that TIRA gave you and the SDK handles everything else automatically:
+
 ```js
 const { Tira } = require("tira-node");
 // or: import { Tira } from "tira-node";
@@ -78,11 +80,10 @@ const tira = new Tira({
   client_key: "YOUR_CLIENT_KEY", // Provided by TIRA
   system_code: "YOUR_SYSTEM_CODE", // Provided by TIRA
   transacting_company_code: "YOUR_COMPANY_CODE", // Provided by TIRA
-  ca_cert_path: "./certs/tira_server_ca.pem", // Provided by TIRA
-  client_cert_path: "./certs/client.crt", // Provided by TIRA
-  client_key_path: "./certs/client.key", // Provided by TIRA
-  pfx_path: "./certs/your_private.pfx", // Provided by TIRA
+  pfx_path: "./path_to_certs/tiramisclientprivate.pfx", // Provided by TIRA
   pfx_passphrase: "your-passphrase", // Provided by TIRA
+  tira_public_pfx_path: "./path_to_certs/tiramispublic.pfx", // Provided by TIRA
+  tira_public_pfx_passphrase: "your-passphrase", // Provided by TIRA
 });
 ```
 

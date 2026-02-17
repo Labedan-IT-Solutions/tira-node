@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
 import forge from 'node-forge';
 
-function privateKeyPemFromPfx(pfxPath: string, passphrase: string): string {
+export function privateKeyPemFromPfx(pfxPath: string, passphrase: string): string {
   const pfxBuf = fs.readFileSync(pfxPath);
   const forgeBuf = forge.util.createBuffer(pfxBuf.toString('binary'));
   const asn1 = forge.asn1.fromDer(forgeBuf);
@@ -35,7 +35,7 @@ export function wrapTiraMsg(contentXml: string, base64Signature: string): string
   return `<TiraMsg>\n${contentXml}\n<MsgSignature>${base64Signature}</MsgSignature>\n</TiraMsg>`;
 }
 
-function publicKeyPemFromPfx(pfxPath: string, passphrase: string): string {
+export function certificatePemFromPfx(pfxPath: string, passphrase: string): string {
   const pfxBuf = fs.readFileSync(pfxPath);
   const forgeBuf = forge.util.createBuffer(pfxBuf.toString('binary'));
   const asn1 = forge.asn1.fromDer(forgeBuf);
@@ -76,7 +76,7 @@ export function verifySignature(
   publicPfxPath: string,
   publicPfxPassphrase: string = '',
 ): boolean {
-  const publicKeyPem = publicKeyPemFromPfx(publicPfxPath, publicPfxPassphrase);
+  const publicKeyPem = certificatePemFromPfx(publicPfxPath, publicPfxPassphrase);
   const verifier = crypto.createVerify('RSA-SHA1');
   verifier.update(contentXml, 'utf8');
   verifier.end();

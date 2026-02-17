@@ -24,15 +24,8 @@ export const mockTiraConfig: TiraConfig = {
   system_code: "TP_GALCO_001",
   transacting_company_code: "IB1076",
   base_url: "https://example.com:8091",
-  client_cert_path: "./certs/client.crt",
-  client_key_path: "./certs/client.key",
-  ca_cert_path: "./certs/tira_server_ca.pem",
   pfx_path: "./certs/tiramisclientprivate.pfx",
   pfx_passphrase: "password",
-};
-
-export const mockTiraConfigWithVerification: TiraConfig = {
-  ...mockTiraConfig,
   tira_public_pfx_path: "./certs/tiramispublic.pfx",
   tira_public_pfx_passphrase: "password",
 };

@@ -50,20 +50,17 @@ export class Tira {
     if (!config.base_url) {
       throw new Error("Tira: base_url is required");
     }
-    if (!config.client_cert_path) {
-      throw new Error("Tira: client_cert_path is required");
-    }
-    if (!config.client_key_path) {
-      throw new Error("Tira: client_key_path is required");
-    }
-    if (!config.ca_cert_path) {
-      throw new Error("Tira: ca_cert_path is required");
-    }
     if (!config.pfx_path) {
       throw new Error("Tira: pfx_path is required");
     }
     if (!config.pfx_passphrase) {
       throw new Error("Tira: pfx_passphrase is required");
+    }
+    if (!config.tira_public_pfx_path) {
+      throw new Error("Tira: tira_public_pfx_path is required");
+    }
+    if (!config.tira_public_pfx_passphrase) {
+      throw new Error("Tira: tira_public_pfx_passphrase is required");
     }
 
     this.config = config;

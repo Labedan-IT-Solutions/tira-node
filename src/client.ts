@@ -1,9 +1,8 @@
 import * as https from "node:https";
-import * as fs from "node:fs";
 import { parseStringPromise } from "xml2js";
 import type { TiraConfig } from "./types/config.js";
 import { TiraApiError } from "./errors.js";
-import { signContent, wrapTiraMsg } from "./signing.js";
+import { signContent, wrapTiraMsg, privateKeyPemFromPfx, certificatePemFromPfx } from "./signing.js";
 
 export class TiraClient {
   private config: TiraConfig;
@@ -12,9 +11,9 @@ export class TiraClient {
   constructor(config: TiraConfig) {
     this.config = config;
     this.agent = new https.Agent({
-      key: fs.readFileSync(config.client_key_path),
-      cert: fs.readFileSync(config.client_cert_path),
-      ca: fs.readFileSync(config.ca_cert_path),
+      key: privateKeyPemFromPfx(config.pfx_path, config.pfx_passphrase),
+      cert: certificatePemFromPfx(config.pfx_path, config.pfx_passphrase),
+      ca: certificatePemFromPfx(config.tira_public_pfx_path, config.tira_public_pfx_passphrase),
       rejectUnauthorized: false,
     });
   }

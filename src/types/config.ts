@@ -11,20 +11,14 @@ export interface TiraConfig {
   transacting_company_code: string;
   /** Base URL for the TIRA API */
   base_url: string;
-  /** Path to the client certificate file (client.crt) */
-  client_cert_path: string;
-  /** Path to the client key file (client.key) */
-  client_key_path: string;
-  /** Path to the CA certificate file (tira_server_ca.pem) */
-  ca_cert_path: string;
-  /** Path to the PFX file for signing requests (tiramisclientprivate.pfx) */
+  /** Path to the client PFX file (tiramisclientprivate.pfx). Used for signing requests and mutual TLS authentication. */
   pfx_path: string;
-  /** Passphrase for the PFX file. Defaults to empty string. */
+  /** Passphrase for the client PFX file */
   pfx_passphrase: string;
+  /** Path to TIRA's public PFX file (tiramispublic.pfx). Used for verifying callback signatures and TLS CA certificate. */
+  tira_public_pfx_path: string;
+  /** Passphrase for TIRA's public PFX file */
+  tira_public_pfx_passphrase: string;
   /** Enable specific callback handlers for the universal handleCallback method */
   enabled_callbacks?: EnabledCallbacks | undefined;
-  /** Path to TIRA's public PFX file for verifying callback signatures (tiramispublic.pfx). If not provided, signature verification is skipped. */
-  tira_public_pfx_path?: string | undefined;
-  /** Passphrase for TIRA's public PFX file. Defaults to empty string. */
-  tira_public_pfx_passphrase?: string | undefined;
 }
