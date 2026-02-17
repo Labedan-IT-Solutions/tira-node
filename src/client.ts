@@ -61,6 +61,10 @@ export class TiraClient {
               res.statusCode &&
               (res.statusCode < 200 || res.statusCode >= 300)
             ) {
+              console.error(
+                `TIRA API responded with ${res.statusCode} with body ${JSON.stringify(body, null, 2)}`,
+              );
+
               reject(
                 new TiraApiError(
                   res.statusCode,

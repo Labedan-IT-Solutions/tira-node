@@ -1,7 +1,8 @@
 export const ENDPOINTS = {
   // Motor
   covernote_motor: "/ecovernote/api/covernote/non-life/motor/v2/request",
-  covernote_motor_fleet: "/ecovernote/api/covernote/non-life/motor-fleet/v2/request",
+  covernote_motor_fleet:
+    "/ecovernote/api/covernote/non-life/motor-fleet/v2/request",
   motor_verification: "/dispatch/api/motor/verification/v1/request",
 
   // Non-life other
@@ -12,7 +13,7 @@ export const ENDPOINTS = {
   longterm_covernote: "/ecovernote/api/covernote/non-life/other/v2/request",
 
   // Cover note & policy
-  covernote_verification: "/ecovernote/api/covernote/verification/v2/request",
+  covernote_verification: "/ecovernote/api/covernote/verification/v1/request",
   policy_submission: "/ecovernote/api/policy/v1/request",
 
   // Reinsurance
