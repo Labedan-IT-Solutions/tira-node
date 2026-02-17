@@ -2,6 +2,7 @@ import type { TiraConfig } from "./types/config.js";
 import type { CallbackResult } from "./types/callback.js";
 import { TiraClient } from "./client.js";
 import { MotorResource } from "./resources/motor.js";
+import { NonLifeOtherResource } from "./resources/non-life-other.js";
 import { parseCallbackXml } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
@@ -11,6 +12,7 @@ export class Tira {
   private client: TiraClient;
   private config: TiraConfig;
   public readonly motor: MotorResource;
+  public readonly nonLifeOther: NonLifeOtherResource;
 
   constructor(config: TiraConfig) {
     if (!config.client_code) {
@@ -47,6 +49,7 @@ export class Tira {
     this.config = config;
     this.client = new TiraClient(config);
     this.motor = new MotorResource(this.client, config);
+    this.nonLifeOther = new NonLifeOtherResource(this.client, config);
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {

@@ -147,3 +147,27 @@ export const sampleMotorCallbackErrorParsed = {
     MsgSignature: "xyz789signature==",
   },
 };
+
+export const sampleNonLifeOtherCallbackXml = `<TiraMsg>
+  <CoverNoteRefRes>
+    <ResponseId>RES-NLO-001</ResponseId>
+    <RequestId>REQ-NLO-001</RequestId>
+    <CoverNoteReferenceNumber>CN-NLO-2025-001</CoverNoteReferenceNumber>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </CoverNoteRefRes>
+  <MsgSignature>abc123signature==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleNonLifeOtherCallbackParsed = {
+  TiraMsg: {
+    CoverNoteRefRes: {
+      ResponseId: "RES-NLO-001",
+      RequestId: "REQ-NLO-001",
+      CoverNoteReferenceNumber: "CN-NLO-2025-001",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "abc123signature==",
+  },
+};

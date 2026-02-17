@@ -20,8 +20,13 @@ export type {
   MotorVerificationResponse,
 } from "./types/motor.js";
 export type {
+  NonLifeOtherCoverNotePayload,
+  NonLifeOtherCoverNoteResponse,
+} from "./types/non-life-other.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
+  NonLifeOtherCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {
@@ -32,4 +37,6 @@ export type {
   CoverNoteAddon,
   PolicyHolder,
   MotorDetails,
+  CoverNotePayloadBase,
+  CoverNoteResponse,
 } from "./types/common.js";

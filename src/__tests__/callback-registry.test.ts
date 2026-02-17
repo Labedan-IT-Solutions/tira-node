@@ -67,3 +67,57 @@ describe("extractCallbackData", () => {
     });
   });
 });
+
+describe("resolveCallbackType — non_life_other", () => {
+  it('returns "non_life_other" for CoverNoteRefRes', () => {
+    expect(resolveCallbackType("CoverNoteRefRes")).toBe("non_life_other");
+  });
+});
+
+describe("extractCallbackData — non_life_other", () => {
+  it("extracts all 5 non_life_other callback fields correctly (no sticker_number)", () => {
+    const data = {
+      ResponseId: "RES-NLO-001",
+      RequestId: "REQ-NLO-001",
+      CoverNoteReferenceNumber: "CN-NLO-2025-001",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    };
+
+    const result = extractCallbackData("non_life_other", data);
+    expect(result).toEqual({
+      response_id: "RES-NLO-001",
+      request_id: "REQ-NLO-001",
+      cover_note_reference_number: "CN-NLO-2025-001",
+      response_status_code: "TIRA001",
+      response_status_desc: "Successful",
+    });
+    expect(result).not.toHaveProperty("sticker_number");
+  });
+
+  it('missing fields default to empty string "" for non_life_other', () => {
+    const data = {
+      ResponseId: "RES-NLO-002",
+      RequestId: "REQ-NLO-002",
+      // CoverNoteReferenceNumber missing
+    };
+
+    const result = extractCallbackData("non_life_other", data);
+    expect(result).toHaveProperty("cover_note_reference_number", "");
+    expect(result).toHaveProperty("response_status_code", "");
+    expect(result).toHaveProperty("response_status_desc", "");
+    expect(result).not.toHaveProperty("sticker_number");
+  });
+
+  it("all five non_life_other fields are present even when data is empty object", () => {
+    const result = extractCallbackData("non_life_other", {});
+    expect(result).toEqual({
+      response_id: "",
+      request_id: "",
+      cover_note_reference_number: "",
+      response_status_code: "",
+      response_status_desc: "",
+    });
+    expect(result).not.toHaveProperty("sticker_number");
+  });
+});

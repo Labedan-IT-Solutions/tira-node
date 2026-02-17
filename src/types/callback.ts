@@ -15,9 +15,22 @@ export interface MotorCallbackResponse {
   /** The original request ID */
   request_id: string;
   /** Cover note reference number assigned by TIRA */
-  cover_note_reference_number: string;
+  cover_note_reference_number?: string;
   /** Sticker number assigned by TIRA */
-  sticker_number: string;
+  sticker_number?: string;
+  /** Response status code */
+  response_status_code: string;
+  /** Response status description */
+  response_status_desc: string;
+}
+
+export interface NonLifeOtherCallbackResponse {
+  /** Response ID from TIRA */
+  response_id: string;
+  /** The original request ID */
+  request_id: string;
+  /** Cover note reference number assigned by TIRA */
+  cover_note_reference_number?: string;
   /** Response status code */
   response_status_code: string;
   /** Response status description */
@@ -27,4 +40,6 @@ export interface MotorCallbackResponse {
 export interface EnabledCallbacks {
   /** Enable motor callback handling */
   motor?: boolean | undefined;
+  /** Enable non-life other callback handling */
+  non_life_other?: boolean | undefined;
 }

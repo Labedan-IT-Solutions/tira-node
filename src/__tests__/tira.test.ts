@@ -28,6 +28,8 @@ import {
   sampleMotorCallbackXml,
   sampleMotorCallbackParsed,
   sampleMotorCallbackErrorParsed,
+  sampleNonLifeOtherCallbackXml,
+  sampleNonLifeOtherCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -38,6 +40,11 @@ describe("Tira constructor", () => {
   it("creates instance with all required config fields", () => {
     const tira = new Tira(mockTiraConfig);
     expect(tira.motor).toBeDefined();
+  });
+
+  it("creates instance with nonLifeOther resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.nonLifeOther).toBeDefined();
   });
 
   const requiredFields: (keyof TiraConfig)[] = [
@@ -73,6 +80,25 @@ describe("Tira.handleCallback", () => {
     expect(result.extracted).toHaveProperty("sticker_number", "STK-2025-001");
     expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
     expect(result.extracted).toHaveProperty("response_status_desc", "Successful");
+  });
+
+  it("returns non_life_other callback result when non_life_other is enabled", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { non_life_other: true } });
+    const result = await tira.handleCallback(sampleNonLifeOtherCallbackParsed);
+
+    expect(result.type).toBe("non_life_other");
+    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-NLO-2025-001");
+    expect(result.extracted).not.toHaveProperty("sticker_number");
+  });
+
+  it("returns non_life_other callback result from XML string", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { non_life_other: true } });
+    const result = await tira.handleCallback(sampleNonLifeOtherCallbackXml);
+
+    expect(result.type).toBe("non_life_other");
+    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-NLO-2025-001");
+    expect(result.extracted).not.toHaveProperty("sticker_number");
+    expect(result.raw_xml).toBe(sampleNonLifeOtherCallbackXml);
   });
 
   it("throws on unknown response tag", async () => {
