@@ -2,9 +2,9 @@ export interface TaxCharged {
   /** Tax code. Given by TIRA. Example: VAT-MAINLAND */
   tax_code: string;
   /** Whether tax is exempted. Y-Yes, N-No */
-  is_tax_exempted: 'Y' | 'N';
+  is_tax_exempted: "Y" | "N";
   /** Tax exemption type. 1-Policy Holder Exempted, 2-Risk Exempted */
-  tax_exemption_type?: '1' | '2' | undefined;
+  tax_exemption_type?: "1" | "2" | undefined;
   /** Tax exemption reference number */
   tax_exemption_reference?: string | undefined;
   /** Tax rate as a decimal (e.g., 0.18 for 18%) (Max 5 decimal places) */
@@ -15,7 +15,7 @@ export interface TaxCharged {
 
 export interface DiscountOffered {
   /** Discount type code: 1-Fleet Discount */
-  discount_type: '1';
+  discount_type: "1";
   /** Discount rate (Max 5 decimal places) */
   discount_rate: number;
   /** Discount amount (Max 2 decimal places) */
@@ -77,13 +77,13 @@ export interface PolicyHolder {
   /** Policy holder birth date in ISO format (YYYY-MM-DD) */
   policyholder_birthdate: string;
   /** Policy holder type: 1-Individual, 2-Corporate */
-  policyholder_type: '1' | '2';
+  policyholder_type: "1" | "2";
   /** Policy holder ID type: 1-NIDA, 2-Voters ID Card, 3-Passport, 4-Driving License, 5-Zanzibar ID, 6-TIN, 7-Company Incorporation Certificate Number */
-  policyholder_id_type: '1' | '2' | '3' | '4' | '5' | '6' | '7';
+  policyholder_id_type: "1" | "2" | "3" | "4" | "5" | "6" | "7";
   /** Policy holder ID number */
   policyholder_id_number: string;
   /** Gender: M-Male, F-Female */
-  gender: 'M' | 'F';
+  gender: "M" | "F";
   /** ISO Country code. Example: KEN, TZA, UGA. Defaults to TZA if not provided. */
   country_code?: string | undefined;
   /** Region code. Provided by TIRA. */
@@ -178,9 +178,9 @@ export interface CoverNoteResponse {
 
 export interface MotorDetails {
   /** Motor category: 1-Motor Vehicle, 2-Motor Cycle */
-  motor_category: '1' | '2';
+  motor_category: "1" | "2";
   /** Motor type: 1-Registered, 2-In Transit */
-  motor_type: '1' | '2';
+  motor_type: "1" | "2";
   /** Registration number. Required if motor type is Registered. */
   registration_number?: string | undefined;
   /** Chassis number */
@@ -214,11 +214,11 @@ export interface MotorDetails {
   /** Gross weight */
   gross_weight: number;
   /** Motor usage: 1-Private, 2-Commercial */
-  motor_usage: '1' | '2';
+  motor_usage: "1" | "2";
   /** Owner name */
   owner_name: string;
   /** Owner category: 1-Sole Proprietor, 2-Corporate */
-  owner_category: '1' | '2';
+  owner_category: "1" | "2";
   /** Owner address */
   owner_address: string;
 }

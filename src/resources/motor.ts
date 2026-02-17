@@ -6,10 +6,22 @@ import type {
   MotorVerificationPayload,
   MotorVerificationResponse,
 } from "../types/motor.js";
-import type { CallbackResult, MotorCallbackResponse } from "../types/callback.js";
-import { validateMotorCoverNotePayload, validateMotorVerificationPayload } from "../validation/motor.js";
-import { buildMotorCoverNoteXml, buildMotorVerificationXml } from "../builders/motor.js";
-import { parseCallbackXml, verifyCallbackSignature } from "../callbacks/handler.js";
+import type {
+  CallbackResult,
+  MotorCallbackResponse,
+} from "../types/callback.js";
+import {
+  validateMotorCoverNotePayload,
+  validateMotorVerificationPayload,
+} from "../validation/motor.js";
+import {
+  buildMotorCoverNoteXml,
+  buildMotorVerificationXml,
+} from "../builders/motor.js";
+import {
+  parseCallbackXml,
+  verifyCallbackSignature,
+} from "../callbacks/handler.js";
 import { extractCallbackData } from "../callbacks/registry.js";
 import { ENDPOINTS } from "../endpoints.js";
 
@@ -56,9 +68,18 @@ export class MotorResource {
     );
 
     const { body, responseData } = await parseCallbackXml(input);
-    const extracted = extractCallbackData("motor", responseData) as MotorCallbackResponse;
+    const extracted = extractCallbackData(
+      "motor",
+      responseData,
+    ) as MotorCallbackResponse;
 
-    return { type: "motor", body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
+    return {
+      type: "motor",
+      body,
+      extracted,
+      raw_xml: typeof input === "string" ? input : "",
+      signature_verified,
+    };
   }
 
   async verify(

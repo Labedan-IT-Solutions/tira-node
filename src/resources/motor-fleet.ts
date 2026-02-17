@@ -4,10 +4,16 @@ import type {
   MotorFleetCoverNotePayload,
   MotorFleetCoverNoteResponse,
 } from "../types/motor-fleet.js";
-import type { CallbackResult, MotorFleetCallbackResponse } from "../types/callback.js";
+import type {
+  CallbackResult,
+  MotorFleetCallbackResponse,
+} from "../types/callback.js";
 import { validateMotorFleetCoverNotePayload } from "../validation/motor-fleet.js";
 import { buildMotorFleetCoverNoteXml } from "../builders/motor-fleet.js";
-import { parseCallbackXml, verifyCallbackSignature } from "../callbacks/handler.js";
+import {
+  parseCallbackXml,
+  verifyCallbackSignature,
+} from "../callbacks/handler.js";
 import { extractCallbackData } from "../callbacks/registry.js";
 import { ENDPOINTS } from "../endpoints.js";
 
@@ -54,8 +60,17 @@ export class MotorFleetResource {
     );
 
     const { body, responseData } = await parseCallbackXml(input);
-    const extracted = extractCallbackData("motor_fleet", responseData) as MotorFleetCallbackResponse;
+    const extracted = extractCallbackData(
+      "motor_fleet",
+      responseData,
+    ) as MotorFleetCallbackResponse;
 
-    return { type: "motor_fleet", body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
+    return {
+      type: "motor_fleet",
+      body,
+      extracted,
+      raw_xml: typeof input === "string" ? input : "",
+      signature_verified,
+    };
   }
 }
