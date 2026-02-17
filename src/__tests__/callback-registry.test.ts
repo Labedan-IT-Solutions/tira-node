@@ -290,3 +290,52 @@ describe("extractCallbackData — reinsurance", () => {
     });
   });
 });
+
+describe("resolveCallbackType — policy", () => {
+  it('returns "policy" for PolicyRes tag', () => {
+    const data = { ResponseId: "TIRA22424232355", RequestId: "NIC22424232355" };
+    expect(resolveCallbackType("PolicyRes", data)).toBe("policy");
+  });
+});
+
+describe("extractCallbackData — policy", () => {
+  it("extracts all 4 policy callback fields correctly", () => {
+    const data = {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    };
+
+    const result = extractCallbackData("policy", data);
+    expect(result).toEqual({
+      response_id: "TIRA22424232355",
+      request_id: "NIC22424232355",
+      response_status_code: "TIRA001",
+      response_status_desc: "Successful",
+    });
+  });
+
+  it("does not include covernote_reference_number or sticker_number", () => {
+    const data = {
+      ResponseId: "RES-001",
+      RequestId: "REQ-001",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "OK",
+    };
+
+    const result = extractCallbackData("policy", data);
+    expect(result).not.toHaveProperty("covernote_reference_number");
+    expect(result).not.toHaveProperty("sticker_number");
+  });
+
+  it('missing fields default to empty string ""', () => {
+    const result = extractCallbackData("policy", {});
+    expect(result).toEqual({
+      response_id: "",
+      request_id: "",
+      response_status_code: "",
+      response_status_desc: "",
+    });
+  });
+});

@@ -9,6 +9,7 @@ import type {
   ReinsurancePayload,
   ReinsuranceDetail,
 } from "../types/reinsurance.js";
+import type { PolicyPayload, PolicyDetail } from "../types/policy.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -437,5 +438,51 @@ export const sampleReinsuranceCallbackParsed = {
       ResponseStatusDesc: "Successful",
     },
     MsgSignature: "reinsurance-sig-abc123==",
+  },
+};
+
+// --- Policy Fixtures ---
+
+export const validPolicyDetail: PolicyDetail = {
+  policy_number: "CV224223255",
+  policy_operative_clause: "Full comprehensive coverage for all listed items",
+  special_conditions: "Coverage applies only within Tanzania mainland",
+  exclusions: "War and terrorism excluded",
+  applied_cover_notes: ["4242424", "2323235"],
+};
+
+export const validPolicyPayload: PolicyPayload = {
+  request_id: "NIC22424232355",
+  callback_url: "https://example.com/policy/callback",
+  insurer_company_code: "ICC103",
+  policy_details: [
+    { ...validPolicyDetail },
+    {
+      ...validPolicyDetail,
+      policy_number: "CV224223256",
+      applied_cover_notes: ["4353646"],
+    },
+  ],
+};
+
+export const samplePolicyCallbackXml = `<TiraMsg>
+  <PolicyRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </PolicyRes>
+  <MsgSignature>policy-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const samplePolicyCallbackParsed = {
+  TiraMsg: {
+    PolicyRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "policy-sig-abc123==",
   },
 };

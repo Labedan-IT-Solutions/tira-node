@@ -80,6 +80,17 @@ export interface ReinsuranceCallbackResponse {
   response_status_desc: string;
 }
 
+export interface PolicyCallbackResponse {
+  /** Response ID from TIRA */
+  response_id: string;
+  /** The original request ID */
+  request_id: string;
+  /** Response status code (e.g., TIRA001 for success) */
+  response_status_code: string;
+  /** Response status description */
+  response_status_desc: string;
+}
+
 export interface EnabledCallbacks {
   /** Enable motor callback handling */
   motor?: boolean | undefined;
@@ -89,4 +100,6 @@ export interface EnabledCallbacks {
   non_life_other?: boolean | undefined;
   /** Enable reinsurance callback handling */
   reinsurance?: boolean | undefined;
+  /** Enable policy callback handling */
+  policy?: boolean | undefined;
 }

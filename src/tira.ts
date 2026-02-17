@@ -5,6 +5,7 @@ import { MotorResource } from "./resources/motor.js";
 import { MotorFleetResource } from "./resources/motor-fleet.js";
 import { NonLifeOtherResource } from "./resources/non-life-other.js";
 import { ReinsuranceResource } from "./resources/reinsurance.js";
+import { PolicyResource } from "./resources/policy.js";
 import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
@@ -17,6 +18,7 @@ export class Tira {
   public readonly motorFleet: MotorFleetResource;
   public readonly nonLifeOther: NonLifeOtherResource;
   public readonly reinsurance: ReinsuranceResource;
+  public readonly policy: PolicyResource;
 
   constructor(config: TiraConfig) {
     if (!config.client_code) {
@@ -56,6 +58,7 @@ export class Tira {
     this.motorFleet = new MotorFleetResource(this.client, config);
     this.nonLifeOther = new NonLifeOtherResource(this.client, config);
     this.reinsurance = new ReinsuranceResource(this.client, config);
+    this.policy = new PolicyResource(this.client, config);
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {

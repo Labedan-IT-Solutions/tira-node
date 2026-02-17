@@ -34,12 +34,18 @@ export type {
   ReinsuranceDetail,
 } from "./types/reinsurance.js";
 export type {
+  PolicyPayload,
+  PolicyResponse,
+  PolicyDetail,
+} from "./types/policy.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
   MotorFleetCallbackDetail,
   NonLifeOtherCallbackResponse,
   ReinsuranceCallbackResponse,
+  PolicyCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {
