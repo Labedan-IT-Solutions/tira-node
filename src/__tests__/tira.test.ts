@@ -1,0 +1,194 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// Mock fs before importing Tira — TiraClient reads certs in constructor
+vi.mock("node:fs", () => ({
+  readFileSync: vi.fn(() => Buffer.from("mock-cert-content")),
+}));
+
+// Mock https — TiraClient creates an Agent in constructor
+vi.mock("node:https", () => ({
+  Agent: vi.fn(),
+  request: vi.fn(),
+}));
+
+// Mock signing — needs real PFX file
+vi.mock("../signing.js", () => ({
+  signContent: vi.fn(() => "mock-base64-signature"),
+  wrapTiraMsg: vi.fn(
+    (content: string, sig: string) =>
+      `<TiraMsg>\n${content}\n<MsgSignature>${sig}</MsgSignature>\n</TiraMsg>`,
+  ),
+}));
+
+import { Tira } from "../tira.js";
+import { signContent, wrapTiraMsg } from "../signing.js";
+import type { TiraConfig } from "../types/config.js";
+import {
+  mockTiraConfig,
+  sampleMotorCallbackXml,
+  sampleMotorCallbackParsed,
+  sampleMotorCallbackErrorParsed,
+} from "./fixtures.js";
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("Tira constructor", () => {
+  it("creates instance with all required config fields", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.motor).toBeDefined();
+  });
+
+  const requiredFields: (keyof TiraConfig)[] = [
+    "client_code",
+    "client_key",
+    "system_code",
+    "transacting_company_code",
+    "base_url",
+    "client_cert_path",
+    "client_key_path",
+    "ca_cert_path",
+    "pfx_path",
+    "pfx_passphrase",
+  ];
+
+  for (const field of requiredFields) {
+    it(`throws when ${field} is missing`, () => {
+      const config = { ...mockTiraConfig, [field]: "" };
+      expect(() => new Tira(config)).toThrow(`Tira: ${field} is required`);
+    });
+  }
+});
+
+describe("Tira.handleCallback", () => {
+  it("returns motor callback result when motor is enabled", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+
+    expect(result.type).toBe("motor");
+    expect(result.extracted).toHaveProperty("response_id", "RES-001");
+    expect(result.extracted).toHaveProperty("request_id", "REQ-001");
+    expect(result.extracted).toHaveProperty("cover_note_reference_number", "CN-2025-001");
+    expect(result.extracted).toHaveProperty("sticker_number", "STK-2025-001");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty("response_status_desc", "Successful");
+  });
+
+  it("throws on unknown response tag", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const input = { TiraMsg: { UnknownTag: { SomeField: "value" }, MsgSignature: "abc" } };
+
+    await expect(tira.handleCallback(input)).rejects.toThrow("Unknown callback type");
+    await expect(tira.handleCallback(input)).rejects.toThrow("UnknownTag");
+  });
+
+  it("throws when callback type is known but not enabled", async () => {
+    const tira = new Tira(mockTiraConfig); // no enabled_callbacks
+    await expect(tira.handleCallback(sampleMotorCallbackParsed)).rejects.toThrow("not enabled");
+    await expect(tira.handleCallback(sampleMotorCallbackParsed)).rejects.toThrow("motor");
+  });
+
+  it("returns body (full parsed object) for acknowledgement", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+    expect(result.body.TiraMsg).toBeDefined();
+    expect(result.body.TiraMsg.MotorCoverNoteRefRes).toBeDefined();
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+    expect(result.raw_xml).toBe("");
+  });
+
+  it("raw_xml is the original string when input is string", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackXml);
+    expect(result.raw_xml).toBe(sampleMotorCallbackXml);
+  });
+
+  it("handles TIRA error callbacks (non-TIRA001 status)", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackErrorParsed);
+
+    expect(result.type).toBe("motor");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA020");
+    expect(result.extracted).toHaveProperty("cover_note_reference_number", "");
+    expect(result.extracted).toHaveProperty("sticker_number", "");
+  });
+});
+
+describe("Tira.acknowledge", () => {
+  it("returns a TiraMsg-wrapped XML string", () => {
+    const tira = new Tira(mockTiraConfig);
+    const result = tira.acknowledge(sampleMotorCallbackParsed, "ACK-123");
+    expect(result).toContain("<TiraMsg>");
+    expect(result).toContain("<MsgSignature>");
+  });
+
+  it("calls signContent with the ack XML content", () => {
+    const tira = new Tira(mockTiraConfig);
+    tira.acknowledge(sampleMotorCallbackParsed, "ACK-123");
+    expect(signContent).toHaveBeenCalledWith(
+      expect.any(String),
+      mockTiraConfig.pfx_path,
+      mockTiraConfig.pfx_passphrase,
+    );
+  });
+
+  it("calls wrapTiraMsg with content and signature", () => {
+    const tira = new Tira(mockTiraConfig);
+    tira.acknowledge(sampleMotorCallbackParsed, "ACK-123");
+    expect(wrapTiraMsg).toHaveBeenCalledWith(expect.any(String), "mock-base64-signature");
+  });
+
+  it("throws when parsedBody has no TiraMsg", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(() => tira.acknowledge({ NoTiraMsg: {} }, "ACK-123")).toThrow("Missing TiraMsg");
+  });
+
+  it("uses the provided acknowledgement ID (not hardcoded)", () => {
+    const tira = new Tira(mockTiraConfig);
+    const result = tira.acknowledge(sampleMotorCallbackParsed, "STK-2025-001-CUSTOM");
+    // The signContent mock receives the inner XML — check it contains the custom ID
+    const signCall = vi.mocked(signContent).mock.calls[0]!;
+    expect(signCall[0]).toContain("STK-2025-001-CUSTOM");
+  });
+});
+
+describe("end-to-end callback flow", () => {
+  it("parse callback → extract data → build ack ID from extracted data → acknowledge", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+
+    // Step 1: Parse callback
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+    expect(result.type).toBe("motor");
+
+    // Step 2: Build ack ID from extracted data (real-world pattern)
+    const ackId = `${result.extracted.cover_note_reference_number}-${result.extracted.sticker_number}`;
+    expect(ackId).toBe("CN-2025-001-STK-2025-001");
+
+    // Step 3: Acknowledge
+    const ackXml = tira.acknowledge(result.body, ackId);
+    expect(ackXml).toContain("<TiraMsg>");
+    expect(ackXml).toContain("<MsgSignature>");
+
+    // Verify the ack content contains the custom ID
+    const signCall = vi.mocked(signContent).mock.calls[0]!;
+    expect(signCall[0]).toContain("CN-2025-001-STK-2025-001");
+  });
+
+  it("handles error callback gracefully — fields default to empty string", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+
+    const result = await tira.handleCallback(sampleMotorCallbackErrorParsed);
+    expect(result.extracted.response_status_code).toBe("TIRA020");
+    expect(result.extracted.cover_note_reference_number).toBe("");
+    expect(result.extracted.sticker_number).toBe("");
+
+    // User can still acknowledge error callbacks
+    const ackXml = tira.acknowledge(result.body, `ERR-${result.extracted.request_id}`);
+    expect(ackXml).toContain("<TiraMsg>");
+  });
+});
