@@ -12,6 +12,7 @@ import type {
 import type { PolicyPayload, PolicyDetail } from "../types/policy.js";
 import type { ClaimNotificationPayload } from "../types/claim-notification.js";
 import type { CoverNoteVerificationPayload } from "../types/covernote-verification.js";
+import type { ClaimIntimationPayload } from "../types/claim-intimation.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -537,4 +538,73 @@ export const validCoverNoteVerificationPayloadFull: CoverNoteVerificationPayload
   sticker_number: "1313-1414-124124",
   motor_registration_number: "T233SQA",
   motor_chassis_number: "4353646",
+};
+
+// --- Claim Intimation Fixtures ---
+
+export const validClaimIntimationPayload: ClaimIntimationPayload = {
+  request_id: "AB3232532523344",
+  callback_url: "https://nic.co.tz/api/CoverNoteref/response",
+  insurer_company_code: "IC100",
+  claim_intimation_number: "322WQ25234234",
+  claim_reference_number: "10020-25400-07720",
+  covernote_reference_number: "10020-25400-07720",
+  claim_intimation_date: "2020-09-10T13:55:22",
+  currency_code: "USD",
+  exchange_rate: 2000.0,
+  claim_estimated_amount: 2000000.0,
+  claim_reserve_amount: 1000000.0,
+  claim_reserve_method: "Chain Ladder",
+  loss_assessment_option: "1",
+  assessor_name: "Baraka Kiswigu",
+  assessor_id_number: "124214114",
+  assessor_id_type: "1",
+  claimants: [
+    {
+      claimant_name: "Augustino Aidan Mwageni",
+      claimant_birth_date: "1920-02-05",
+      claimant_category: "2",
+      claimant_type: "1",
+      claimant_id_number: "24241241",
+      claimant_id_type: "1",
+      country_code: "TZA",
+      region: "Dar es Salaam",
+      district: "Ilala",
+      claimant_phone_number: "255713525539",
+    },
+    {
+      claimant_name: "KISWIGU Company Ltd",
+      claimant_birth_date: "1950-02-05",
+      claimant_category: "2",
+      claimant_type: "2",
+      claimant_id_number: "3452525235525",
+      claimant_id_type: "3",
+      country_code: "TZA",
+      region: "Dar es Salaam",
+      district: "Ilala",
+      claimant_phone_number: "255713525539",
+    },
+  ],
+};
+
+export const sampleClaimIntimationCallbackXml = `<TiraMsg>
+  <ClaimIntimationRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </ClaimIntimationRes>
+  <MsgSignature>claim-intim-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleClaimIntimationCallbackParsed = {
+  TiraMsg: {
+    ClaimIntimationRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "claim-intim-sig-abc123==",
+  },
 };

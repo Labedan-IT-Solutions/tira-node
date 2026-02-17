@@ -47,6 +47,11 @@ export type {
   CoverNoteVerificationResponse,
 } from "./types/covernote-verification.js";
 export type {
+  ClaimIntimationPayload,
+  ClaimIntimationResponse,
+  Claimant,
+} from "./types/claim-intimation.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
@@ -55,6 +60,7 @@ export type {
   ReinsuranceCallbackResponse,
   PolicyCallbackResponse,
   ClaimNotificationCallbackResponse,
+  ClaimIntimationCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {

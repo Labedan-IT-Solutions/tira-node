@@ -44,6 +44,8 @@ import {
   samplePolicyCallbackParsed,
   sampleClaimNotificationCallbackXml,
   sampleClaimNotificationCallbackParsed,
+  sampleClaimIntimationCallbackXml,
+  sampleClaimIntimationCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -634,5 +636,68 @@ describe("Tira.handleCallback — claim_notification", () => {
       "claim_reference_number",
       "3325253254",
     );
+  });
+});
+
+describe("Tira constructor — claimIntimation", () => {
+  it("creates instance with claimIntimation resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.claimIntimation).toBeDefined();
+  });
+});
+
+describe("Tira.handleCallback — claim_intimation", () => {
+  it("returns claim_intimation callback result when enabled", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_intimation: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimIntimationCallbackParsed,
+    );
+
+    expect(result.type).toBe("claim_intimation");
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+    expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
+  });
+
+  it("throws when claim_intimation is not enabled", async () => {
+    const tira = new Tira(mockTiraConfig);
+    await expect(
+      tira.handleCallback(sampleClaimIntimationCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleClaimIntimationCallbackParsed),
+    ).rejects.toThrow("claim_intimation");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_intimation: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimIntimationCallbackXml,
+    );
+
+    expect(result.type).toBe("claim_intimation");
+    expect(result.raw_xml).toBe(sampleClaimIntimationCallbackXml);
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_intimation: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimIntimationCallbackParsed,
+    );
+    expect(result.raw_xml).toBe("");
   });
 });
