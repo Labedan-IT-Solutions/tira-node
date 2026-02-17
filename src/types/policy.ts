@@ -20,8 +20,8 @@ export interface PolicyPayload {
   callback_url: string;
   /** Insurer company code */
   insurer_company_code: string;
-  /** Policy detail entries. At least one required. */
-  policy_details: PolicyDetail[];
+  /** Policy detail entry */
+  policy_detail: PolicyDetail;
 }
 
 export type PolicyResponse = CoverNoteResponse;

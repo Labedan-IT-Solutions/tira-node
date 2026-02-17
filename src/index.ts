@@ -39,6 +39,10 @@ export type {
   PolicyDetail,
 } from "./types/policy.js";
 export type {
+  ClaimNotificationPayload,
+  ClaimNotificationResponse,
+} from "./types/claim-notification.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
   MotorFleetCallbackResponse,
@@ -46,6 +50,7 @@ export type {
   NonLifeOtherCallbackResponse,
   ReinsuranceCallbackResponse,
   PolicyCallbackResponse,
+  ClaimNotificationCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";
 export type {

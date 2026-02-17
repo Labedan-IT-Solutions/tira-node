@@ -38,19 +38,19 @@ describe("validatePolicyPayload", () => {
     ).toThrow(TiraValidationError);
   });
 
-  // --- Policy Details ---
-  it("throws when policy_details is empty", () => {
+  // --- Policy Detail ---
+  it("throws when policy_detail is missing", () => {
     expect(() =>
-      validatePolicyPayload(pol({ policy_details: [] })),
+      validatePolicyPayload(pol({ policy_detail: undefined as any })),
     ).toThrow(TiraValidationError);
   });
 
-  // --- Per-detail fields ---
+  // --- Detail fields ---
   it("throws when policy_number is missing in detail", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, policy_number: "" }],
+          policy_detail: { ...validPolicyDetail, policy_number: "" },
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -60,7 +60,7 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, policy_operative_clause: "" }],
+          policy_detail: { ...validPolicyDetail, policy_operative_clause: "" },
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -70,7 +70,7 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, special_conditions: "" }],
+          policy_detail: { ...validPolicyDetail, special_conditions: "" },
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -80,7 +80,7 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, applied_cover_notes: [] }],
+          policy_detail: { ...validPolicyDetail, applied_cover_notes: [] },
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -90,7 +90,7 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, applied_cover_notes: ["CN-001", ""] }],
+          policy_detail: { ...validPolicyDetail, applied_cover_notes: ["CN-001", ""] },
         }),
       ),
     ).toThrow(TiraValidationError);
@@ -101,7 +101,7 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, exclusions: undefined }],
+          policy_detail: { ...validPolicyDetail, exclusions: undefined },
         }),
       ),
     ).not.toThrow();
@@ -111,14 +111,9 @@ describe("validatePolicyPayload", () => {
     expect(() =>
       validatePolicyPayload(
         pol({
-          policy_details: [{ ...validPolicyDetail, applied_cover_notes: ["CN-001"] }],
+          policy_detail: { ...validPolicyDetail, applied_cover_notes: ["CN-001"] },
         }),
       ),
     ).not.toThrow();
-  });
-
-  it("passes with multiple policy details", () => {
-    expect(() => validatePolicyPayload(validPolicyPayload)).not.toThrow();
-    expect(validPolicyPayload.policy_details).toHaveLength(2);
   });
 });

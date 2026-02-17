@@ -6,15 +6,7 @@ export function buildPolicyXml(
   payload: PolicyPayload,
   config: TiraConfig,
 ): string {
-  const policyDtls = payload.policy_details.map((d) => ({
-    PolicyNumber: d.policy_number,
-    PolicyOperativeClause: d.policy_operative_clause,
-    SpecialConditions: d.special_conditions,
-    Exclusions: d.exclusions ?? "",
-    AppliedCoverNotes: {
-      CoverNoteReferenceNumber: d.applied_cover_notes,
-    },
-  }));
+  const d = payload.policy_detail;
 
   return create({ version: "1.0" })
     .ele({
@@ -26,7 +18,15 @@ export function buildPolicyXml(
           CallBackUrl: payload.callback_url,
           InsurerCompanyCode: payload.insurer_company_code,
         },
-        PolicyDtl: policyDtls,
+        PolicyDtl: {
+          PolicyNumber: d.policy_number,
+          PolicyOperativeClause: d.policy_operative_clause,
+          SpecialConditions: d.special_conditions,
+          Exclusions: d.exclusions ?? "",
+          AppliedCoverNotes: {
+            CoverNoteReferenceNumber: d.applied_cover_notes,
+          },
+        },
       },
     })
     .end({ prettyPrint: false, headless: true });

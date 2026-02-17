@@ -10,6 +10,7 @@ import type {
   ReinsuranceDetail,
 } from "../types/reinsurance.js";
 import type { PolicyPayload, PolicyDetail } from "../types/policy.js";
+import type { ClaimNotificationPayload } from "../types/claim-notification.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -455,14 +456,7 @@ export const validPolicyPayload: PolicyPayload = {
   request_id: "NIC22424232355",
   callback_url: "https://example.com/policy/callback",
   insurer_company_code: "ICC103",
-  policy_details: [
-    { ...validPolicyDetail },
-    {
-      ...validPolicyDetail,
-      policy_number: "CV224223256",
-      applied_cover_notes: ["4353646"],
-    },
-  ],
+  policy_detail: { ...validPolicyDetail },
 };
 
 export const samplePolicyCallbackXml = `<TiraMsg>
@@ -484,5 +478,47 @@ export const samplePolicyCallbackParsed = {
       ResponseStatusDesc: "Successful",
     },
     MsgSignature: "policy-sig-abc123==",
+  },
+};
+
+// --- Claim Notification Fixtures ---
+
+export const validClaimNotificationPayload: ClaimNotificationPayload = {
+  request_id: "NIC22424232355",
+  callback_url: "https://example.com/claim-notification/callback",
+  insurer_company_code: "IC001",
+  claim_notification_number: "NIC00004",
+  covernote_reference_number: "3252-5252",
+  claim_report_date: "2020-09-15T13:55:22",
+  claim_form_dully_filled: "Y",
+  loss_date: "2020-09-15T13:55:22",
+  loss_nature: "Fire and Allied Perils",
+  loss_type: "Bodily Injury",
+  loss_location: "Morogoro",
+  officer_name: "John Doe",
+  officer_title: "Underwriter",
+};
+
+export const sampleClaimNotificationCallbackXml = `<TiraMsg>
+  <ClaimNotificationRefRes>
+    <ResponseId>TIRA22424232355</ResponseId>
+    <RequestId>NIC22424232355</RequestId>
+    <ClaimReferenceNumber>3325253254</ClaimReferenceNumber>
+    <ResponseStatusCode>TIRA001</ResponseStatusCode>
+    <ResponseStatusDesc>Successful</ResponseStatusDesc>
+  </ClaimNotificationRefRes>
+  <MsgSignature>claim-notif-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleClaimNotificationCallbackParsed = {
+  TiraMsg: {
+    ClaimNotificationRefRes: {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ClaimReferenceNumber: "3325253254",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    },
+    MsgSignature: "claim-notif-sig-abc123==",
   },
 };

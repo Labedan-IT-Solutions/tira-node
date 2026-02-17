@@ -339,3 +339,57 @@ describe("extractCallbackData — policy", () => {
     });
   });
 });
+
+describe("resolveCallbackType — claim_notification", () => {
+  it('returns "claim_notification" for ClaimNotificationRefRes tag', () => {
+    const data = { ResponseId: "TIRA22424232355", RequestId: "NIC22424232355" };
+    expect(resolveCallbackType("ClaimNotificationRefRes", data)).toBe(
+      "claim_notification",
+    );
+  });
+});
+
+describe("extractCallbackData — claim_notification", () => {
+  it("extracts all 5 claim notification callback fields correctly", () => {
+    const data = {
+      ResponseId: "TIRA22424232355",
+      RequestId: "NIC22424232355",
+      ClaimReferenceNumber: "3325253254",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "Successful",
+    };
+
+    const result = extractCallbackData("claim_notification", data);
+    expect(result).toEqual({
+      response_id: "TIRA22424232355",
+      request_id: "NIC22424232355",
+      claim_reference_number: "3325253254",
+      response_status_code: "TIRA001",
+      response_status_desc: "Successful",
+    });
+  });
+
+  it("includes claim_reference_number (unique to this callback)", () => {
+    const data = {
+      ResponseId: "RES-001",
+      RequestId: "REQ-001",
+      ClaimReferenceNumber: "CLM-REF-001",
+      ResponseStatusCode: "TIRA001",
+      ResponseStatusDesc: "OK",
+    };
+
+    const result = extractCallbackData("claim_notification", data);
+    expect(result).toHaveProperty("claim_reference_number", "CLM-REF-001");
+  });
+
+  it('missing fields default to empty string ""', () => {
+    const result = extractCallbackData("claim_notification", {});
+    expect(result).toEqual({
+      response_id: "",
+      request_id: "",
+      claim_reference_number: "",
+      response_status_code: "",
+      response_status_desc: "",
+    });
+  });
+});

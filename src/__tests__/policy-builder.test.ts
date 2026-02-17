@@ -36,18 +36,18 @@ describe("buildPolicyXml", () => {
     expect(hdr.InsurerCompanyCode).toBe(validPolicyPayload.insurer_company_code);
   });
 
-  it("PolicyDtl is an array matching policy_details count", async () => {
+  it("PolicyDtl is a single object (not array)", async () => {
     const xml = buildPolicyXml(validPolicyPayload, mockTiraConfig);
     const parsed = await parseXml(xml);
     const dtl = parsed.PolicyReq.PolicyDtl;
-    expect(Array.isArray(dtl)).toBe(true);
-    expect(dtl).toHaveLength(2);
+    expect(Array.isArray(dtl)).toBe(false);
+    expect(dtl).toBeDefined();
   });
 
-  it("each PolicyDtl entry has correct text fields", async () => {
+  it("PolicyDtl has correct text fields", async () => {
     const xml = buildPolicyXml(validPolicyPayload, mockTiraConfig);
     const parsed = await parseXml(xml);
-    const dtl = parsed.PolicyReq.PolicyDtl[0];
+    const dtl = parsed.PolicyReq.PolicyDtl;
     expect(dtl.PolicyNumber).toBe("CV224223255");
     expect(dtl.PolicyOperativeClause).toBe(validPolicyDetail.policy_operative_clause);
     expect(dtl.SpecialConditions).toBe(validPolicyDetail.special_conditions);
@@ -57,7 +57,7 @@ describe("buildPolicyXml", () => {
   it("Exclusions defaults to empty string when not provided", async () => {
     const payload = {
       ...validPolicyPayload,
-      policy_details: [{ ...validPolicyDetail, exclusions: undefined }],
+      policy_detail: { ...validPolicyDetail, exclusions: undefined },
     };
     const xml = buildPolicyXml(payload, mockTiraConfig);
     const parsed = await parseXml(xml);
@@ -68,7 +68,7 @@ describe("buildPolicyXml", () => {
   it("AppliedCoverNotes contains CoverNoteReferenceNumber entries", async () => {
     const xml = buildPolicyXml(validPolicyPayload, mockTiraConfig);
     const parsed = await parseXml(xml);
-    const dtl = parsed.PolicyReq.PolicyDtl[0];
+    const dtl = parsed.PolicyReq.PolicyDtl;
     const coverNotes = dtl.AppliedCoverNotes.CoverNoteReferenceNumber;
     expect(Array.isArray(coverNotes)).toBe(true);
     expect(coverNotes).toHaveLength(2);
@@ -79,9 +79,7 @@ describe("buildPolicyXml", () => {
   it("single cover note is still accessible", async () => {
     const payload = {
       ...validPolicyPayload,
-      policy_details: [
-        { ...validPolicyDetail, applied_cover_notes: ["CN-SINGLE"] },
-      ],
+      policy_detail: { ...validPolicyDetail, applied_cover_notes: ["CN-SINGLE"] },
     };
     const xml = buildPolicyXml(payload, mockTiraConfig);
     const parsed = await parseXml(xml);
@@ -93,23 +91,5 @@ describe("buildPolicyXml", () => {
   it("output is headless (no XML declaration)", () => {
     const xml = buildPolicyXml(validPolicyPayload, mockTiraConfig);
     expect(xml).not.toMatch(/^<\?xml/);
-  });
-
-  it("single policy detail is still valid XML", async () => {
-    const payload = {
-      ...validPolicyPayload,
-      policy_details: [validPolicyDetail],
-    };
-    const xml = buildPolicyXml(payload, mockTiraConfig);
-    const parsed = await parseXml(xml);
-    expect(parsed.PolicyReq.PolicyDtl).toBeDefined();
-  });
-
-  it("second PolicyDtl has different policy_number", async () => {
-    const xml = buildPolicyXml(validPolicyPayload, mockTiraConfig);
-    const parsed = await parseXml(xml);
-    const dtl = parsed.PolicyReq.PolicyDtl;
-    expect(dtl[0].PolicyNumber).toBe("CV224223255");
-    expect(dtl[1].PolicyNumber).toBe("CV224223256");
   });
 });

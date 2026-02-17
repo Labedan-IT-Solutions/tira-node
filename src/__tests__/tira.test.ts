@@ -42,6 +42,8 @@ import {
   sampleReinsuranceCallbackParsed,
   samplePolicyCallbackXml,
   samplePolicyCallbackParsed,
+  sampleClaimNotificationCallbackXml,
+  sampleClaimNotificationCallbackParsed,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -544,5 +546,86 @@ describe("Tira.handleCallback — policy", () => {
     const result = await tira.handleCallback(samplePolicyCallbackParsed);
     expect(result.extracted).not.toHaveProperty("covernote_reference_number");
     expect(result.extracted).not.toHaveProperty("sticker_number");
+  });
+});
+
+describe("Tira constructor — claimNotification", () => {
+  it("creates instance with claimNotification resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.claimNotification).toBeDefined();
+  });
+});
+
+describe("Tira.handleCallback — claim_notification", () => {
+  it("returns claim_notification callback result when enabled", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_notification: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimNotificationCallbackParsed,
+    );
+
+    expect(result.type).toBe("claim_notification");
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+    expect(result.extracted).toHaveProperty("request_id", "NIC22424232355");
+    expect(result.extracted).toHaveProperty(
+      "claim_reference_number",
+      "3325253254",
+    );
+    expect(result.extracted).toHaveProperty("response_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty(
+      "response_status_desc",
+      "Successful",
+    );
+  });
+
+  it("throws when claim_notification is not enabled", async () => {
+    const tira = new Tira(mockTiraConfig); // no enabled_callbacks
+    await expect(
+      tira.handleCallback(sampleClaimNotificationCallbackParsed),
+    ).rejects.toThrow("not enabled");
+    await expect(
+      tira.handleCallback(sampleClaimNotificationCallbackParsed),
+    ).rejects.toThrow("claim_notification");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_notification: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimNotificationCallbackXml,
+    );
+
+    expect(result.type).toBe("claim_notification");
+    expect(result.raw_xml).toBe(sampleClaimNotificationCallbackXml);
+    expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
+  });
+
+  it("raw_xml is empty string when input is pre-parsed object", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_notification: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimNotificationCallbackParsed,
+    );
+    expect(result.raw_xml).toBe("");
+  });
+
+  it("extracted data includes claim_reference_number", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { claim_notification: true },
+    });
+    const result = await tira.handleCallback(
+      sampleClaimNotificationCallbackParsed,
+    );
+    expect(result.extracted).toHaveProperty(
+      "claim_reference_number",
+      "3325253254",
+    );
   });
 });

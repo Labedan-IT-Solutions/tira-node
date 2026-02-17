@@ -9,44 +9,37 @@ export function validatePolicyPayload(payload: PolicyPayload): void {
   validateHttpsUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
 
-  // --- Policy Details ---
-  if (
-    !Array.isArray(payload.policy_details) ||
-    payload.policy_details.length === 0
-  ) {
+  // --- Policy Detail ---
+  if (!payload.policy_detail) {
     throw new TiraValidationError(
-      "At least one policy detail entry must be provided.",
-      "policy_details",
+      "policy_detail is required.",
+      "policy_detail",
     );
   }
 
-  for (let i = 0; i < payload.policy_details.length; i++) {
-    const d = payload.policy_details[i]!;
-    const prefix = `policy_details[${i}]`;
+  const d = payload.policy_detail;
+  validateRequired(d.policy_number, "policy_detail.policy_number");
+  validateRequired(
+    d.policy_operative_clause,
+    "policy_detail.policy_operative_clause",
+  );
+  validateRequired(d.special_conditions, "policy_detail.special_conditions");
 
-    validateRequired(d.policy_number, `${prefix}.policy_number`);
-    validateRequired(
-      d.policy_operative_clause,
-      `${prefix}.policy_operative_clause`,
+  // applied_cover_notes must be non-empty array of non-empty strings
+  if (
+    !Array.isArray(d.applied_cover_notes) ||
+    d.applied_cover_notes.length === 0
+  ) {
+    throw new TiraValidationError(
+      "At least one cover note reference number must be provided in policy_detail.applied_cover_notes.",
+      "policy_detail.applied_cover_notes",
     );
-    validateRequired(d.special_conditions, `${prefix}.special_conditions`);
+  }
 
-    // applied_cover_notes must be non-empty array of non-empty strings
-    if (
-      !Array.isArray(d.applied_cover_notes) ||
-      d.applied_cover_notes.length === 0
-    ) {
-      throw new TiraValidationError(
-        `At least one cover note reference number must be provided in ${prefix}.applied_cover_notes.`,
-        `${prefix}.applied_cover_notes`,
-      );
-    }
-
-    for (let j = 0; j < d.applied_cover_notes.length; j++) {
-      validateRequired(
-        d.applied_cover_notes[j],
-        `${prefix}.applied_cover_notes[${j}]`,
-      );
-    }
+  for (let j = 0; j < d.applied_cover_notes.length; j++) {
+    validateRequired(
+      d.applied_cover_notes[j],
+      `policy_detail.applied_cover_notes[${j}]`,
+    );
   }
 }
