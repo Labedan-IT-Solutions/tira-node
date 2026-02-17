@@ -6,6 +6,7 @@ import type {
 } from "../types/motor.js";
 import { validateMotorCoverNotePayload } from "../validation/motor.js";
 import { buildMotorCoverNoteXml } from "../builders/motor.js";
+import { ENDPOINTS } from "../endpoints.js";
 
 export class MotorResource {
   private client: TiraClient;
@@ -23,7 +24,7 @@ export class MotorResource {
 
     const xml = buildMotorCoverNoteXml(payload, this.config);
     const raw = await this.client.postXml<Record<string, any>>(
-      "/ecovernote/api/covernote/non-life/motor/v2/request",
+      ENDPOINTS.covernote_motor,
       xml,
     );
 

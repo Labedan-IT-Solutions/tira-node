@@ -4,6 +4,7 @@
 // RESOURCES:
 export { Tira } from "./tira.js";
 export { TiraError, TiraApiError, TiraValidationError } from "./errors.js";
+export { ENDPOINTS } from "./endpoints.js";
 
 // TYPES:
 export type { TiraConfig } from "./types/config.js";
