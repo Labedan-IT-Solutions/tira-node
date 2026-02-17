@@ -95,8 +95,8 @@ describe("extractSignedContentAndSignature", () => {
 });
 
 describe("verifyCallbackSignature", () => {
-  it("returns false when no public PFX path provided", () => {
-    const result = verifyCallbackSignature(sampleXml);
+  it("returns false when verify_signatures is false", () => {
+    const result = verifyCallbackSignature(sampleXml, false, "./certs/tiramispublic.pfx", "password");
     expect(result).toBe(false);
     expect(verifySignature).not.toHaveBeenCalled();
   });
@@ -104,6 +104,7 @@ describe("verifyCallbackSignature", () => {
   it("returns false when input is a pre-parsed object", () => {
     const result = verifyCallbackSignature(
       { TiraMsg: { SomeTag: {} } },
+      true,
       "./certs/tiramispublic.pfx",
       "password",
     );
@@ -114,6 +115,7 @@ describe("verifyCallbackSignature", () => {
   it("returns true when signature is valid", () => {
     const result = verifyCallbackSignature(
       sampleXml,
+      true,
       "./certs/tiramispublic.pfx",
       "password",
     );
@@ -131,6 +133,7 @@ describe("verifyCallbackSignature", () => {
     expect(() =>
       verifyCallbackSignature(
         sampleXml,
+        true,
         "./certs/tiramispublic.pfx",
         "password",
       ),
@@ -138,6 +141,7 @@ describe("verifyCallbackSignature", () => {
     expect(() =>
       verifyCallbackSignature(
         sampleXml,
+        true,
         "./certs/tiramispublic.pfx",
         "password",
       ),
@@ -149,6 +153,7 @@ describe("verifyCallbackSignature", () => {
     expect(() =>
       verifyCallbackSignature(
         "<invalid>xml</invalid>",
+        true,
         "./certs/tiramispublic.pfx",
         "password",
       ),
@@ -156,19 +161,10 @@ describe("verifyCallbackSignature", () => {
     expect(() =>
       verifyCallbackSignature(
         "<invalid>xml</invalid>",
+        true,
         "./certs/tiramispublic.pfx",
         "password",
       ),
     ).toThrow("Could not extract signature");
-  });
-
-  it("defaults passphrase to empty string when not provided", () => {
-    verifyCallbackSignature(sampleXml, "./certs/tiramispublic.pfx");
-    expect(verifySignature).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      "./certs/tiramispublic.pfx",
-      "",
-    );
   });
 });

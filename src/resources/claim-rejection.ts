@@ -55,6 +55,7 @@ export class ClaimRejectionResource {
   ): Promise<CallbackResult<ClaimRejectionCallbackResponse>> {
     const signature_verified = verifyCallbackSignature(
       input,
+      this.config.verify_signatures !== false,
       this.config.tira_public_pfx_path,
       this.config.tira_public_pfx_passphrase,
     );

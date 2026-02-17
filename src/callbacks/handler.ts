@@ -26,10 +26,11 @@ export async function parseCallbackXml(input: string | Record<string, any>): Pro
 
 export function verifyCallbackSignature(
   input: string | Record<string, any>,
-  tiraPublicPfxPath?: string,
-  tiraPublicPfxPassphrase?: string,
+  shouldVerify: boolean,
+  tiraPublicPfxPath: string,
+  tiraPublicPfxPassphrase: string,
 ): boolean {
-  if (!tiraPublicPfxPath) {
+  if (!shouldVerify) {
     return false;
   }
 
@@ -46,7 +47,7 @@ export function verifyCallbackSignature(
     parts.contentXml,
     parts.base64Signature,
     tiraPublicPfxPath,
-    tiraPublicPfxPassphrase ?? "",
+    tiraPublicPfxPassphrase,
   );
 
   if (!isValid) {
