@@ -2,7 +2,12 @@ import * as https from "node:https";
 import { parseStringPromise } from "xml2js";
 import type { TiraConfig } from "./types/config.js";
 import { TiraApiError } from "./errors.js";
-import { signContent, wrapTiraMsg, privateKeyPemFromPfx, certificatePemFromPfx } from "./signing.js";
+import {
+  signContent,
+  wrapTiraMsg,
+  privateKeyPemFromPfx,
+  certificatePemFromPfx,
+} from "./signing.js";
 
 export class TiraClient {
   private config: TiraConfig;
@@ -13,7 +18,10 @@ export class TiraClient {
     this.agent = new https.Agent({
       key: privateKeyPemFromPfx(config.pfx_path, config.pfx_passphrase),
       cert: certificatePemFromPfx(config.pfx_path, config.pfx_passphrase),
-      ca: certificatePemFromPfx(config.tira_public_pfx_path, config.tira_public_pfx_passphrase),
+      ca: certificatePemFromPfx(
+        config.tira_public_pfx_path,
+        config.tira_public_pfx_passphrase,
+      ),
       rejectUnauthorized: false,
     });
   }
@@ -52,10 +60,6 @@ export class TiraClient {
               res.statusCode &&
               (res.statusCode < 200 || res.statusCode >= 300)
             ) {
-              console.error(
-                `TIRA API responded with ${res.statusCode} with body ${JSON.stringify(body, null, 2)}`,
-              );
-
               reject(
                 new TiraApiError(
                   res.statusCode,
