@@ -26,3 +26,10 @@ export class TiraValidationError extends TiraError {
     this.field = field;
   }
 }
+
+export class TiraSignatureError extends TiraError {
+  constructor(message: string = 'Callback signature verification failed') {
+    super(message);
+    this.name = 'TiraSignatureError';
+  }
+}

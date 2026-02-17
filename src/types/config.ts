@@ -23,4 +23,8 @@ export interface TiraConfig {
   pfx_passphrase: string;
   /** Enable specific callback handlers for the universal handleCallback method */
   enabled_callbacks?: EnabledCallbacks | undefined;
+  /** Path to TIRA's public PFX file for verifying callback signatures (tiramispublic.pfx). If not provided, signature verification is skipped. */
+  tira_public_pfx_path?: string | undefined;
+  /** Passphrase for TIRA's public PFX file. Defaults to empty string. */
+  tira_public_pfx_passphrase?: string | undefined;
 }

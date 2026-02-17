@@ -1,4 +1,6 @@
 import { parseStringPromise } from "xml2js";
+import { extractSignedContentAndSignature, verifySignature } from "../signing.js";
+import { TiraSignatureError } from "../errors.js";
 
 export interface ParsedCallback {
   body: Record<string, any>;
@@ -20,4 +22,36 @@ export async function parseCallbackXml(input: string | Record<string, any>): Pro
   const responseData = responseTag ? tiraMsg[responseTag] : {};
 
   return { body, responseTag, responseData };
+}
+
+export function verifyCallbackSignature(
+  input: string | Record<string, any>,
+  tiraPublicPfxPath?: string,
+  tiraPublicPfxPassphrase?: string,
+): boolean {
+  if (!tiraPublicPfxPath) {
+    return false;
+  }
+
+  if (typeof input !== "string") {
+    return false;
+  }
+
+  const parts = extractSignedContentAndSignature(input);
+  if (!parts) {
+    throw new TiraSignatureError("Could not extract signature from TiraMsg XML");
+  }
+
+  const isValid = verifySignature(
+    parts.contentXml,
+    parts.base64Signature,
+    tiraPublicPfxPath,
+    tiraPublicPfxPassphrase ?? "",
+  );
+
+  if (!isValid) {
+    throw new TiraSignatureError("Callback signature verification failed: signature does not match content");
+  }
+
+  return true;
 }

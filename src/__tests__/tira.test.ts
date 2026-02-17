@@ -18,10 +18,15 @@ vi.mock("../signing.js", () => ({
     (content: string, sig: string) =>
       `<TiraMsg>\n${content}\n<MsgSignature>${sig}</MsgSignature>\n</TiraMsg>`,
   ),
+  extractSignedContentAndSignature: vi.fn((rawXml: string) => ({
+    contentXml: "mock-content",
+    base64Signature: "abc123signature==",
+  })),
+  verifySignature: vi.fn(() => true),
 }));
 
 import { Tira } from "../tira.js";
-import { signContent, wrapTiraMsg } from "../signing.js";
+import { signContent, wrapTiraMsg, verifySignature } from "../signing.js";
 import type { TiraConfig } from "../types/config.js";
 import {
   mockTiraConfig,
@@ -216,5 +221,60 @@ describe("end-to-end callback flow", () => {
     // User can still acknowledge error callbacks
     const ackXml = tira.acknowledge(result.body, `ERR-${result.extracted.request_id}`);
     expect(ackXml).toContain("<TiraMsg>");
+  });
+});
+
+describe("Tira.handleCallback signature verification", () => {
+  it("sets signature_verified to true when verification succeeds with raw XML", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+      tira_public_pfx_path: "./certs/tiramispublic.pfx",
+      tira_public_pfx_passphrase: "password",
+    });
+    const result = await tira.handleCallback(sampleMotorCallbackXml);
+    expect(result.signature_verified).toBe(true);
+    expect(verifySignature).toHaveBeenCalled();
+  });
+
+  it("sets signature_verified to false when tira_public_pfx_path is not configured", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackXml);
+    expect(result.signature_verified).toBe(false);
+    expect(verifySignature).not.toHaveBeenCalled();
+  });
+
+  it("sets signature_verified to false when input is pre-parsed object", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+      tira_public_pfx_path: "./certs/tiramispublic.pfx",
+    });
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+    expect(result.signature_verified).toBe(false);
+    expect(verifySignature).not.toHaveBeenCalled();
+  });
+
+  it("throws TiraSignatureError when verification fails", async () => {
+    vi.mocked(verifySignature).mockReturnValueOnce(false);
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { motor: true },
+      tira_public_pfx_path: "./certs/tiramispublic.pfx",
+    });
+    await expect(tira.handleCallback(sampleMotorCallbackXml)).rejects.toThrow(
+      "signature verification failed",
+    );
+  });
+
+  it("verifies non_life_other callback signature when configured", async () => {
+    const tira = new Tira({
+      ...mockTiraConfig,
+      enabled_callbacks: { non_life_other: true },
+      tira_public_pfx_path: "./certs/tiramispublic.pfx",
+    });
+    const result = await tira.handleCallback(sampleNonLifeOtherCallbackXml);
+    expect(result.signature_verified).toBe(true);
+    expect(result.type).toBe("non_life_other");
   });
 });

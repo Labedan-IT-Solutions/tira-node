@@ -9,7 +9,7 @@ import type {
 import type { CallbackResult, MotorCallbackResponse } from "../types/callback.js";
 import { validateMotorCoverNotePayload, validateMotorVerificationPayload } from "../validation/motor.js";
 import { buildMotorCoverNoteXml, buildMotorVerificationXml } from "../builders/motor.js";
-import { parseCallbackXml } from "../callbacks/handler.js";
+import { parseCallbackXml, verifyCallbackSignature } from "../callbacks/handler.js";
 import { extractCallbackData } from "../callbacks/registry.js";
 import { ENDPOINTS } from "../endpoints.js";
 
@@ -49,10 +49,16 @@ export class MotorResource {
   async handleCallback(
     input: string | Record<string, any>,
   ): Promise<CallbackResult<MotorCallbackResponse>> {
+    const signature_verified = verifyCallbackSignature(
+      input,
+      this.config.tira_public_pfx_path,
+      this.config.tira_public_pfx_passphrase,
+    );
+
     const { body, responseData } = await parseCallbackXml(input);
     const extracted = extractCallbackData("motor", responseData) as MotorCallbackResponse;
 
-    return { type: "motor", body, extracted, raw_xml: typeof input === "string" ? input : "" };
+    return { type: "motor", body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
   }
 
   async verify(

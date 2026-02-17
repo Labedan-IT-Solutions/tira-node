@@ -7,7 +7,7 @@ import type {
 import type { CallbackResult, NonLifeOtherCallbackResponse } from "../types/callback.js";
 import { validateNonLifeOtherCoverNotePayload } from "../validation/non-life-other.js";
 import { buildNonLifeOtherCoverNoteXml } from "../builders/non-life-other.js";
-import { parseCallbackXml } from "../callbacks/handler.js";
+import { parseCallbackXml, verifyCallbackSignature } from "../callbacks/handler.js";
 import { extractCallbackData } from "../callbacks/registry.js";
 import { ENDPOINTS } from "../endpoints.js";
 
@@ -47,9 +47,15 @@ export class NonLifeOtherResource {
   async handleCallback(
     input: string | Record<string, any>,
   ): Promise<CallbackResult<NonLifeOtherCallbackResponse>> {
+    const signature_verified = verifyCallbackSignature(
+      input,
+      this.config.tira_public_pfx_path,
+      this.config.tira_public_pfx_passphrase,
+    );
+
     const { body, responseData } = await parseCallbackXml(input);
     const extracted = extractCallbackData("non_life_other", responseData) as NonLifeOtherCallbackResponse;
 
-    return { type: "non_life_other", body, extracted, raw_xml: typeof input === "string" ? input : "" };
+    return { type: "non_life_other", body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
   }
 }

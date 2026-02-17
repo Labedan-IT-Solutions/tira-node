@@ -7,6 +7,8 @@ export interface CallbackResult<T = Record<string, any>> {
   extracted: T;
   /** Original XML string */
   raw_xml: string;
+  /** Whether the MsgSignature was verified against TIRA's public key. false when verification is not configured or input was pre-parsed. */
+  signature_verified: boolean;
 }
 
 export interface MotorCallbackResponse {

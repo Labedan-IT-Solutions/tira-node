@@ -15,6 +15,12 @@ export const mockTiraConfig: TiraConfig = {
   pfx_passphrase: "password",
 };
 
+export const mockTiraConfigWithVerification: TiraConfig = {
+  ...mockTiraConfig,
+  tira_public_pfx_path: "./certs/tiramispublic.pfx",
+  tira_public_pfx_passphrase: "password",
+};
+
 export const validCoverNotePayload: MotorCoverNotePayload = {
   request_id: "GLC-1234567890",
   callback_url: "https://example.com/callback",

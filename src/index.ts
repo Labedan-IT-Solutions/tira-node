@@ -3,7 +3,7 @@
 
 // RESOURCES:
 export { Tira } from "./tira.js";
-export { TiraError, TiraApiError, TiraValidationError } from "./errors.js";
+export { TiraError, TiraApiError, TiraValidationError, TiraSignatureError } from "./errors.js";
 
 // REFERENCE DATA:
 export { ENDPOINTS } from "./endpoints.js";

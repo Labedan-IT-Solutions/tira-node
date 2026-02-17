@@ -3,7 +3,7 @@ import type { CallbackResult } from "./types/callback.js";
 import { TiraClient } from "./client.js";
 import { MotorResource } from "./resources/motor.js";
 import { NonLifeOtherResource } from "./resources/non-life-other.js";
-import { parseCallbackXml } from "./callbacks/handler.js";
+import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
 import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
 import { signContent, wrapTiraMsg } from "./signing.js";
@@ -53,6 +53,12 @@ export class Tira {
   }
 
   async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {
+    const signature_verified = verifyCallbackSignature(
+      input,
+      this.config.tira_public_pfx_path,
+      this.config.tira_public_pfx_passphrase,
+    );
+
     const { body, responseTag, responseData } = await parseCallbackXml(input);
     const type = resolveCallbackType(responseTag);
 
@@ -72,7 +78,7 @@ export class Tira {
     }
 
     const extracted = extractCallbackData(type, responseData);
-    return { type, body, extracted, raw_xml: typeof input === "string" ? input : "" };
+    return { type, body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
   }
 
   acknowledge(parsedBody: Record<string, any>, acknowledgementId: string): string {
