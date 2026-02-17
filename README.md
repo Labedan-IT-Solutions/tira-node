@@ -2,7 +2,7 @@
 
 # tira-node
 
-**The unofficial Node.js SDK for TIRA's TIMIS**\
+**The unofficial Node.js SDK for TIRA's TIRAMIS**\
 Tanzania Insurance Management Information System
 
 [![npm version](https://img.shields.io/npm/v/tira-node?color=cb3837&label=npm&logo=npm&logoColor=white)](https://www.npmjs.com/package/tira-node)
