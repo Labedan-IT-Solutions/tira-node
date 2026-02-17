@@ -1,6 +1,7 @@
 import type { MotorCoverNotePayload } from "../types/motor.js";
 import type { MotorVerificationPayload } from "../types/motor.js";
 import type { TiraConfig } from "../types/config.js";
+import type { MotorFleetCoverNotePayload, FleetDetailEntry } from "../types/motor-fleet.js";
 
 export const mockTiraConfig: TiraConfig = {
   client_code: "IB1076",
@@ -176,4 +177,199 @@ export const sampleNonLifeOtherCallbackParsed = {
     },
     MsgSignature: "abc123signature==",
   },
+};
+
+export const sampleFleetCallbackXml = `<TiraMsg>
+  <MotorCoverNoteRefRes>
+    <FleetResHdr>
+      <ResponseId>RES-FLT-001</ResponseId>
+      <RequestId>REQ-FLT-001</RequestId>
+      <FleetId>FLT-001</FleetId>
+      <FleetStatusCode>TIRA001</FleetStatusCode>
+      <FleetStatusDesc>All vehicles processed successfully</FleetStatusDesc>
+    </FleetResHdr>
+    <FleetResDtl>
+      <FleetEntry>1</FleetEntry>
+      <CoverNoteNumber>SPCPLBA000001</CoverNoteNumber>
+      <CoverNoteReferenceNumber>CN-FLT-2025-001</CoverNoteReferenceNumber>
+      <StickerNumber>STK-FLT-2025-001</StickerNumber>
+      <ResponseStatusCode>TIRA001</ResponseStatusCode>
+      <ResponseStatusDesc>Successful</ResponseStatusDesc>
+    </FleetResDtl>
+    <FleetResDtl>
+      <FleetEntry>2</FleetEntry>
+      <CoverNoteNumber>SPCPLBA000002</CoverNoteNumber>
+      <CoverNoteReferenceNumber>CN-FLT-2025-002</CoverNoteReferenceNumber>
+      <StickerNumber>STK-FLT-2025-002</StickerNumber>
+      <ResponseStatusCode>TIRA001</ResponseStatusCode>
+      <ResponseStatusDesc>Successful</ResponseStatusDesc>
+    </FleetResDtl>
+  </MotorCoverNoteRefRes>
+  <MsgSignature>fleet-sig-abc123==</MsgSignature>
+</TiraMsg>`;
+
+export const sampleFleetCallbackParsed = {
+  TiraMsg: {
+    MotorCoverNoteRefRes: {
+      FleetResHdr: {
+        ResponseId: "RES-FLT-001",
+        RequestId: "REQ-FLT-001",
+        FleetId: "FLT-001",
+        FleetStatusCode: "TIRA001",
+        FleetStatusDesc: "All vehicles processed successfully",
+      },
+      FleetResDtl: [
+        {
+          FleetEntry: "1",
+          CoverNoteNumber: "SPCPLBA000001",
+          CoverNoteReferenceNumber: "CN-FLT-2025-001",
+          StickerNumber: "STK-FLT-2025-001",
+          ResponseStatusCode: "TIRA001",
+          ResponseStatusDesc: "Successful",
+        },
+        {
+          FleetEntry: "2",
+          CoverNoteNumber: "SPCPLBA000002",
+          CoverNoteReferenceNumber: "CN-FLT-2025-002",
+          StickerNumber: "STK-FLT-2025-002",
+          ResponseStatusCode: "TIRA001",
+          ResponseStatusDesc: "Successful",
+        },
+      ],
+    },
+    MsgSignature: "fleet-sig-abc123==",
+  },
+};
+
+export const sampleFleetCallbackSingleVehicleParsed = {
+  TiraMsg: {
+    MotorCoverNoteRefRes: {
+      FleetResHdr: {
+        ResponseId: "RES-FLT-002",
+        RequestId: "REQ-FLT-002",
+        FleetId: "FLT-002",
+        FleetStatusCode: "TIRA001",
+        FleetStatusDesc: "Processed",
+      },
+      FleetResDtl: {
+        FleetEntry: "1",
+        CoverNoteNumber: "SPCPLBA000001",
+        CoverNoteReferenceNumber: "CN-FLT-2025-001",
+        StickerNumber: "STK-FLT-2025-001",
+        ResponseStatusCode: "TIRA001",
+        ResponseStatusDesc: "Successful",
+      },
+    },
+    MsgSignature: "fleet-sig-single==",
+  },
+};
+
+export const validFleetDetailEntry: FleetDetailEntry = {
+  fleet_entry: 1,
+  covernote_number: "SPCPLBA000001",
+  covernote_desc: "Private Vehicles",
+  operative_clause: "Comprehensive",
+  risks_covered: [
+    {
+      risk_code: "SP014001000001",
+      sum_insured: 15000000,
+      sum_insured_equivalent: 15000000,
+      premium_rate: 0.035,
+      premium_before_discount: 525000,
+      premium_after_discount: 525000,
+      premium_excluding_tax_equivalent: 525000,
+      premium_including_tax: 619500,
+      taxes_charged: [
+        {
+          tax_code: "VAT-MAINLAND",
+          is_tax_exempted: "N",
+          tax_rate: 0.18,
+          tax_amount: 94500,
+        },
+      ],
+    },
+  ],
+  subject_matters_covered: [
+    {
+      subject_matter_reference: "HSB001",
+      subject_matter_desc: "Vehicle",
+    },
+  ],
+  motor_details: {
+    motor_category: "1",
+    motor_type: "1",
+    registration_number: "T123ABC",
+    chassis_number: "1234567890",
+    make: "Toyota",
+    model: "RAV4",
+    model_number: "2010",
+    body_type: "STATION WAGON",
+    color: "WHITE",
+    engine_number: "984668484DDD",
+    engine_capacity: "2360",
+    fuel_used: "PETROL",
+    number_of_axles: 2,
+    axle_distance: 0,
+    sitting_capacity: 5,
+    year_of_manufacture: 2010,
+    tare_weight: 1750,
+    gross_weight: 1850,
+    motor_usage: "1",
+    owner_name: "TEST CLIENT",
+    owner_category: "1",
+    owner_address: "DSM",
+  },
+};
+
+export const validFleetPayload: MotorFleetCoverNotePayload = {
+  request_id: "GLC-FLEET-1234567890",
+  callback_url: "https://example.com/callback",
+  insurer_company_code: "ICC103",
+  covernote_type: "1",
+  fleet_id: "FLT-001",
+  fleet_type: "1",
+  fleet_size: 2,
+  sales_point_code: "SP719",
+  covernote_start_date: "2025-05-31T21:00:00Z",
+  covernote_end_date: "2026-05-31T21:00:00Z",
+  payment_mode: "3",
+  total_premium_excluding_tax: 1050000,
+  total_premium_including_tax: 1239000,
+  commission_paid: 131250,
+  commission_rate: 0.125,
+  officer_name: "Johnson Abraham",
+  officer_title: "Manager",
+  product_code: "SP014001000000",
+  policy_holders: [
+    {
+      policyholder_name: "FLEET OWNER",
+      policyholder_birthdate: "1984-06-19",
+      policyholder_type: "2",
+      policyholder_id_number: "19840619566676776857",
+      policyholder_id_type: "6",
+      gender: "M",
+      country_code: "TZA",
+      region: "Dar es Salaam",
+      district: "Ilala",
+      street: "Kariakoo",
+      phone_number: "255712345678",
+      postal_address: "DSM",
+    },
+  ],
+  fleet_details: [
+    { ...validFleetDetailEntry },
+    {
+      ...validFleetDetailEntry,
+      fleet_entry: 2,
+      covernote_number: "SPCPLBA000002",
+      motor_details: {
+        ...validFleetDetailEntry.motor_details,
+        registration_number: "T456DEF",
+        chassis_number: "9876543210",
+        make: "Nissan",
+        model: "X-Trail",
+        model_number: "2015",
+      },
+    },
+  ],
 };

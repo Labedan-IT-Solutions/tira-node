@@ -35,6 +35,9 @@ import {
   sampleMotorCallbackErrorParsed,
   sampleNonLifeOtherCallbackXml,
   sampleNonLifeOtherCallbackParsed,
+  sampleFleetCallbackParsed,
+  sampleFleetCallbackSingleVehicleParsed,
+  sampleFleetCallbackXml,
 } from "./fixtures.js";
 
 beforeEach(() => {
@@ -50,6 +53,11 @@ describe("Tira constructor", () => {
   it("creates instance with nonLifeOther resource accessible", () => {
     const tira = new Tira(mockTiraConfig);
     expect(tira.nonLifeOther).toBeDefined();
+  });
+
+  it("creates instance with motorFleet resource accessible", () => {
+    const tira = new Tira(mockTiraConfig);
+    expect(tira.motorFleet).toBeDefined();
   });
 
   const requiredFields: (keyof TiraConfig)[] = [
@@ -147,6 +155,47 @@ describe("Tira.handleCallback", () => {
     expect(result.extracted).toHaveProperty("response_status_code", "TIRA020");
     expect(result.extracted).toHaveProperty("cover_note_reference_number", "");
     expect(result.extracted).toHaveProperty("sticker_number", "");
+  });
+});
+
+describe("Tira.handleCallback — motor_fleet (discriminator)", () => {
+  it("resolves motor_fleet type when FleetResHdr is present", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
+    const result = await tira.handleCallback(sampleFleetCallbackParsed);
+
+    expect(result.type).toBe("motor_fleet");
+    expect(result.extracted).toHaveProperty("fleet_id", "FLT-001");
+    expect(result.extracted).toHaveProperty("fleet_status_code", "TIRA001");
+    expect(result.extracted).toHaveProperty("fleet_details");
+    expect((result.extracted as any).fleet_details).toHaveLength(2);
+  });
+
+  it("handles single vehicle fleet (xml2js returns object, not array)", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
+    const result = await tira.handleCallback(sampleFleetCallbackSingleVehicleParsed);
+
+    expect(result.type).toBe("motor_fleet");
+    expect((result.extracted as any).fleet_details).toHaveLength(1);
+    expect((result.extracted as any).fleet_details[0].fleet_entry).toBe(1);
+  });
+
+  it("throws when motor_fleet is not enabled", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    await expect(tira.handleCallback(sampleFleetCallbackParsed)).rejects.toThrow("not enabled");
+    await expect(tira.handleCallback(sampleFleetCallbackParsed)).rejects.toThrow("motor_fleet");
+  });
+
+  it("returns raw_xml when input is XML string", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor_fleet: true } });
+    const result = await tira.handleCallback(sampleFleetCallbackXml);
+    expect(result.type).toBe("motor_fleet");
+    expect(result.raw_xml).toBe(sampleFleetCallbackXml);
+  });
+
+  it("still resolves regular motor when no FleetResHdr", async () => {
+    const tira = new Tira({ ...mockTiraConfig, enabled_callbacks: { motor: true } });
+    const result = await tira.handleCallback(sampleMotorCallbackParsed);
+    expect(result.type).toBe("motor");
   });
 });
 

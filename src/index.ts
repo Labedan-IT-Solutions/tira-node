@@ -24,8 +24,15 @@ export type {
   NonLifeOtherCoverNoteResponse,
 } from "./types/non-life-other.js";
 export type {
+  MotorFleetCoverNotePayload,
+  MotorFleetCoverNoteResponse,
+  FleetDetailEntry,
+} from "./types/motor-fleet.js";
+export type {
   CallbackResult,
   MotorCallbackResponse,
+  MotorFleetCallbackResponse,
+  MotorFleetCallbackDetail,
   NonLifeOtherCallbackResponse,
   EnabledCallbacks,
 } from "./types/callback.js";

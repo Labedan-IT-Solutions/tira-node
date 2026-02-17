@@ -2,6 +2,7 @@ import type {
   MotorCoverNotePayload,
   MotorVerificationPayload,
 } from "../types/motor.js";
+import type { MotorDetails } from "../types/common.js";
 import {
   validateRequired,
   validateEnum,
@@ -11,21 +12,17 @@ import {
 import { validateCoverNotePayload } from "./covernote.js";
 import { TiraValidationError } from "../errors.js";
 
-export function validateMotorCoverNotePayload(
-  payload: MotorCoverNotePayload,
+export function validateMotorDetails(
+  m: MotorDetails,
+  prefix: string,
 ): void {
-  validateCoverNotePayload(payload);
-
-  // --- Motor Details ---
-  const m = payload.motor_details;
-
   validateEnum(
     m.motor_category,
     {
       "1": "Motor Vehicle",
       "2": "Motor Cycle",
     },
-    "motor_details.motor_category",
+    `${prefix}.motor_category`,
   );
   validateEnum(
     m.motor_type,
@@ -33,36 +30,36 @@ export function validateMotorCoverNotePayload(
       "1": "Registered",
       "2": "In Transit",
     },
-    "motor_details.motor_type",
+    `${prefix}.motor_type`,
   );
 
   if (m.motor_type === "1") {
     validateRequired(
       m.registration_number,
-      "motor_details.registration_number",
+      `${prefix}.registration_number`,
     );
   }
 
-  validateRequired(m.chassis_number, "motor_details.chassis_number");
-  validateRequired(m.make, "motor_details.make");
-  validateRequired(m.model, "motor_details.model");
-  validateRequired(m.model_number, "motor_details.model_number");
-  validateRequired(m.body_type, "motor_details.body_type");
-  validateRequired(m.color, "motor_details.color");
-  validateRequired(m.engine_number, "motor_details.engine_number");
-  validateRequired(m.engine_capacity, "motor_details.engine_capacity");
-  validateRequired(m.fuel_used, "motor_details.fuel_used");
+  validateRequired(m.chassis_number, `${prefix}.chassis_number`);
+  validateRequired(m.make, `${prefix}.make`);
+  validateRequired(m.model, `${prefix}.model`);
+  validateRequired(m.model_number, `${prefix}.model_number`);
+  validateRequired(m.body_type, `${prefix}.body_type`);
+  validateRequired(m.color, `${prefix}.color`);
+  validateRequired(m.engine_number, `${prefix}.engine_number`);
+  validateRequired(m.engine_capacity, `${prefix}.engine_capacity`);
+  validateRequired(m.fuel_used, `${prefix}.fuel_used`);
 
   // Axles, axle distance, sitting capacity required for motor vehicles (not motor cycles)
   if (m.motor_category === "1") {
     validateNumber(
       m.number_of_axles as number,
-      "motor_details.number_of_axles",
+      `${prefix}.number_of_axles`,
     );
-    validateNumber(m.axle_distance as number, "motor_details.axle_distance");
+    validateNumber(m.axle_distance as number, `${prefix}.axle_distance`);
     validateNumber(
       m.sitting_capacity as number,
-      "motor_details.sitting_capacity",
+      `${prefix}.sitting_capacity`,
     );
   }
 
@@ -73,30 +70,37 @@ export function validateMotorCoverNotePayload(
   ) {
     throw new TiraValidationError(
       "A valid year of manufacture is required.",
-      "motor_details.year_of_manufacture",
+      `${prefix}.year_of_manufacture`,
     );
   }
 
-  validatePositiveNumber(m.tare_weight, "motor_details.tare_weight");
-  validatePositiveNumber(m.gross_weight, "motor_details.gross_weight");
+  validatePositiveNumber(m.tare_weight, `${prefix}.tare_weight`);
+  validatePositiveNumber(m.gross_weight, `${prefix}.gross_weight`);
   validateEnum(
     m.motor_usage,
     {
       "1": "Private",
       "2": "Commercial",
     },
-    "motor_details.motor_usage",
+    `${prefix}.motor_usage`,
   );
-  validateRequired(m.owner_name, "motor_details.owner_name");
+  validateRequired(m.owner_name, `${prefix}.owner_name`);
   validateEnum(
     m.owner_category,
     {
       "1": "Sole Proprietor",
       "2": "Corporate",
     },
-    "motor_details.owner_category",
+    `${prefix}.owner_category`,
   );
-  validateRequired(m.owner_address, "motor_details.owner_address");
+  validateRequired(m.owner_address, `${prefix}.owner_address`);
+}
+
+export function validateMotorCoverNotePayload(
+  payload: MotorCoverNotePayload,
+): void {
+  validateCoverNotePayload(payload);
+  validateMotorDetails(payload.motor_details, "motor_details");
 }
 
 export function validateMotorVerificationPayload(

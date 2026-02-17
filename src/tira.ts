@@ -2,6 +2,7 @@ import type { TiraConfig } from "./types/config.js";
 import type { CallbackResult } from "./types/callback.js";
 import { TiraClient } from "./client.js";
 import { MotorResource } from "./resources/motor.js";
+import { MotorFleetResource } from "./resources/motor-fleet.js";
 import { NonLifeOtherResource } from "./resources/non-life-other.js";
 import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
 import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
@@ -12,6 +13,7 @@ export class Tira {
   private client: TiraClient;
   private config: TiraConfig;
   public readonly motor: MotorResource;
+  public readonly motorFleet: MotorFleetResource;
   public readonly nonLifeOther: NonLifeOtherResource;
 
   constructor(config: TiraConfig) {
@@ -49,6 +51,7 @@ export class Tira {
     this.config = config;
     this.client = new TiraClient(config);
     this.motor = new MotorResource(this.client, config);
+    this.motorFleet = new MotorFleetResource(this.client, config);
     this.nonLifeOther = new NonLifeOtherResource(this.client, config);
   }
 
@@ -60,7 +63,7 @@ export class Tira {
     );
 
     const { body, responseTag, responseData } = await parseCallbackXml(input);
-    const type = resolveCallbackType(responseTag);
+    const type = resolveCallbackType(responseTag, responseData);
 
     const enabledCallbacks = this.config.enabled_callbacks;
     const isEnabled = enabledCallbacks?.[type as keyof typeof enabledCallbacks];

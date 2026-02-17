@@ -39,9 +39,41 @@ export interface NonLifeOtherCallbackResponse {
   response_status_desc: string;
 }
 
+export interface MotorFleetCallbackDetail {
+  /** Fleet entry sequence number */
+  fleet_entry: number;
+  /** Cover note number for this vehicle */
+  covernote_number: string;
+  /** Cover note reference number assigned by TIRA */
+  cover_note_reference_number: string;
+  /** Sticker number assigned by TIRA */
+  sticker_number: string;
+  /** Response status code for this vehicle */
+  response_status_code: string;
+  /** Response status description for this vehicle */
+  response_status_desc: string;
+}
+
+export interface MotorFleetCallbackResponse {
+  /** Response ID from TIRA */
+  response_id: string;
+  /** The original request ID */
+  request_id: string;
+  /** Fleet identifier */
+  fleet_id: string;
+  /** Fleet-level status code (TIRA001 = all successful) */
+  fleet_status_code: string;
+  /** Fleet-level status description */
+  fleet_status_desc: string;
+  /** Per-vehicle results */
+  fleet_details: MotorFleetCallbackDetail[];
+}
+
 export interface EnabledCallbacks {
   /** Enable motor callback handling */
   motor?: boolean | undefined;
+  /** Enable motor fleet callback handling */
+  motor_fleet?: boolean | undefined;
   /** Enable non-life other callback handling */
   non_life_other?: boolean | undefined;
 }

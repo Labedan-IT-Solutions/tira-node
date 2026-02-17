@@ -1,12 +1,30 @@
-import type { MotorCallbackResponse, NonLifeOtherCallbackResponse } from "../types/callback.js";
+import type {
+  MotorCallbackResponse,
+  MotorFleetCallbackResponse,
+  NonLifeOtherCallbackResponse,
+} from "../types/callback.js";
 
 const TAG_MAP: Record<string, string> = {
   MotorCoverNoteRefRes: "motor",
   CoverNoteRefRes: "non_life_other",
 };
 
+/**
+ * Discriminators refine the callback type when multiple sub-types share the same response tag.
+ * Each function inspects the response data and returns a refined type string, or undefined to
+ * fall through to the default TAG_MAP type. This pattern is reusable for any future tag that
+ * has multiple sub-types.
+ */
+const TAG_DISCRIMINATORS: Record<string, (data: Record<string, any>) => string | undefined> = {
+  MotorCoverNoteRefRes: (data) => {
+    if (data.FleetResHdr) return "motor_fleet";
+    return undefined;
+  },
+};
+
 const EXTRACTORS: Record<string, (data: Record<string, any>) => Record<string, any>> = {
   motor: extractMotorCallback,
+  motor_fleet: extractMotorFleetCallback,
   non_life_other: extractNonLifeOtherCallback,
 };
 
@@ -21,6 +39,29 @@ function extractMotorCallback(data: Record<string, any>): MotorCallbackResponse 
   };
 }
 
+function extractMotorFleetCallback(data: Record<string, any>): MotorFleetCallbackResponse {
+  const hdr = data.FleetResHdr ?? {};
+  const dtlRaw = data.FleetResDtl;
+  // xml2js returns a single object when there's one entry, array when multiple
+  const dtls = Array.isArray(dtlRaw) ? dtlRaw : dtlRaw ? [dtlRaw] : [];
+
+  return {
+    response_id: hdr.ResponseId ?? "",
+    request_id: hdr.RequestId ?? "",
+    fleet_id: hdr.FleetId ?? "",
+    fleet_status_code: hdr.FleetStatusCode ?? "",
+    fleet_status_desc: hdr.FleetStatusDesc ?? "",
+    fleet_details: dtls.map((d: Record<string, any>) => ({
+      fleet_entry: Number(d.FleetEntry ?? 0),
+      covernote_number: d.CoverNoteNumber ?? "",
+      cover_note_reference_number: d.CoverNoteReferenceNumber ?? "",
+      sticker_number: d.StickerNumber ?? "",
+      response_status_code: d.ResponseStatusCode ?? "",
+      response_status_desc: d.ResponseStatusDesc ?? "",
+    })),
+  };
+}
+
 function extractNonLifeOtherCallback(data: Record<string, any>): NonLifeOtherCallbackResponse {
   return {
     response_id: data.ResponseId ?? "",
@@ -31,7 +72,12 @@ function extractNonLifeOtherCallback(data: Record<string, any>): NonLifeOtherCal
   };
 }
 
-export function resolveCallbackType(responseTag: string): string {
+export function resolveCallbackType(responseTag: string, responseData: Record<string, any>): string {
+  const discriminator = TAG_DISCRIMINATORS[responseTag];
+  if (discriminator) {
+    const refined = discriminator(responseData);
+    if (refined) return refined;
+  }
   return TAG_MAP[responseTag] ?? "unknown";
 }
 

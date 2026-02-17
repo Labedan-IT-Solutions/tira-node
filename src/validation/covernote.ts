@@ -1,4 +1,4 @@
-import type { CoverNotePayloadBase } from "../types/common.js";
+import type { CoverNotePayloadBase, RisksCovered, SubjectMatter, CoverNoteAddon, PolicyHolder } from "../types/common.js";
 import {
   validateRequired,
   validateEnum,
@@ -12,6 +12,181 @@ import {
   validateTaxesCharged,
 } from "./validators.js";
 import { TiraValidationError } from "../errors.js";
+
+export function validateRisksCoveredArray(
+  risks: RisksCovered[],
+  prefix: string,
+): void {
+  const fieldName = `${prefix}risks_covered`;
+
+  if (!Array.isArray(risks) || risks.length === 0) {
+    throw new TiraValidationError(
+      "At least one risk must be provided.",
+      fieldName,
+    );
+  }
+
+  for (let i = 0; i < risks.length; i++) {
+    const r = risks[i]!;
+    const label = `${fieldName}[${i}]`;
+
+    validateRequired(r.risk_code, `${label}.risk_code`);
+    validateNumber(r.sum_insured, `${label}.sum_insured`);
+    validateNumber(r.sum_insured_equivalent, `${label}.sum_insured_equivalent`);
+    validateNumber(r.premium_rate, `${label}.premium_rate`);
+    validateNumber(
+      r.premium_before_discount,
+      `${label}.premium_before_discount`,
+    );
+    validateNumber(r.premium_after_discount, `${label}.premium_after_discount`);
+    validateNumber(
+      r.premium_excluding_tax_equivalent,
+      `${label}.premium_excluding_tax_equivalent`,
+    );
+    validateNumber(r.premium_including_tax, `${label}.premium_including_tax`);
+
+    // Discounts - optional but validate if present
+    if (r.discounts_offered) {
+      if (!Array.isArray(r.discounts_offered)) {
+        throw new TiraValidationError(
+          "discounts_offered must be an array.",
+          `${label}.discounts_offered`,
+        );
+      }
+      for (let j = 0; j < r.discounts_offered.length; j++) {
+        const d = r.discounts_offered[j]!;
+        const dLabel = `${label}.discounts_offered[${j}]`;
+        validateEnum(
+          d.discount_type,
+          { "1": "Fleet Discount" },
+          `${dLabel}.discount_type`,
+        );
+        validateNumber(d.discount_rate, `${dLabel}.discount_rate`);
+        validateNumber(d.discount_amount, `${dLabel}.discount_amount`);
+      }
+    }
+
+    validateTaxesCharged(r.taxes_charged, label);
+  }
+}
+
+export function validateSubjectMattersArray(
+  subjects: SubjectMatter[],
+  prefix: string,
+): void {
+  const fieldName = `${prefix}subject_matters_covered`;
+
+  if (!Array.isArray(subjects) || subjects.length === 0) {
+    throw new TiraValidationError(
+      "At least one subject matter must be provided.",
+      fieldName,
+    );
+  }
+
+  for (let i = 0; i < subjects.length; i++) {
+    const s = subjects[i]!;
+    const label = `${fieldName}[${i}]`;
+    validateRequired(
+      s.subject_matter_reference,
+      `${label}.subject_matter_reference`,
+    );
+    validateRequired(s.subject_matter_desc, `${label}.subject_matter_desc`);
+  }
+}
+
+export function validateCoverNoteAddonsArray(
+  addons: CoverNoteAddon[] | undefined,
+  prefix: string,
+): void {
+  if (!addons) return;
+
+  const fieldName = `${prefix}covernote_addons`;
+
+  if (!Array.isArray(addons)) {
+    throw new TiraValidationError(
+      "covernote_addons must be an array.",
+      fieldName,
+    );
+  }
+
+  for (let i = 0; i < addons.length; i++) {
+    const a = addons[i]!;
+    const label = `${fieldName}[${i}]`;
+
+    validateRequired(a.addon_reference, `${label}.addon_reference`);
+    validateRequired(a.addon_description, `${label}.addon_description`);
+    validateNumber(a.addon_amount, `${label}.addon_amount`);
+    validateNumber(a.addon_premium_rate, `${label}.addon_premium_rate`);
+    validateNumber(a.premium_excluding_tax, `${label}.premium_excluding_tax`);
+    validateNumber(
+      a.premium_excluding_tax_equivalent,
+      `${label}.premium_excluding_tax_equivalent`,
+    );
+    validateNumber(a.premium_including_tax, `${label}.premium_including_tax`);
+    validateTaxesCharged(a.taxes_charged, label);
+  }
+}
+
+export function validatePolicyHoldersArray(
+  holders: PolicyHolder[],
+  prefix: string,
+): void {
+  const fieldName = `${prefix}policy_holders`;
+
+  if (!Array.isArray(holders) || holders.length === 0) {
+    throw new TiraValidationError(
+      "At least one policy holder must be provided.",
+      fieldName,
+    );
+  }
+
+  for (let i = 0; i < holders.length; i++) {
+    const p = holders[i]!;
+    const label = `${fieldName}[${i}]`;
+
+    validateRequired(p.policyholder_name, `${label}.policyholder_name`);
+    validateDateString(
+      p.policyholder_birthdate,
+      `${label}.policyholder_birthdate`,
+    );
+    validateEnum(
+      p.policyholder_type,
+      {
+        "1": "Individual",
+        "2": "Corporate",
+      },
+      `${label}.policyholder_type`,
+    );
+    validateEnum(
+      p.policyholder_id_type,
+      {
+        "1": "NIDA",
+        "2": "Voters ID Card",
+        "3": "Passport",
+        "4": "Driving License",
+        "5": "Zanzibar ID",
+        "6": "TIN",
+        "7": "Company Incorporation Certificate Number",
+      },
+      `${label}.policyholder_id_type`,
+    );
+    validateRequired(
+      p.policyholder_id_number,
+      `${label}.policyholder_id_number`,
+    );
+    validateEnum(p.gender, { M: "Male", F: "Female" }, `${label}.gender`);
+    validateRequired(p.region, `${label}.region`);
+    validateRequired(p.district, `${label}.district`);
+    validateRequired(p.street, `${label}.street`);
+    validateRequired(p.phone_number, `${label}.phone_number`);
+    validatePhoneNumber(p.phone_number, `${label}.phone_number`);
+    validateRequired(p.postal_address, `${label}.postal_address`);
+
+    if (p.email_address) {
+      validateEmail(p.email_address, `${label}.email_address`);
+    }
+  }
+}
 
 export function validateCoverNotePayload(
   payload: CoverNotePayloadBase,
@@ -116,163 +291,8 @@ export function validateCoverNotePayload(
     validateRequired(payload.endorsement_reason, "endorsement_reason");
   }
 
-  // --- Risks Covered ---
-  if (
-    !Array.isArray(payload.risks_covered) ||
-    payload.risks_covered.length === 0
-  ) {
-    throw new TiraValidationError(
-      "At least one risk must be provided.",
-      "risks_covered",
-    );
-  }
-
-  for (let i = 0; i < payload.risks_covered.length; i++) {
-    const r = payload.risks_covered[i]!;
-    const label = `risks_covered[${i}]`;
-
-    validateRequired(r.risk_code, `${label}.risk_code`);
-    validateNumber(r.sum_insured, `${label}.sum_insured`);
-    validateNumber(r.sum_insured_equivalent, `${label}.sum_insured_equivalent`);
-    validateNumber(r.premium_rate, `${label}.premium_rate`);
-    validateNumber(
-      r.premium_before_discount,
-      `${label}.premium_before_discount`,
-    );
-    validateNumber(r.premium_after_discount, `${label}.premium_after_discount`);
-    validateNumber(
-      r.premium_excluding_tax_equivalent,
-      `${label}.premium_excluding_tax_equivalent`,
-    );
-    validateNumber(r.premium_including_tax, `${label}.premium_including_tax`);
-
-    // Discounts - optional but validate if present
-    if (r.discounts_offered) {
-      if (!Array.isArray(r.discounts_offered)) {
-        throw new TiraValidationError(
-          "discounts_offered must be an array.",
-          `${label}.discounts_offered`,
-        );
-      }
-      for (let j = 0; j < r.discounts_offered.length; j++) {
-        const d = r.discounts_offered[j]!;
-        const dLabel = `${label}.discounts_offered[${j}]`;
-        validateEnum(
-          d.discount_type,
-          { "1": "Fleet Discount" },
-          `${dLabel}.discount_type`,
-        );
-        validateNumber(d.discount_rate, `${dLabel}.discount_rate`);
-        validateNumber(d.discount_amount, `${dLabel}.discount_amount`);
-      }
-    }
-
-    validateTaxesCharged(r.taxes_charged, label);
-  }
-
-  // --- Subject Matters ---
-  if (
-    !Array.isArray(payload.subject_matters_covered) ||
-    payload.subject_matters_covered.length === 0
-  ) {
-    throw new TiraValidationError(
-      "At least one subject matter must be provided.",
-      "subject_matters_covered",
-    );
-  }
-
-  for (let i = 0; i < payload.subject_matters_covered.length; i++) {
-    const s = payload.subject_matters_covered[i]!;
-    const label = `subject_matters_covered[${i}]`;
-    validateRequired(
-      s.subject_matter_reference,
-      `${label}.subject_matter_reference`,
-    );
-    validateRequired(s.subject_matter_desc, `${label}.subject_matter_desc`);
-  }
-
-  // --- Cover Note Addons (optional) ---
-  if (payload.covernote_addons) {
-    if (!Array.isArray(payload.covernote_addons)) {
-      throw new TiraValidationError(
-        "covernote_addons must be an array.",
-        "covernote_addons",
-      );
-    }
-
-    for (let i = 0; i < payload.covernote_addons.length; i++) {
-      const a = payload.covernote_addons[i]!;
-      const label = `covernote_addons[${i}]`;
-
-      validateRequired(a.addon_reference, `${label}.addon_reference`);
-      validateRequired(a.addon_description, `${label}.addon_description`);
-      validateNumber(a.addon_amount, `${label}.addon_amount`);
-      validateNumber(a.addon_premium_rate, `${label}.addon_premium_rate`);
-      validateNumber(a.premium_excluding_tax, `${label}.premium_excluding_tax`);
-      validateNumber(
-        a.premium_excluding_tax_equivalent,
-        `${label}.premium_excluding_tax_equivalent`,
-      );
-      validateNumber(a.premium_including_tax, `${label}.premium_including_tax`);
-      validateTaxesCharged(a.taxes_charged, label);
-    }
-  }
-
-  // --- Policy Holders ---
-  if (
-    !Array.isArray(payload.policy_holders) ||
-    payload.policy_holders.length === 0
-  ) {
-    throw new TiraValidationError(
-      "At least one policy holder must be provided.",
-      "policy_holders",
-    );
-  }
-
-  for (let i = 0; i < payload.policy_holders.length; i++) {
-    const p = payload.policy_holders[i]!;
-    const label = `policy_holders[${i}]`;
-
-    validateRequired(p.policyholder_name, `${label}.policyholder_name`);
-    validateDateString(
-      p.policyholder_birthdate,
-      `${label}.policyholder_birthdate`,
-    );
-    validateEnum(
-      p.policyholder_type,
-      {
-        "1": "Individual",
-        "2": "Corporate",
-      },
-      `${label}.policyholder_type`,
-    );
-    validateEnum(
-      p.policyholder_id_type,
-      {
-        "1": "NIDA",
-        "2": "Voters ID Card",
-        "3": "Passport",
-        "4": "Driving License",
-        "5": "Zanzibar ID",
-        "6": "TIN",
-        "7": "Company Incorporation Certificate Number",
-      },
-      `${label}.policyholder_id_type`,
-    );
-    validateRequired(
-      p.policyholder_id_number,
-      `${label}.policyholder_id_number`,
-    );
-    validateEnum(p.gender, { M: "Male", F: "Female" }, `${label}.gender`);
-    validateRequired(p.region, `${label}.region`);
-    validateRequired(p.district, `${label}.district`);
-    validateRequired(p.street, `${label}.street`);
-    validateRequired(p.phone_number, `${label}.phone_number`);
-    validatePhoneNumber(p.phone_number, `${label}.phone_number`);
-    validateRequired(p.postal_address, `${label}.postal_address`);
-
-    if (p.email_address) {
-      validateEmail(p.email_address, `${label}.email_address`);
-    }
-  }
+  validateRisksCoveredArray(payload.risks_covered, "");
+  validateSubjectMattersArray(payload.subject_matters_covered, "");
+  validateCoverNoteAddonsArray(payload.covernote_addons, "");
+  validatePolicyHoldersArray(payload.policy_holders, "");
 }
