@@ -42,13 +42,14 @@ Before writing new code, check what you can reuse:
 
 ### Types (`package/src/types/common.ts`)
 - `CoverNotePayloadBase` — shared fields for all cover note payloads (request_id, callback_url, dates, premiums, policy_holders, risks_covered, etc.)
-- `CoverNoteResponse` — shared acknowledgement response shape
+- `CoverNoteResponse` — shared acknowledgement response shape (used by all async resources)
+- `SimpleClaimant` — shared 4-field claimant type (claimant_category, claimant_type, claimant_id_number, claimant_id_type). Used by claim-intimation, claim-assessment, discharge-voucher, claim-payment, claim-rejection
 - `TaxCharged`, `DiscountOffered`, `RisksCovered`, `SubjectMatter`, `CoverNoteAddon`, `PolicyHolder`, `MotorDetails` — reusable sub-types
 
-**Decision: extend or pick?**
+**Decision: extend, pick, or standalone?**
 - If your payload has ALL CoverNotePayloadBase fields + extras → `extends CoverNotePayloadBase` (e.g., motor, non-life-other)
 - If your payload shares SOME fields but not all → `extends Pick<CoverNotePayloadBase, 'field1' | 'field2' | ...>` (e.g., motor fleet where risks/subjects/addons are per-vehicle, not top-level)
-- If your payload is completely different → create a standalone interface
+- If your payload is completely different → create a standalone interface (e.g., claim resources with their own header/detail structure)
 
 ### Validation (`package/src/validation/`)
 - `validators.ts` — Atomic validators: `validateRequired`, `validateEnum`, `validatePositiveNumber`, `validateNumber`, `validateDateString`, `validateDateRange`, `validatePhoneNumber`, `validateEmail`, `validateHttpsUrl`, `validateTaxesCharged`
@@ -73,11 +74,18 @@ Before writing new code, check what you can reuse:
 ### Callbacks (`package/src/callbacks/`)
 - `handler.ts` — `parseCallbackXml(input)` parses XML/object into `{ body, responseTag, responseData }`. `verifyCallbackSignature(input, pfxPath, passphrase)` handles optional signature verification
 - `registry.ts` — `TAG_MAP` maps XML response tags to callback types. `TAG_DISCRIMINATORS` refines types when multiple sub-types share a tag (e.g., motor vs motor_fleet). `EXTRACTORS` maps types to extraction functions. `resolveCallbackType()` and `extractCallbackData()` drive the universal handler
+- `extractBaseCallback` — shared extractor for the standard 4-field callback response. Used by 7 of 12 resources. Only write a custom extractor if your callback has extra fields
+
+### Callback Types (`package/src/types/callback.ts`)
+- `BaseCallbackResponse` — shared interface with 4 fields: response_id, request_id, response_status_code, response_status_desc
+- Most callback response types are just `type YourCallbackResponse = BaseCallbackResponse` (type alias)
+- Types with extra fields extend `BaseCallbackResponse` (motor, non_life_other, claim_notification)
 
 ### Other
 - `endpoints.ts` — All TIRA API paths. Check if your endpoint already exists before adding one
 - `utils.ts` — `formatDateForTira(date)` converts UTC dates to GMT+3 (TIRA's timezone)
 - `signing.ts` — `signContent()`, `wrapTiraMsg()` for request signing
+- `builders/acknowledgement.ts` — `buildAckPayload()`, `buildAcknowledgementXml()` for building TIRA acknowledgements. Used by `Tira.acknowledge()`
 - `errors.ts` — `TiraValidationError`, `TiraSignatureError`, `TiraApiError`
 
 ---
@@ -247,35 +255,42 @@ export class YourResource {
 
 **File:** `package/src/callbacks/registry.ts`
 
-There are two scenarios: your resource has a **new unique response tag**, or it **shares a tag** with an existing resource.
+There are three scenarios depending on your callback's response shape and XML tag.
 
-#### Scenario A: New Unique Response Tag
+#### Scenario A: Standard 4-Field Callback (Most Common)
 
-If TIRA sends a new/different response tag for your resource's async callback:
+Most TIRA callbacks return the same 4 fields (ResponseId, RequestId, ResponseStatusCode, ResponseStatusDesc). In this case, reuse the shared `extractBaseCallback` function — no custom extractor needed:
 
 ```ts
 const TAG_MAP: Record<string, string> = {
-  MotorCoverNoteRefRes: "motor",
-  CoverNoteRefRes: "non_life_other",
+  // ... existing
   YourResponseTag: "your_type", // Add this
 };
 
 const EXTRACTORS: Record<string, ...> = {
-  motor: extractMotorCallback,
-  non_life_other: extractNonLifeOtherCallback,
-  your_type: extractYourCallback, // Add this
+  // ... existing
+  your_type: extractBaseCallback, // Reuse shared extractor
 };
+```
 
+This pattern is used by: reinsurance, policy, claim_intimation, claim_assessment, discharge_voucher, claim_payment, claim_rejection.
+
+#### Scenario B: Custom Callback Fields
+
+If your callback has extra fields beyond the standard 4, write a custom extractor that spreads `extractBaseCallback`:
+
+```ts
 function extractYourCallback(data: Record<string, any>): YourCallbackResponse {
   return {
-    response_id: data.ResponseId ?? "",
-    request_id: data.RequestId ?? "",
-    // ... map fields
+    ...extractBaseCallback(data),
+    your_extra_field: data.YourExtraField ?? "",
   };
 }
 ```
 
-#### Scenario B: Shared Response Tag (TAG_DISCRIMINATORS Pattern)
+This pattern is used by: motor (+ covernote_reference_number, sticker_number), non_life_other (+ covernote_reference_number), claim_notification (+ claim_reference_number).
+
+#### Scenario C: Shared Response Tag (TAG_DISCRIMINATORS Pattern)
 
 If your resource shares the same XML response tag as an existing resource but has a different internal structure, use the **TAG_DISCRIMINATORS** pattern. This inspects the response data to refine the type.
 
@@ -315,20 +330,38 @@ const TAG_DISCRIMINATORS: Record<string, (data: Record<string, any>) => string |
 
 This pattern is designed to be reusable for any future scenario where TIRA uses the same response tag for different resource types.
 
-### Step 7: Add Callback Response Type (if new)
+### Step 7: Add Callback Response Type
 
 **File:** `package/src/types/callback.ts`
 
+For standard 4-field callbacks, use a type alias of `BaseCallbackResponse`:
 ```ts
-export interface YourCallbackResponse {
-  response_id: string;
-  request_id: string;
-  // ... fields from the async callback
-}
+// Standard callback — just a type alias (most resources)
+export type YourCallbackResponse = BaseCallbackResponse;
+```
 
+For callbacks with extra fields, extend `BaseCallbackResponse`:
+```ts
+// Custom callback — extends base with extra fields
+export interface YourCallbackResponse extends BaseCallbackResponse {
+  your_extra_field: string;
+}
+```
+
+Add your type to `EnabledCallbacks`:
+```ts
 export interface EnabledCallbacks {
   motor?: boolean | undefined;
+  motor_fleet?: boolean | undefined;
   non_life_other?: boolean | undefined;
+  reinsurance?: boolean | undefined;
+  policy?: boolean | undefined;
+  claim_notification?: boolean | undefined;
+  claim_intimation?: boolean | undefined;
+  claim_assessment?: boolean | undefined;
+  discharge_voucher?: boolean | undefined;
+  claim_payment?: boolean | undefined;
+  claim_rejection?: boolean | undefined;
   your_type?: boolean | undefined; // Add this
 }
 ```
@@ -341,13 +374,17 @@ export interface EnabledCallbacks {
 import { YourResource } from "./resources/<resource-name>.js";
 
 export class Tira {
-  // ... existing
+  // ... existing resources
   public readonly yourResource: YourResource;
 
   constructor(config: TiraConfig) {
     // ... existing validation and setup
     this.yourResource = new YourResource(this.client, config);
   }
+
+  // The Tira class also provides:
+  // - handleCallback(input) — universal callback handler using registry
+  // - acknowledge(parsedBody, acknowledgementId) — builds signed ack XML
 }
 ```
 
@@ -356,10 +393,17 @@ export class Tira {
 **File:** `package/src/index.ts`
 
 ```ts
+// Add payload/response types
 export type {
   YourPayload,
   YourResponse,
 } from "./types/<resource-name>.js";
+
+// Add callback response type to the existing callback exports block
+export type {
+  // ... existing
+  YourCallbackResponse,
+} from "./types/callback.js";
 ```
 
 ### Step 10: Write Tests
@@ -387,8 +431,15 @@ Test pattern:
 - Optional fields default correctly (currency_code → TZS, exchange_rate → 1.00)
 - Output is headless (no XML declaration)
 
-#### Integration Test in `tira.test.ts`
+#### Integration Tests in `tira.test.ts`
 - `tira.yourResource` is defined after construction
+- Callback returns correct type when enabled
+- Callback throws when not enabled
+- `raw_xml` populated for XML string input, empty for pre-parsed object input
+
+Add callback fixture data to `fixtures.ts`:
+- `sampleYourCallbackXml` — raw XML string
+- `sampleYourCallbackParsed` — pre-parsed JS object (same structure as xml2js output)
 
 ### Step 11: Build and Test
 
@@ -459,16 +510,39 @@ If you find yourself duplicating validation/builder logic that's identical to an
 - Risks, subjects, addons, policy holders (validation + builders)
 - Motor details (validation + builder)
 - Cover note header (builder)
+- `SimpleClaimant` (shared type in `types/common.ts` used by 5 claim resources)
+- `BaseCallbackResponse` + `extractBaseCallback` (shared callback type + extractor used by 7 resources)
 
 ---
 
-## Existing Resources Reference
+## Existing Resources Reference (All 12 Complete)
 
-| Resource | Type File | Validation | Builder | Resource Class | Endpoint |
-|----------|-----------|------------|---------|----------------|----------|
-| Motor | `types/motor.ts` | `validation/motor.ts` | `builders/motor.ts` | `resources/motor.ts` | `covernote_motor` |
-| Non-Life Other | `types/non-life-other.ts` | `validation/non-life-other.ts` | `builders/non-life-other.ts` | `resources/non-life-other.ts` | `covernote_other` |
-| Motor Fleet | `types/motor-fleet.ts` | `validation/motor-fleet.ts` | `builders/motor-fleet.ts` | `resources/motor-fleet.ts` | `covernote_motor_fleet` |
+| Resource | Accessor | Type File | Endpoint | Ack Tag | Callback Tag |
+|----------|----------|-----------|----------|---------|--------------|
+| Motor | `tira.motor` | `types/motor.ts` | `covernote_motor` | `MotorCoverNoteRefReqAck` | `MotorCoverNoteRefRes` |
+| Motor Fleet | `tira.motorFleet` | `types/motor-fleet.ts` | `covernote_motor_fleet` | `MotorCoverNoteRefReqAck` | `MotorCoverNoteRefRes`* |
+| Non-Life Other | `tira.nonLifeOther` | `types/non-life-other.ts` | `covernote_other` | `CoverNoteRefReqAck` | `CoverNoteRefRes` |
+| Reinsurance | `tira.reinsurance` | `types/reinsurance.ts` | `reinsurance_submission` | `ReinsuranceReqAck` | `ReinsuranceRes` |
+| Policy | `tira.policy` | `types/policy.ts` | `policy_submission` | `PolicyReqAck` | `PolicyRes` |
+| Claim Notification | `tira.claimNotification` | `types/claim-notification.ts` | `claim_notification` | `ClaimNotificationRefReqAck` | `ClaimNotificationRefRes` |
+| Cover Note Verification | `tira.coverNoteVerification` | `types/covernote-verification.ts` | `covernote_verification` | — (sync) | — (sync) |
+| Claim Intimation | `tira.claimIntimation` | `types/claim-intimation.ts` | `claim_intimation` | `ClaimIntimationReqAck` | `ClaimIntimationRes` |
+| Claim Assessment | `tira.claimAssessment` | `types/claim-assessment.ts` | `claim_assessment` | `ClaimAssessmentReqAck` | `ClaimAssessmentRes` |
+| Discharge Voucher | `tira.dischargeVoucher` | `types/discharge-voucher.ts` | `discharge_voucher` | `DischargeVoucherReqAck` | `DischargeVoucherRes` |
+| Claim Payment | `tira.claimPayment` | `types/claim-payment.ts` | `claim_payment` | `ClaimPaymentReqAck` | `ClaimPaymentRes` |
+| Claim Rejection | `tira.claimRejection` | `types/claim-rejection.ts` | `claim_rejection` | `ClaimRejectionReqAck` | `ClaimRejectionRes` |
+
+\*Motor Fleet shares the `MotorCoverNoteRefRes` callback tag with Motor — discriminated by `FleetResHdr` field presence via `TAG_DISCRIMINATORS`.
+
+Each resource follows the same file naming pattern: `types/<name>.ts`, `validation/<name>.ts`, `builders/<name>.ts`, `resources/<name>.ts`. Exception: Cover Note Verification is sync (has `verify()` instead of `submit()`, no callback handling).
+
+### Callback Response Types
+
+| Pattern | Callback Type | Resources |
+|---------|--------------|-----------|
+| `BaseCallbackResponse` (type alias) | Standard 4 fields | reinsurance, policy, claim_intimation, claim_assessment, discharge_voucher, claim_payment, claim_rejection |
+| `extends BaseCallbackResponse` | Extra fields | motor (+covernote_reference_number, +sticker_number), non_life_other (+covernote_reference_number), claim_notification (+claim_reference_number) |
+| Custom structure | Unique shape | motor_fleet (FleetResHdr + FleetResDtl[]) |
 
 ### Endpoints Already Defined (in `endpoints.ts`)
 ```
