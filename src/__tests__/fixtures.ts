@@ -31,7 +31,7 @@ export const mockTiraConfigWithVerification: TiraConfig = {
 };
 
 export const validCoverNotePayload: MotorCoverNotePayload = {
-  request_id: "GLC-1234567890",
+  request_id: "LABEDAN-1234567890",
   callback_url: "https://example.com/callback",
   insurer_company_code: "ICC103",
   covernote_type: "1",
@@ -118,7 +118,7 @@ export const validCoverNotePayload: MotorCoverNotePayload = {
 };
 
 export const validVerificationPayload: MotorVerificationPayload = {
-  request_id: "GLC-VERIFY-1234567890",
+  request_id: "LABEDAN-VERIFY-1234567890",
   motor_category: "1",
   motor_registration_number: "T337DSE",
 };
@@ -330,7 +330,7 @@ export const validFleetDetailEntry: FleetDetailEntry = {
 };
 
 export const validFleetPayload: MotorFleetCoverNotePayload = {
-  request_id: "GLC-FLEET-1234567890",
+  request_id: "LABEDAN-FLEET-1234567890",
   callback_url: "https://example.com/callback",
   insurer_company_code: "ICC103",
   covernote_type: "1",

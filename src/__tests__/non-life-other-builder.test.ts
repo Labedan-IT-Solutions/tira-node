@@ -9,7 +9,7 @@ async function parseXml(xml: string): Promise<Record<string, any>> {
 }
 
 const validNonLifeOtherPayload: NonLifeOtherCoverNotePayload = {
-  request_id: "GLC-NLO-1234567890",
+  request_id: "LABEDAN-NLO-1234567890",
   callback_url: "https://example.com/callback",
   insurer_company_code: "ICC103",
   covernote_type: "1",
@@ -73,19 +73,28 @@ const validNonLifeOtherPayload: NonLifeOtherCoverNotePayload = {
 
 describe("buildNonLifeOtherCoverNoteXml", () => {
   it("produces valid XML that can be parsed back", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     await expect(parseXml(xml)).resolves.toBeDefined();
   });
 
   it("root element is CoverNoteRefReq", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     expect(parsed).toHaveProperty("CoverNoteRefReq");
     expect(parsed).not.toHaveProperty("MotorCoverNoteRefReq");
   });
 
   it("CoverNoteHdr contains config fields", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     const hdr = parsed.CoverNoteRefReq.CoverNoteHdr;
     expect(hdr.CompanyCode).toBe(mockTiraConfig.client_code);
@@ -95,7 +104,10 @@ describe("buildNonLifeOtherCoverNoteXml", () => {
   });
 
   it("premium values are formatted with .toFixed(2)", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     const dtl = parsed.CoverNoteRefReq.CoverNoteDtl;
     expect(dtl.TotalPremiumExcludingTax).toBe("525000.00");
@@ -103,7 +115,10 @@ describe("buildNonLifeOtherCoverNoteXml", () => {
   });
 
   it("dates are converted from UTC to GMT+3", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     const dtl = parsed.CoverNoteRefReq.CoverNoteDtl;
     expect(dtl.CoverNoteStartDate).toBe("2025-06-01T00:00:00");
@@ -111,14 +126,20 @@ describe("buildNonLifeOtherCoverNoteXml", () => {
   });
 
   it("does NOT contain MotorDtl", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     const dtl = parsed.CoverNoteRefReq.CoverNoteDtl;
     expect(dtl).not.toHaveProperty("MotorDtl");
   });
 
   it("output is headless (no XML declaration)", () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     expect(xml).not.toMatch(/^<\?xml/);
   });
 
@@ -133,7 +154,10 @@ describe("buildNonLifeOtherCoverNoteXml", () => {
     const payload = {
       ...validNonLifeOtherPayload,
       policy_holders: [
-        { ...validNonLifeOtherPayload.policy_holders[0]!, country_code: undefined },
+        {
+          ...validNonLifeOtherPayload.policy_holders[0]!,
+          country_code: undefined,
+        },
       ],
     };
     const xml = buildNonLifeOtherCoverNoteXml(payload, mockTiraConfig);
@@ -143,7 +167,10 @@ describe("buildNonLifeOtherCoverNoteXml", () => {
   });
 
   it("tax values formatted correctly", async () => {
-    const xml = buildNonLifeOtherCoverNoteXml(validNonLifeOtherPayload, mockTiraConfig);
+    const xml = buildNonLifeOtherCoverNoteXml(
+      validNonLifeOtherPayload,
+      mockTiraConfig,
+    );
     const parsed = await parseXml(xml);
     const risk = parsed.CoverNoteRefReq.CoverNoteDtl.RisksCovered.RiskCovered;
     const tax = risk.TaxesCharged.TaxCharged;
