@@ -5,6 +5,6 @@
     "moduleResolution": "node",
     "outDir": "build/cjs",
     "verbatimModuleSyntax": false,
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true
   }
 }

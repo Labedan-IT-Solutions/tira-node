@@ -45,11 +45,11 @@ export class MotorResource {
   }
 
   async handleCallback(
-    rawXml: string,
+    input: string | Record<string, any>,
   ): Promise<CallbackResult<MotorCallbackResponse>> {
-    const { body, responseData } = await parseCallbackXml(rawXml);
+    const { body, responseData } = await parseCallbackXml(input);
     const extracted = extractCallbackData("motor", responseData) as MotorCallbackResponse;
 
-    return { type: "motor", body, extracted, raw_xml: rawXml };
+    return { type: "motor", body, extracted, raw_xml: typeof input === "string" ? input : "" };
   }
 }

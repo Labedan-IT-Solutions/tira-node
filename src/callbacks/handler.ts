@@ -6,8 +6,10 @@ export interface ParsedCallback {
   responseData: Record<string, any>;
 }
 
-export async function parseCallbackXml(rawXml: string): Promise<ParsedCallback> {
-  const body = await parseStringPromise(rawXml, { explicitArray: false });
+export async function parseCallbackXml(input: string | Record<string, any>): Promise<ParsedCallback> {
+  const body = typeof input === "string"
+    ? await parseStringPromise(input, { explicitArray: false })
+    : input;
 
   const tiraMsg = body?.TiraMsg;
   if (!tiraMsg) {

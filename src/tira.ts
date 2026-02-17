@@ -49,8 +49,8 @@ export class Tira {
     this.motor = new MotorResource(this.client, config);
   }
 
-  async handleCallback(rawXml: string): Promise<CallbackResult> {
-    const { body, responseTag, responseData } = await parseCallbackXml(rawXml);
+  async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {
+    const { body, responseTag, responseData } = await parseCallbackXml(input);
     const type = resolveCallbackType(responseTag);
 
     const enabledCallbacks = this.config.enabled_callbacks;
@@ -69,7 +69,7 @@ export class Tira {
     }
 
     const extracted = extractCallbackData(type, responseData);
-    return { type, body, extracted, raw_xml: rawXml };
+    return { type, body, extracted, raw_xml: typeof input === "string" ? input : "" };
   }
 
   acknowledge(parsedBody: Record<string, any>, acknowledgementId: string): string {
