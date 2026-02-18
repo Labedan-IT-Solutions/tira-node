@@ -9,7 +9,7 @@ import {
   validateDateRange,
   validatePhoneNumber,
   validateEmail,
-  validateHttpsUrl,
+  validateUrl,
   validateTaxesCharged,
 } from "../validation/validators.js";
 
@@ -185,19 +185,21 @@ describe("validateEmail", () => {
   });
 });
 
-describe("validateHttpsUrl", () => {
-  it("throws on HTTP URL", () => {
-    expect(() => validateHttpsUrl("http://example.com/callback", "callback_url")).toThrow(
-      TiraValidationError,
-    );
-  });
-
-  it("throws on empty string", () => {
-    expect(() => validateHttpsUrl("", "callback_url")).toThrow(TiraValidationError);
+describe("validateUrl", () => {
+  it("accepts HTTP URL", () => {
+    expect(() => validateUrl("http://example.com/callback", "callback_url")).not.toThrow();
   });
 
   it("accepts HTTPS URL", () => {
-    expect(() => validateHttpsUrl("https://example.com/callback", "callback_url")).not.toThrow();
+    expect(() => validateUrl("https://example.com/callback", "callback_url")).not.toThrow();
+  });
+
+  it("throws on empty string", () => {
+    expect(() => validateUrl("", "callback_url")).toThrow(TiraValidationError);
+  });
+
+  it("throws on non-URL string", () => {
+    expect(() => validateUrl("not-a-url", "callback_url")).toThrow(TiraValidationError);
   });
 });
 

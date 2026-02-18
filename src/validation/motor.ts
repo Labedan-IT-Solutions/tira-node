@@ -84,7 +84,6 @@ export function validateMotorDetails(
     },
     `${prefix}.motor_usage`,
   );
-  validateRequired(m.owner_name, `${prefix}.owner_name`);
   validateEnum(
     m.owner_category,
     {

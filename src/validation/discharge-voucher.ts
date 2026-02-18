@@ -2,7 +2,7 @@ import type { DischargeVoucherPayload } from "../types/discharge-voucher.js";
 import { TiraValidationError } from "../errors.js";
 import {
   validateRequired,
-  validateHttpsUrl,
+  validateUrl,
   validateDateString,
   validateEnum,
   validateNumber,
@@ -43,7 +43,7 @@ export function validateDischargeVoucherPayload(
   // --- Header fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
 
   // --- Detail string fields ---

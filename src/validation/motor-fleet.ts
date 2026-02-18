@@ -5,7 +5,7 @@ import {
   validatePositiveNumber,
   validateDateString,
   validateDateRange,
-  validateHttpsUrl,
+  validateUrl,
   validateNumber,
 } from "./validators.js";
 import {
@@ -23,7 +23,7 @@ export function validateMotorFleetCoverNotePayload(
   // --- Top-level fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
   validateEnum(
     payload.covernote_type,

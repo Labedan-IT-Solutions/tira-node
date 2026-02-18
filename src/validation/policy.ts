@@ -1,12 +1,12 @@
 import type { PolicyPayload } from "../types/policy.js";
-import { validateRequired, validateHttpsUrl } from "./validators.js";
+import { validateRequired, validateUrl } from "./validators.js";
 import { TiraValidationError } from "../errors.js";
 
 export function validatePolicyPayload(payload: PolicyPayload): void {
   // --- Header fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
 
   // --- Policy Detail ---

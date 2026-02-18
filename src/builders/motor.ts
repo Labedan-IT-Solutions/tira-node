@@ -28,7 +28,7 @@ export function buildMotorDtlXml(m: MotorDetails): Record<string, any> {
     TareWeight: m.tare_weight,
     GrossWeight: m.gross_weight,
     MotorUsage: m.motor_usage,
-    OwnerName: m.owner_name,
+    OwnerName: m.owner_name ?? "",
     OwnerCategory: m.owner_category,
     OwnerAddress: m.owner_address,
   };

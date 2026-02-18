@@ -1,7 +1,7 @@
 import type { ClaimNotificationPayload } from "../types/claim-notification.js";
 import {
   validateRequired,
-  validateHttpsUrl,
+  validateUrl,
   validateEnum,
   validateDateString,
 } from "./validators.js";
@@ -12,7 +12,7 @@ export function validateClaimNotificationPayload(
   // --- Header fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
 
   // --- Detail fields ---

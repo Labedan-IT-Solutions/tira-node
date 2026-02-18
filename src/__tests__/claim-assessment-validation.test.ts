@@ -30,12 +30,12 @@ describe("validateClaimAssessmentPayload", () => {
     ).toThrow(TiraValidationError);
   });
 
-  it("throws when callback_url uses HTTP", () => {
+  it("accepts HTTP callback_url", () => {
     expect(() =>
       validateClaimAssessmentPayload(
         ca({ callback_url: "http://example.com/cb" }),
       ),
-    ).toThrow(TiraValidationError);
+    ).not.toThrow();
   });
 
   it("throws when insurer_company_code is missing", () => {

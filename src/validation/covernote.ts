@@ -8,7 +8,7 @@ import {
   validateDateRange,
   validatePhoneNumber,
   validateEmail,
-  validateHttpsUrl,
+  validateUrl,
   validateTaxesCharged,
 } from "./validators.js";
 import { TiraValidationError } from "../errors.js";
@@ -194,7 +194,7 @@ export function validateCoverNotePayload(
   // --- Top-level fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
   validateEnum(
     payload.covernote_type,

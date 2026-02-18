@@ -17,10 +17,10 @@ describe("validateMotorCoverNotePayload", () => {
   });
 
   // --- Callback URL ---
-  it("throws when callback_url uses HTTP", () => {
+  it("accepts HTTP callback_url", () => {
     expect(() =>
       validateMotorCoverNotePayload(coverNote({ callback_url: "http://example.com/cb" })),
-    ).toThrow(TiraValidationError);
+    ).not.toThrow();
   });
 
   it("throws when callback_url is missing", () => {

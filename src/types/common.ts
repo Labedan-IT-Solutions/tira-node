@@ -116,7 +116,7 @@ export interface SimpleClaimant {
 export interface CoverNotePayloadBase {
   /** Unique request identifier */
   request_id: string;
-  /** Callback URL for responses (must be HTTPS) */
+  /** Callback URL for responses */
   callback_url: string;
   /** Insurer company code */
   insurer_company_code: string;
@@ -226,8 +226,8 @@ export interface MotorDetails {
   gross_weight: number;
   /** Motor usage: 1-Private, 2-Commercial */
   motor_usage: "1" | "2";
-  /** Owner name */
-  owner_name: string;
+  /** Owner name. Optional — TIRA no longer requires this field. */
+  owner_name?: string | undefined;
   /** Owner category: 1-Sole Proprietor, 2-Corporate */
   owner_category: "1" | "2";
   /** Owner address */

@@ -4,7 +4,7 @@ import {
   validateEnum,
   validatePositiveNumber,
   validateNumber,
-  validateHttpsUrl,
+  validateUrl,
   validateDateString,
 } from "./validators.js";
 import { TiraValidationError } from "../errors.js";
@@ -13,7 +13,7 @@ export function validateReinsurancePayload(payload: ReinsurancePayload): void {
   // --- Header fields ---
   validateRequired(payload.request_id, "request_id");
   validateRequired(payload.callback_url, "callback_url");
-  validateHttpsUrl(payload.callback_url, "callback_url");
+  validateUrl(payload.callback_url, "callback_url");
   validateRequired(payload.insurer_company_code, "insurer_company_code");
   validateRequired(
     payload.covernote_reference_number,

@@ -77,10 +77,10 @@ export function validateEmail(value: string, fieldName: string): void {
   }
 }
 
-export function validateHttpsUrl(value: string, fieldName: string): void {
-  if (typeof value !== 'string' || !value.startsWith('https://')) {
+export function validateUrl(value: string, fieldName: string): void {
+  if (typeof value !== 'string' || (!value.startsWith('http://') && !value.startsWith('https://'))) {
     throw new TiraValidationError(
-      `${fieldName} must be a valid HTTPS URL.`,
+      `${fieldName} must be a valid HTTP or HTTPS URL.`,
       fieldName
     );
   }
