@@ -60,12 +60,7 @@ export class TiraClient {
               res.statusCode &&
               (res.statusCode < 200 || res.statusCode >= 300)
             ) {
-              reject(
-                new TiraApiError(
-                  res.statusCode,
-                  res.statusMessage ?? "Unknown error",
-                ),
-              );
+              reject(new TiraApiError(res.statusCode, body ?? "Unknown error"));
               return;
             }
             resolve(body);
