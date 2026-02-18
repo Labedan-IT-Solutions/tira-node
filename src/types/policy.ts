@@ -16,7 +16,7 @@ export interface PolicyDetail {
 export interface PolicyPayload {
   /** Unique request identifier */
   request_id: string;
-  /** Callback URL for responses (must be HTTPS) */
+  /** Callback URL for responses */
   callback_url: string;
   /** Insurer company code */
   insurer_company_code: string;

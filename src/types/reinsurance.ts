@@ -24,7 +24,7 @@ export interface ReinsuranceDetail {
 export interface ReinsurancePayload {
   /** Unique request identifier */
   request_id: string;
-  /** Callback URL for async responses (must be HTTPS) */
+  /** Callback URL for async responses */
   callback_url: string;
   /** Insurer company code */
   insurer_company_code: string;
