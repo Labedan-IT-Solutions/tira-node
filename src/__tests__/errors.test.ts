@@ -34,10 +34,10 @@ describe("TiraApiError", () => {
     expect(err.name).toBe("TiraApiError");
   });
 
-  it("has status and statusText properties", () => {
+  it("has status and bodyText properties", () => {
     const err = new TiraApiError(401, "Unauthorized");
     expect(err.status).toBe(401);
-    expect(err.statusText).toBe("Unauthorized");
+    expect(err.bodyText).toBe("Unauthorized");
   });
 
   it("message includes status code and text", () => {
