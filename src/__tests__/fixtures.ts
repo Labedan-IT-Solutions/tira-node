@@ -489,7 +489,7 @@ export const validClaimNotificationPayload: ClaimNotificationPayload = {
   claim_notification_number: "NIC00004",
   covernote_reference_number: "3252-5252",
   claim_report_date: "2020-09-15T13:55:22",
-  claim_form_dully_filled: "Y",
+  claim_form_duly_filled: "Y",
   loss_date: "2020-09-15T13:55:22",
   loss_nature: "Fire and Allied Perils",
   loss_type: "Bodily Injury",
@@ -529,13 +529,14 @@ export const validCoverNoteVerificationPayload: CoverNoteVerificationPayload = {
   covernote_reference_number: "4242424",
 };
 
-export const validCoverNoteVerificationPayloadFull: CoverNoteVerificationPayload = {
-  request_id: "NIC22424232355",
-  covernote_reference_number: "4242424",
-  sticker_number: "1313-1414-124124",
-  motor_registration_number: "T233SQA",
-  motor_chassis_number: "4353646",
-};
+export const validCoverNoteVerificationPayloadFull: CoverNoteVerificationPayload =
+  {
+    request_id: "NIC22424232355",
+    covernote_reference_number: "4242424",
+    sticker_number: "1313-1414-124124",
+    motor_registration_number: "T233SQA",
+    motor_chassis_number: "4353646",
+  };
 
 // --- Claim Intimation Fixtures ---
 

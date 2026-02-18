@@ -22,7 +22,7 @@ export function buildClaimNotificationXml(
           ClaimNotificationNumber: payload.claim_notification_number,
           CoverNoteReferenceNumber: payload.covernote_reference_number,
           ClaimReportDate: formatDateForTira(payload.claim_report_date),
-          ClaimFormDullyFilled: payload.claim_form_dully_filled,
+          ClaimFormDullyFilled: payload.claim_form_duly_filled,
           LossDate: formatDateForTira(payload.loss_date),
           LossNature: payload.loss_nature,
           LossType: payload.loss_type,

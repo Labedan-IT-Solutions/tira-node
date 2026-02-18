@@ -92,26 +92,26 @@ describe("validateClaimNotificationPayload", () => {
   });
 
   // --- Enum validation ---
-  it("throws when claim_form_dully_filled is not Y or N", () => {
+  it("throws when claim_form_duly_filled is not Y or N", () => {
     expect(() =>
       validateClaimNotificationPayload(
-        cn({ claim_form_dully_filled: "X" as any }),
+        cn({ claim_form_duly_filled: "X" as any }),
       ),
     ).toThrow(TiraValidationError);
   });
 
-  it("accepts Y for claim_form_dully_filled", () => {
+  it("accepts Y for claim_form_duly_filled", () => {
     expect(() =>
       validateClaimNotificationPayload(
-        cn({ claim_form_dully_filled: "Y" }),
+        cn({ claim_form_duly_filled: "Y" }),
       ),
     ).not.toThrow();
   });
 
-  it("accepts N for claim_form_dully_filled", () => {
+  it("accepts N for claim_form_duly_filled", () => {
     expect(() =>
       validateClaimNotificationPayload(
-        cn({ claim_form_dully_filled: "N" }),
+        cn({ claim_form_duly_filled: "N" }),
       ),
     ).not.toThrow();
   });

@@ -14,7 +14,7 @@ export interface ClaimNotificationPayload {
   /** Claim report date and time. YYYY-MM-DD'T'HH:MM:SS format */
   claim_report_date: string | Date;
   /** Whether filled claim form is submitted. Y-Yes, N-No */
-  claim_form_dully_filled: "Y" | "N";
+  claim_form_duly_filled: "Y" | "N";
   /** Loss date and time. YYYY-MM-DD'T'HH:MM:SS format */
   loss_date: string | Date;
   /** Nature of loss. String(100) */

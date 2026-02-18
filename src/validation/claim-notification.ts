@@ -32,9 +32,9 @@ export function validateClaimNotificationPayload(
   validateDateString(reportDateStr, "claim_report_date");
 
   validateEnum(
-    payload.claim_form_dully_filled,
+    payload.claim_form_duly_filled,
     { Y: "Yes", N: "No" },
-    "claim_form_dully_filled",
+    "claim_form_duly_filled",
   );
 
   const lossDateStr =
