@@ -13,9 +13,18 @@ import { ClaimAssessmentResource } from "./resources/claim-assessment.js";
 import { DischargeVoucherResource } from "./resources/discharge-voucher.js";
 import { ClaimPaymentResource } from "./resources/claim-payment.js";
 import { ClaimRejectionResource } from "./resources/claim-rejection.js";
-import { parseCallbackXml, verifyCallbackSignature } from "./callbacks/handler.js";
-import { resolveCallbackType, extractCallbackData } from "./callbacks/registry.js";
-import { buildAckPayload, buildAcknowledgementXml } from "./builders/acknowledgement.js";
+import {
+  parseCallbackXml,
+  verifyCallbackSignature,
+} from "./callbacks/handler.js";
+import {
+  resolveCallbackType,
+  extractCallbackData,
+} from "./callbacks/registry.js";
+import {
+  buildAckPayload,
+  buildAcknowledgementXml,
+} from "./builders/acknowledgement.js";
 import { signContent, wrapTiraMsg } from "./signing.js";
 
 export class Tira {
@@ -50,11 +59,11 @@ export class Tira {
     if (!config.base_url) {
       throw new Error("Tira: base_url is required");
     }
-    if (!config.pfx_path) {
-      throw new Error("Tira: pfx_path is required");
+    if (!config.client_private_pfx_path) {
+      throw new Error("Tira: client_private_pfx_path is required");
     }
-    if (!config.pfx_passphrase) {
-      throw new Error("Tira: pfx_passphrase is required");
+    if (!config.client_private_pfx_passphrase) {
+      throw new Error("Tira: client_private_pfx_passphrase is required");
     }
     if (!config.tira_public_pfx_path) {
       throw new Error("Tira: tira_public_pfx_path is required");
@@ -71,7 +80,10 @@ export class Tira {
     this.reinsurance = new ReinsuranceResource(this.client, config);
     this.policy = new PolicyResource(this.client, config);
     this.claimNotification = new ClaimNotificationResource(this.client, config);
-    this.coverNoteVerification = new CoverNoteVerificationResource(this.client, config);
+    this.coverNoteVerification = new CoverNoteVerificationResource(
+      this.client,
+      config,
+    );
     this.claimIntimation = new ClaimIntimationResource(this.client, config);
     this.claimAssessment = new ClaimAssessmentResource(this.client, config);
     this.dischargeVoucher = new DischargeVoucherResource(this.client, config);
@@ -79,7 +91,9 @@ export class Tira {
     this.claimRejection = new ClaimRejectionResource(this.client, config);
   }
 
-  async handleCallback(input: string | Record<string, any>): Promise<CallbackResult> {
+  async handleCallback(
+    input: string | Record<string, any>,
+  ): Promise<CallbackResult> {
     const signature_verified = verifyCallbackSignature(
       input,
       this.config.verify_signatures !== false,
@@ -106,16 +120,25 @@ export class Tira {
     }
 
     const extracted = extractCallbackData(type, responseData);
-    return { type, body, extracted, raw_xml: typeof input === "string" ? input : "", signature_verified };
+    return {
+      type,
+      body,
+      extracted,
+      raw_xml: typeof input === "string" ? input : "",
+      signature_verified,
+    };
   }
 
-  acknowledge(parsedBody: Record<string, any>, acknowledgementId: string): string {
+  acknowledge(
+    parsedBody: Record<string, any>,
+    acknowledgementId: string,
+  ): string {
     const ackPayload = buildAckPayload(parsedBody, acknowledgementId);
     const ackContentXml = buildAcknowledgementXml(ackPayload);
     const signature = signContent(
       ackContentXml,
-      this.config.pfx_path,
-      this.config.pfx_passphrase,
+      this.config.client_private_pfx_path,
+      this.config.client_private_pfx_passphrase,
     );
     return wrapTiraMsg(ackContentXml, signature);
   }

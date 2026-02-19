@@ -94,8 +94,8 @@ describe("Tira constructor", () => {
     "system_code",
     "transacting_company_code",
     "base_url",
-    "pfx_path",
-    "pfx_passphrase",
+    "client_private_pfx_path",
+    "client_private_pfx_passphrase",
     "tira_public_pfx_path",
     "tira_public_pfx_passphrase",
   ];
@@ -304,8 +304,8 @@ describe("Tira.acknowledge", () => {
     tira.acknowledge(sampleMotorCallbackParsed, "ACK-123");
     expect(signContent).toHaveBeenCalledWith(
       expect.any(String),
-      mockTiraConfig.pfx_path,
-      mockTiraConfig.pfx_passphrase,
+      mockTiraConfig.client_private_pfx_path,
+      mockTiraConfig.client_private_pfx_passphrase,
     );
   });
 
@@ -675,9 +675,7 @@ describe("Tira.handleCallback — claim_intimation", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_intimation: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimIntimationCallbackXml,
-    );
+    const result = await tira.handleCallback(sampleClaimIntimationCallbackXml);
 
     expect(result.type).toBe("claim_intimation");
     expect(result.raw_xml).toBe(sampleClaimIntimationCallbackXml);
@@ -738,9 +736,7 @@ describe("Tira.handleCallback — claim_assessment", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_assessment: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimAssessmentCallbackXml,
-    );
+    const result = await tira.handleCallback(sampleClaimAssessmentCallbackXml);
 
     expect(result.type).toBe("claim_assessment");
     expect(result.raw_xml).toBe(sampleClaimAssessmentCallbackXml);
@@ -801,9 +797,7 @@ describe("Tira.handleCallback — discharge_voucher", () => {
       ...mockTiraConfig,
       enabled_callbacks: { discharge_voucher: true },
     });
-    const result = await tira.handleCallback(
-      sampleDischargeVoucherCallbackXml,
-    );
+    const result = await tira.handleCallback(sampleDischargeVoucherCallbackXml);
 
     expect(result.type).toBe("discharge_voucher");
     expect(result.raw_xml).toBe(sampleDischargeVoucherCallbackXml);
@@ -835,9 +829,7 @@ describe("Tira.handleCallback — claim_payment", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_payment: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimPaymentCallbackParsed,
-    );
+    const result = await tira.handleCallback(sampleClaimPaymentCallbackParsed);
 
     expect(result.type).toBe("claim_payment");
     expect(result.extracted).toHaveProperty("response_id", "TIRA22424232355");
@@ -864,9 +856,7 @@ describe("Tira.handleCallback — claim_payment", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_payment: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimPaymentCallbackXml,
-    );
+    const result = await tira.handleCallback(sampleClaimPaymentCallbackXml);
 
     expect(result.type).toBe("claim_payment");
     expect(result.raw_xml).toBe(sampleClaimPaymentCallbackXml);
@@ -878,9 +868,7 @@ describe("Tira.handleCallback — claim_payment", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_payment: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimPaymentCallbackParsed,
-    );
+    const result = await tira.handleCallback(sampleClaimPaymentCallbackParsed);
     expect(result.raw_xml).toBe("");
   });
 });
@@ -927,9 +915,7 @@ describe("Tira.handleCallback — claim_rejection", () => {
       ...mockTiraConfig,
       enabled_callbacks: { claim_rejection: true },
     });
-    const result = await tira.handleCallback(
-      sampleClaimRejectionCallbackXml,
-    );
+    const result = await tira.handleCallback(sampleClaimRejectionCallbackXml);
 
     expect(result.type).toBe("claim_rejection");
     expect(result.raw_xml).toBe(sampleClaimRejectionCallbackXml);

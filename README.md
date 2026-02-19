@@ -80,8 +80,8 @@ const tira = new Tira({
   client_key: "YOUR_CLIENT_KEY", // Provided by TIRA
   system_code: "YOUR_SYSTEM_CODE", // Provided by TIRA
   transacting_company_code: "YOUR_COMPANY_CODE", // Provided by TIRA
-  pfx_path: "./path_to_certs/tiramisclientprivate.pfx", // Provided by TIRA
-  pfx_passphrase: "your-passphrase", // Provided by TIRA
+  client_private_pfx_path: "./path_to_certs/tiramisclientprivate.pfx", // Your private key (Provided by TIRA for testing)
+  client_private_pfx_passphrase: "your-passphrase", // Your private key passphrase (Provided by TIRA for testing)
   tira_public_pfx_path: "./path_to_certs/tiramispublic.pfx", // Provided by TIRA
   tira_public_pfx_passphrase: "your-passphrase", // Provided by TIRA
 });

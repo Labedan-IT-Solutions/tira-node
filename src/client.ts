@@ -16,8 +16,14 @@ export class TiraClient {
   constructor(config: TiraConfig) {
     this.config = config;
     this.agent = new https.Agent({
-      key: privateKeyPemFromPfx(config.pfx_path, config.pfx_passphrase),
-      cert: certificatePemFromPfx(config.pfx_path, config.pfx_passphrase),
+      key: privateKeyPemFromPfx(
+        config.client_private_pfx_path,
+        config.client_private_pfx_passphrase,
+      ),
+      cert: certificatePemFromPfx(
+        config.client_private_pfx_path,
+        config.client_private_pfx_passphrase,
+      ),
       ca: certificatePemFromPfx(
         config.tira_public_pfx_path,
         config.tira_public_pfx_passphrase,
@@ -32,8 +38,8 @@ export class TiraClient {
     // Sign and wrap the XML
     const signature = signContent(
       xmlBody,
-      this.config.pfx_path,
-      this.config.pfx_passphrase,
+      this.config.client_private_pfx_path,
+      this.config.client_private_pfx_passphrase,
     );
     const wrappedXml = wrapTiraMsg(xmlBody, signature);
 
